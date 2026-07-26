@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 Refactor &amp; test &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 7–8</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html" class="on"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 04 &middot; Weeks 7–8</div>
+<h2>Refactor &amp; test</h2>
+<p class="lede">No new features. Go back to the expense tracker and make it something you'd be happy to hand over.</p>
+<div class="cmsg">refactor: make past-me's code liveable</div>
+
+<p>This is the fortnight that feels least like progress and teaches the most. You're not adding anything. You're taking code you wrote a month ago — which you'll find surprisingly hard to read — and restructuring it without breaking it.</p>
+<p>That skill, changing existing code safely, is most of what professional engineering actually is. Very little of the job is writing new things on blank pages.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">Read your own code</a></li>
+<li><a href="#s2">Your first test</a></li>
+<li><a href="#s3">The safety net</a></li>
+<li><a href="#s4">Classes</a></li>
+<li><a href="#s5">Splitting into files</a></li>
+<li><a href="#s6">Refactor for real</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>Read your own code</h3></div>
+
+<p>Before changing anything, open the expense tracker and read it start to finish. Keep a notes file open and write down every time you have to stop and work something out.</p>
+<p>Look for: functions doing more than one thing, names that don't say what they hold, the same logic copied in two places, functions longer than about twenty lines, and anything you had to re-read twice.</p>
+<div class="note"><div class="lbl">This is the exercise</div><p>The discomfort of reading your own old code is the lesson. Every confusing bit is a decision that made sense at the time and doesn't now. That's what you're about to fix — and noticing it is a skill in itself.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>A written list of everything wrong with it. Commit the notes file — it's evidence of how you think, and it'll be satisfying at the end of the fortnight.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You have a concrete list of problems rather than a vague sense the code is messy.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Your first test</h3></div>
+
+<p>Before changing code you need a way to know you haven't broken it. That's what tests are.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>pip install pytest</code></pre></div>
+<p>A test is a function starting with <code>test_</code> containing an <code>assert</code> — a statement of what should be true:</p>
+<div class="code"><button class="copy">Copy</button><pre><code><span class="c"># test_tracker.py</span>
+from tracker import calculate_total
+
+def test_total_of_two_expenses():
+    expenses = [{"amount": 10.0}, {"amount": 5.50}]
+    assert calculate_total(expenses) == 15.50
+
+def test_total_of_empty_list_is_zero():
+    assert calculate_total([]) == 0</code></pre></div>
+<p>Run them with <code>pytest</code> in your terminal. Green means passing, red means something's wrong.</p>
+<p>Each test has three parts: set up the situation, do the thing, check the result. Name tests so a failure tells you what broke without reading the code.</p>
+
+<div class="sbuild"><b>Build this</b><p>Write tests for every function that returns a value. Aim for the normal case, an empty case, and one odd case each.</p></div>
+<div class="scheck"><b>You should now be able to</b><p><code>pytest</code> runs and passes, and you understand what each test is protecting.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>The safety net</h3></div>
+
+<p>Tests only help if they cover the behaviour you're about to change. So before refactoring anything, get the current behaviour under test — including the bits you think are ugly.</p>
+<p>You'll hit a problem: some functions can't be tested because they do too much. A function that reads input, calculates and prints has no return value to assert on. That's not a testing problem, it's a design problem, and the test is what revealed it.</p>
+<div class="note"><div class="lbl">The useful insight</div><p>Hard-to-test code is badly structured code. Testability isn't a separate quality you add — it's a symptom of good separation. If you can't test it, split the calculating from the printing and test the calculating.</p></div>
+<p>Test what the function <em>does</em>, not how it does it. A test that breaks when you rename an internal variable is a test that will annoy you forever.</p>
+
+<div class="sbuild"><b>Build this</b><p>Every calculation function under test. Split any function that mixes input, logic and output — logic in the middle, testable.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can change the inside of any calculation function and the tests will tell you if you broke it.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>Classes</h3></div>
+
+<p>You've been passing the same list of expenses into every function. A <strong>class</strong> bundles data together with the functions that work on it.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>class ExpenseBook:
+    def __init__(self):
+        self.expenses = []
+
+    def add(self, description, amount, category):
+        self.expenses.append({
+            "description": description,
+            "amount": amount,
+            "category": category,
+        })
+
+    def total(self):
+        return sum(e["amount"] for e in self.expenses)</code></pre></div>
+<div class="code"><button class="copy">Copy</button><pre><code>book = ExpenseBook()
+book.add("Coffee", 3.40, "food")
+print(book.total())</code></pre></div>
+<p><code>__init__</code> runs when you create one. <code>self</code> means "this particular book" — it's how each instance keeps its own data. Functions inside a class are called methods.</p>
+<p>Classes aren't automatically better. They're useful when data and behaviour belong together — which is exactly the case here.</p>
+
+<div class="sbuild"><b>Build this</b><p>Rebuild the tracker around an <code>ExpenseBook</code> class. Keep the tests green the whole way through.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain what <code>self</code> does without reciting a definition.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>Splitting into files</h3></div>
+
+<p>One long file is fine until it isn't. Split by responsibility:</p>
+<div class="code"><pre><code>expense_tracker/
+  main.py         <span class="c"># menu loop, talks to the person</span>
+  expense_book.py <span class="c"># the class, all the logic</span>
+  storage.py      <span class="c"># loading and saving JSON</span>
+  test_book.py
+  test_storage.py</code></pre></div>
+<p>Import across files by filename:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from expense_book import ExpenseBook
+from storage import load, save</code></pre></div>
+<p>The division that matters: <code>main.py</code> is the only file that talks to a human. Everything else just works with data. That's why the rest is testable — and it's the same separation that will let you put a web interface on it in project 5 without rewriting the logic.</p>
+
+<div class="sbuild"><b>Build this</b><p>Split into modules. Tests still green. Everything still works.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your logic files contain no <code>print</code> or <code>input</code> at all.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Refactor for real</h3></div>
+
+<p>Now the safety net is in place, go through your week-one list of problems and fix them properly. The discipline:</p>
+<ol>
+<li>Make one small change</li>
+<li>Run the tests</li>
+<li>Green? Commit. Red? Undo it and go smaller.</li>
+</ol>
+<p>Never make two changes at once. When something breaks you want to know exactly what caused it.</p>
+<div class="note warn"><div class="lbl">The temptation to start over</div><p>At some point you'll want to delete it and rewrite from scratch. Don't. Rewriting is easy and teaches you nothing; changing working code without breaking it is the actual skill, and it's the one you'll use every week of your career.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Work through the list. Commit after each fix. Finish by re-reading the file you wrote in session 1 and adding a note on what changed.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>15+ tests pass, the code is across several files, and you ran the tests before every commit.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>Deleting and rewriting</b><p>Not refactoring. The skill is changing code safely, in steps, with the tests green.</p></div>
+<div class="trap"><b>Testing the inside</b><p>If renaming a private variable breaks a test, the test is testing the wrong thing. Test behaviour.</p></div>
+<div class="trap"><b>Classes everywhere</b><p>Not everything needs to be a class. A function that takes some data and returns an answer is often just better.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Add a test that checks loading and saving round-trips correctly.</li>
+<li>Use <code>pytest</code> fixtures to avoid repeating setup in every test.</li>
+<li>Add type hints to your functions and run <code>mypy</code> over it.</li>
+<li>Set up GitHub Actions to run your tests automatically on every push.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>15+ passing tests, code split across modules, no printing inside the logic, and a commit history showing small steps rather than one giant rewrite.</div>
+<div class="pager">
+<a class="pg" href="03-weather-client.html"><span>&larr; Previous</span><strong>03 &middot; Weather client</strong></a>
+<a class="pg r" href="05-first-web-app.html"><span>Next &rarr;</span><strong>05 &middot; First web app</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 Expense tracker &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 3–4</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html" class="on"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 02 &middot; Weeks 3–4</div>
+<h2>Expense tracker</h2>
+<p class="lede">Your first program that remembers things. Lists, dictionaries, and files.</p>
+<div class="cmsg">feat: data that survives a restart</div>
+
+<p>This project has a trick built into it, and it's worth knowing about now so you recognise it when it happens.</p>
+<p>You'll spend the first week building something that works nicely — add an expense, list them, total them up. Then you'll close it, reopen it, and everything will be gone. That moment is the entire point of the project. Everything you learn in week two exists to solve it.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">Lists</a></li>
+<li><a href="#s2">Dictionaries, and data with shape</a></li>
+<li><a href="#s3">A menu that keeps running</a></li>
+<li><a href="#s4">The crash — and files</a></li>
+<li><a href="#s5">JSON — saving data that has shape</a></li>
+<li><a href="#s6">Filtering, totals, and writing it up</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>Lists</h3></div>
+
+<p>A list holds several values in order. Square brackets, comma separated:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>shopping = ["milk", "bread", "eggs"]
+
+print(shopping[0])        <span class="c"># milk — counting starts at 0</span>
+print(len(shopping))      <span class="c"># 3</span>
+
+shopping.append("cheese") <span class="c"># add to the end</span>
+shopping.remove("bread")  <span class="c"># take one out</span>
+
+for item in shopping:
+    print(item)</code></pre></div>
+<p>Counting from zero is standard across nearly every programming language. The first item is <code>[0]</code>, the last is <code>[-1]</code>. Asking for an index that doesn't exist gives you an <code>IndexError</code>.</p>
+
+<div class="sbuild"><b>Build this</b><p>A script that keeps a list of expense amounts. Add one, show them all, print the total using <code>sum()</code>.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can build a list, add to it, loop over it, and total it.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Dictionaries, and data with shape</h3></div>
+
+<p>A list of amounts isn't enough — an expense has a description, a category and a date too. A <strong>dictionary</strong> stores labelled values:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>expense = {
+    "description": "Coffee",
+    "amount": 3.40,
+    "category": "food"
+}
+
+print(expense["amount"])       <span class="c"># 3.4</span>
+expense["amount"] = 3.60       <span class="c"># change it</span></code></pre></div>
+<p>The real shape you want is a <strong>list of dictionaries</strong> — several expenses, each with labelled fields:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>expenses = [
+    {"description": "Coffee", "amount": 3.40, "category": "food"},
+    {"description": "Bus",    "amount": 2.80, "category": "travel"},
+]
+
+for e in expenses:
+    print(f"{e['description']}: £{e['amount']}")</code></pre></div>
+<p>Asking for a key that isn't there gives a <code>KeyError</code>. Use <code>e.get("category", "unknown")</code> when a field might be missing.</p>
+
+<div class="sbuild"><b>Build this</b><p>Rework your tracker so each expense is a dictionary with description, amount and category. Print them as a neat table.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You're comfortable with a list of dictionaries and can get at any field inside it.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>A menu that keeps running</h3></div>
+
+<p>Real tools don't do one thing and exit. They show options and wait. That's a <code>while</code> loop with a menu inside:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>while True:
+    print("1: add   2: list   3: quit")
+    choice = input("> ")
+
+    if choice == "1":
+        add_expense()
+    elif choice == "2":
+        list_expenses()
+    elif choice == "3":
+        break
+    else:
+        print("Didn't understand that.")</code></pre></div>
+<p><code>while True</code> loops forever; <code>break</code> is the only way out. Notice the menu loop doesn't <em>do</em> anything itself — it decides which function to call. That's the structure to aim for.</p>
+<div class="note"><div class="lbl">One function, one job</div><p>You want separate functions for adding, listing, deleting and totalling. If you end up with one function called <code>do_everything()</code>, you'll fight it for the rest of the project.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Menu loop with add, list, delete and total. Each one its own function.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your program runs until told to stop, and each menu option calls a separate, sensibly named function.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>The crash — and files</h3></div>
+
+<p>Close your program. Open it again. Everything's gone.</p>
+<p>Variables live in memory, and memory is wiped when the program ends. To keep anything you have to write it to a file on disk.</p>
+<div class="code"><button class="copy">Copy</button><pre><code><span class="c"># writing</span>
+with open("notes.txt", "w") as f:
+    f.write("hello")
+
+<span class="c"># reading</span>
+with open("notes.txt", "r") as f:
+    contents = f.read()</code></pre></div>
+<p>The <code>with</code> block closes the file for you when it finishes, even if something goes wrong. Always use it.</p>
+<p><code>"w"</code> means write — and it <strong>wipes the file first</strong>. <code>"r"</code> means read. <code>"a"</code> appends to the end.</p>
+
+<div class="sbuild"><b>Build this</b><p>Practice: save a list of names to a text file and read them back. Don't wire it into the tracker yet — text files are the wrong tool for structured data, and the next session explains why.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write to a file and read it back, and you know <code>"w"</code> destroys what was there.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>JSON — saving data that has shape</h3></div>
+
+<p>Your expenses are a list of dictionaries. Saving that as plain text means inventing a format and writing code to pick it apart again. <strong>JSON</strong> already solved this.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>import json
+
+<span class="c"># save</span>
+with open("expenses.json", "w") as f:
+    json.dump(expenses, f, indent=2)
+
+<span class="c"># load</span>
+with open("expenses.json", "r") as f:
+    expenses = json.load(f)</code></pre></div>
+<p>That's it. Your list of dictionaries goes out and comes back with its structure intact. Open the file in VS Code and look at it — it's readable, which is part of why JSON won.</p>
+<p>One problem: the very first time you run it there's no file yet, and <code>json.load</code> will crash. Handle it:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>def load_expenses():
+    try:
+        with open("expenses.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []</code></pre></div>
+<p>No file means no expenses yet, so return an empty list. That's not a workaround — it's the correct behaviour.</p>
+
+<div class="sbuild"><b>Build this</b><p>Wire it in. Load on start, save after every change. Close it, reopen it, and watch your data still be there.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your data survives a restart. This is the project's whole purpose.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Filtering, totals, and writing it up</h3></div>
+
+<p>Now the data persists, make it useful. Filtering a list by a condition:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>food = [e for e in expenses if e["category"] == "food"]</code></pre></div>
+<p>That's a <strong>list comprehension</strong> — read it as "e for every e in expenses, where the category is food". It's the same as a <code>for</code> loop with an <code>if</code>, written on one line. Write it the long way first if that's clearer, then try shortening it.</p>
+<p>Totalling one field across a list:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>total = sum(e["amount"] for e in expenses)</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>Add: total by category, a filter by category, and a sort by amount. Then the README — include what happened when you first closed the program.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can filter and summarise a list of dictionaries, and your README tells the story of the project.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>One giant function</b><p>If <code>add_expense()</code> is also saving the file and printing a summary, split it up. One job each.</p></div>
+<div class="trap"><b>Forgetting to save</b><p>Data changes in memory but never reaches disk. Save after every change that matters.</p></div>
+<div class="trap"><b>Floats and money</b><p><code>0.1 + 0.2</code> doesn't give exactly <code>0.3</code> in any language. For this project just round when displaying. Real financial software stores pennies as whole numbers.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Add a date to each expense using the <code>datetime</code> module.</li>
+<li>Show a monthly total, grouped by month.</li>
+<li>Add a budget per category and warn when it's exceeded.</li>
+<li>Export to CSV so it opens in a spreadsheet.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>You can close the program, reopen it, and your expenses are still there. Add, list, delete, total and filter all work, and each lives in its own function.</div>
+<div class="pager">
+<a class="pg" href="01-terminal-toolkit.html"><span>&larr; Previous</span><strong>01 &middot; Terminal toolkit</strong></a>
+<a class="pg r" href="03-weather-client.html"><span>Next &rarr;</span><strong>03 &middot; Weather client</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>

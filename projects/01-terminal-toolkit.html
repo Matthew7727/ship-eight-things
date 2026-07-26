@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 Terminal toolkit &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 1–2</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html" class="on"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 01 &middot; Weeks 1–2</div>
+<h2>Terminal toolkit</h2>
+<p class="lede">Four small command-line tools. Everything you need to write a working program.</p>
+<div class="cmsg">init: first commits</div>
+
+<p>The goal of these two weeks is not the tools. It's getting to the point where writing a small program stops feeling like magic and starts feeling like typing.</p>
+<p>You'll build four things in one repository. Each is small enough to finish in a session or two, and each adds one new idea. Nothing here has a user interface, nothing looks good, and that's fine — you're learning to make a computer do what you say.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">Printing, variables, and your first script</a></li>
+<li><a href="#s2">Numbers, and why input lies to you</a></li>
+<li><a href="#s3">Making decisions</a></li>
+<li><a href="#s4">Loops, and repeating yourself properly</a></li>
+<li><a href="#s5">Functions</a></li>
+<li><a href="#s6">Tidy up and write it up</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>Printing, variables, and your first script</h3></div>
+
+<p>A Python program is a text file that runs top to bottom. Make a file called <code>hello.py</code>, put one line in it, and run it with <code>python3 hello.py</code>.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>print("Hello")</code></pre></div>
+<p>A <strong>variable</strong> is a name for a value. The <code>=</code> sign means "put this value in this name" — it is not the maths equals.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>name = "Sam"
+age = 34
+print(name)</code></pre></div>
+<p>To put a variable inside a sentence, use an <strong>f-string</strong> — an <code>f</code> before the quote, and curly braces around the variable:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>print(f"{name} is {age} years old")</code></pre></div>
+<p><code>input()</code> asks the person running the program to type something. Whatever they type comes back as text.</p>
+
+<div class="sbuild"><b>Build this</b><p>Write a script that asks for someone's name and their favourite food, then prints a sentence using both. Commit it.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can create a file, run it from the terminal, store input in variables, and print a sentence built from them.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Numbers, and why input lies to you</h3></div>
+
+<p>Here is the first thing that will confuse you, and it confuses everyone. <code>input()</code> always gives you <strong>text</strong>, even when the person typed a number.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>age = input("Age: ")   <span class="c"># person types 34</span>
+print(age + 1)         <span class="c"># TypeError!</span></code></pre></div>
+<p>Python is telling you it can't add a number to a piece of text. You have to convert it first — <code>int()</code> for whole numbers, <code>float()</code> for decimals:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>age = int(input("Age: "))
+print(age + 1)         <span class="c"># 35</span></code></pre></div>
+<p>Maths works how you'd expect: <code>+ - * /</code>. Two extras worth knowing: <code>**</code> is "to the power of", and <code>round(x, 2)</code> rounds to two decimal places, which you'll want for anything involving money.</p>
+
+<div class="sbuild"><b>Build this</b><p>Build <code>converter.py</code>: ask for a temperature in Celsius, print it in Fahrenheit. Then add kilometres to miles. Round the answers sensibly.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You understand why <code>int()</code> and <code>float()</code> exist and you can read a TypeError without panicking.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>Making decisions</h3></div>
+
+<p><code>if</code> runs a block of code only when something is true. The indentation is not decoration — it's how Python knows what's inside the <code>if</code>.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>temperature = 31
+
+if temperature > 30:
+    print("Too hot")
+elif temperature > 20:
+    print("Nice")
+else:
+    print("Bring a coat")</code></pre></div>
+<p>The comparisons: <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code> for size, <code>==</code> for "is the same as", <code>!=</code> for "is not the same as".</p>
+<div class="note warn"><div class="lbl">The classic mistake</div><p>One <code>=</code> assigns a value. Two <code>==</code> asks a question. Using <code>=</code> where you meant <code>==</code> is something every programmer alive has done, usually more than once.</p></div>
+<p>You can combine conditions with <code>and</code> and <code>or</code>, and flip one with <code>not</code>.</p>
+
+<div class="sbuild"><b>Build this</b><p>Start <code>guess.py</code>. Pick a secret number in the code, ask the person for a guess, and tell them whether they were too high, too low, or correct. One guess only for now.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write a branching decision and you know the difference between <code>=</code> and <code>==</code>.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>Loops, and repeating yourself properly</h3></div>
+
+<p>A <code>while</code> loop repeats as long as something stays true:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>count = 3
+while count > 0:
+    print(count)
+    count = count - 1
+print("Go")</code></pre></div>
+<p>A <code>for</code> loop runs once for each item in a collection:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>for colour in ["red", "green", "blue"]:
+    print(colour)
+
+for n in range(5):      <span class="c"># 0, 1, 2, 3, 4</span>
+    print(n)</code></pre></div>
+<p><code>break</code> escapes a loop immediately. Use it when the person guesses correctly.</p>
+<div class="note"><div class="lbl">If it never stops</div><p>Press <code>ctrl + c</code>. You've written a loop whose condition never becomes false — usually because you forgot to change the variable it's checking.</p></div>
+<p>To pick a random number, use the <code>random</code> module, which comes with Python:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>import random
+secret = random.randint(1, 100)</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>Finish the guessing game: random secret number, keep asking until they get it, count the guesses and tell them at the end. Then build <code>dice.py</code> — roll any number of dice with any number of sides.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write both kinds of loop and you know which to reach for.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>Functions</h3></div>
+
+<p>A function is a named piece of code you can run whenever you like. It's how you stop repeating yourself and how programs stay readable past about fifty lines.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>def celsius_to_fahrenheit(celsius):
+    return celsius * 9 / 5 + 32
+
+result = celsius_to_fahrenheit(20)
+print(result)   <span class="c"># 68.0</span></code></pre></div>
+<p><code>def</code> defines it, the name in brackets is the <strong>parameter</strong> — a value handed in when it's called — and <code>return</code> sends an answer back.</p>
+<div class="note warn"><div class="lbl">print is not return</div><p>This trips up nearly everyone. <code>print</code> shows something on screen and gives back nothing. <code>return</code> hands a value back to whatever called the function, so it can be stored and used. A function that prints instead of returning is a function you can't build anything on top of.</p></div>
+<p>Good functions do <strong>one thing</strong> and have a name that says what that thing is. If you can't name it clearly, it's probably doing too much.</p>
+
+<div class="sbuild"><b>Build this</b><p>Go back through all three tools and pull the logic into functions. Then build <code>tip.py</code>: take a bill total, a tip percentage and a number of people, and return what each person owes.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write a function that returns a value, and you can explain why returning beats printing.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Tidy up and write it up</h3></div>
+
+<p>Two weeks in, go back over everything with fresh eyes.</p>
+<p><strong>Handle bad input.</strong> What happens if someone types "banana" when you asked for a number? Right now, a crash. Wrap the risky conversion:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>try:
+    age = int(input("Age: "))
+except ValueError:
+    print("That wasn't a number.")</code></pre></div>
+<p><strong>Rename things.</strong> Any variable called <code>x</code>, <code>temp</code> or <code>data</code> should be renamed to say what it holds. This is the cheapest possible improvement to code quality.</p>
+<p><strong>Write the README.</strong> Use the template in the reference section. Include the "what I learned" part properly — it's the bit that's actually worth something.</p>
+
+<div class="sbuild"><b>Build this</b><p>Every tool survives nonsense input. Every variable has a meaningful name. README written. Everything pushed.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Someone else could clone your repo and run all four tools from your README alone.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>Making it look nice</b><p>It's a terminal. Fancy formatting is procrastination dressed as work.</p></div>
+<div class="trap"><b>Copying without reading</b><p>If you paste something and it works but you can't explain it, you've learned nothing. Delete it and type it out.</p></div>
+<div class="trap"><b>Waiting to commit</b><p>Commit when it works, and when it half works. Fifteen small commits beats one big one.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Give the guessing game a difficulty setting that changes the range.</li>
+<li>Make the dice roller show each individual roll as well as the total.</li>
+<li>Add a loop to the converter so it keeps going until the person types 'quit'.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>Four scripts run without crashing, each survives nonsense input, the README explains how to run each one, and there are 15+ commits.</div>
+<div class="pager">
+<a class="pg" href="../index.html#firstrepo"><span>&larr; Previous</span><strong>Setup &middot; Your first repo</strong></a>
+<a class="pg r" href="02-expense-tracker.html"><span>Next &rarr;</span><strong>02 &middot; Expense tracker</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>

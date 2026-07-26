@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 Accounts &amp; auth &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 13–14</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html" class="on"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 07 &middot; Weeks 13–14</div>
+<h2>Accounts &amp; auth</h2>
+<p class="lede">Your portfolio piece. Something you'd actually use, with real user accounts.</p>
+<div class="cmsg">feat: multiple users, real accounts</div>
+
+<p>This is the project you'll talk about in interviews, so build something you care about — a habit tracker, a reading log, a five-a-side organiser, a recipe box, a running log. It only has to matter to you.</p>
+<p>By week 13 the novelty has completely gone. Genuine interest in what you're building is what gets you through the fortnight.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">Design before you build</a></li>
+<li><a href="#s2">Passwords, done properly</a></li>
+<li><a href="#s3">Logging in, and staying logged in</a></li>
+<li><a href="#s4">Protecting pages</a></li>
+<li><a href="#s5">The bug almost everyone ships</a></li>
+<li><a href="#s6">Finish and deploy</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>Design before you build</h3></div>
+
+<p>Start on paper. What are the things in your app, what does each one need to know, and how do they relate?</p>
+<p>For a reading log: a <strong>user</strong> has an email and a password hash; a <strong>book</strong> has a title, an author, a status and a rating — and belongs to a user.</p>
+<p>That "belongs to" is a <strong>foreign key</strong> — a column holding another table's id:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE books (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    status TEXT DEFAULT 'to-read',
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);</code></pre></div>
+<p>Sketch the pages too. Four or five is plenty: sign up, log in, the main list, add, edit.</p>
+
+<div class="sbuild"><b>Build this</b><p>A written data model and a rough sketch of each page. Commit it — deciding before building is the professional habit.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain your tables and how they relate before writing any code.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Passwords, done properly</h3></div>
+
+<p>You never store a password. You store a <strong>hash</strong> — a one-way transformation that can't be reversed. When someone logs in, you hash what they typed and compare hashes.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from werkzeug.security import generate_password_hash, check_password_hash
+
+hashed = generate_password_hash(password)      <span class="c"># on sign-up</span>
+ok = check_password_hash(hashed, attempt)      <span class="c"># on log-in</span></code></pre></div>
+<p>That's the whole thing. The library handles salting and choosing a slow algorithm — both of which matter and neither of which you should implement yourself.</p>
+<div class="note warn"><div class="lbl">Why this is worth understanding, not just copying</div><p>Databases leak. Regularly. If yours leaks with plain-text passwords, you've handed over credentials that many people reuse on their email and their bank. Hashing means an attacker gets a pile of useless strings instead. It's the difference between an embarrassing incident and a serious one.</p></div>
+<p>Hashing is one-way; encryption is two-way. Passwords are hashed. If you ever meet a service that can email you your existing password, they've done it wrong.</p>
+
+<div class="sbuild"><b>Build this</b><p>Working sign-up: form, validation, hash, store. Check the database — you should see gibberish where the passwords are.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain hashing versus encryption, and why salting exists.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>Logging in, and staying logged in</h3></div>
+
+<p>HTTP forgets you between requests, so after a successful log-in you store something in a <strong>session</strong> — a small signed cookie Flask manages for you.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from flask import session
+
+<span class="c"># after checking the password</span>
+session["user_id"] = user["id"]
+
+<span class="c"># logging out</span>
+session.clear()</code></pre></div>
+<p>Flask signs the cookie with your <code>SECRET_KEY</code> so nobody can tamper with it. Generate a real random one and keep it in your environment variables — never in the code.</p>
+<div class="note warn"><div class="lbl">Vague log-in errors are deliberate</div><p>Say "email or password is incorrect", never "no account with that email". The second version lets someone test which addresses are registered. This is called user enumeration and it's worth knowing the name.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Log in, log out, and a page that shows who you are when you're logged in.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can log in, close the tab, come back and still be logged in — and explain what's in the cookie.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>Protecting pages</h3></div>
+
+<p>Now stop logged-out people reaching pages they shouldn't. A <strong>decorator</strong> lets you mark routes as protected:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from functools import wraps
+
+def login_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return wrapped
+
+@app.route("/books")
+@login_required
+def books():
+    ...</code></pre></div>
+<p>Decorators look strange the first time. All this one does is wrap your function in a check that runs first.</p>
+
+<div class="sbuild"><b>Build this</b><p>Every page that shows or changes data requires a login. Test by logging out and typing the URL directly.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>There's no URL a logged-out person can reach that shows anything private.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>The bug almost everyone ships</h3></div>
+
+<p>Log in as user A, open one of your items, and look at the URL — <code>/books/7</code>. Now log in as user B and type that same URL.</p>
+<p>If you can see user A's book, you have an <strong>IDOR</strong> — insecure direct object reference. You checked whether someone was logged in, but never whether <em>this</em> logged-in person owns <em>that</em> record.</p>
+<div class="code"><button class="copy">Copy</button><pre><code><span class="c"># not enough</span>
+"SELECT * FROM books WHERE id = ?"
+
+<span class="c"># correct</span>
+"SELECT * FROM books WHERE id = ? AND user_id = ?"</code></pre></div>
+<p>Every query touching user data needs that second condition. Authentication is who you are; authorisation is what you're allowed to touch. Confusing them is one of the most common real-world security holes there is.</p>
+
+<div class="sbuild"><b>Build this</b><p>Audit every route. Create two accounts and genuinely try to break into one from the other — including edit and delete, not just viewing.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Two accounts, tested by hand, and no URL exposes anyone else's data.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Finish and deploy</h3></div>
+
+<p>Deploy it, then write the README as though a hiring manager will read it — because one might.</p>
+<p>Cover: what it does and why you built it, a screenshot, the live link, how to run it locally, the data model, and an honest "what I'd do differently". That last section is the one that makes people take you seriously.</p>
+<p>Add test accounts to the README so someone can look around without signing up.</p>
+
+<div class="sbuild"><b>Build this</b><p>Deployed, README written properly, link sent to someone who'll actually use it.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Live, secure, and documented well enough to show a stranger.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>Writing your own password hashing</b><p>Use the library. Then read about why.</p></div>
+<div class="trap"><b>Checking login but not ownership</b><p>The IDOR bug. Test it with two accounts, by hand, every time.</p></div>
+<div class="trap"><b>SECRET_KEY in the code</b><p>Environment variable. If it leaks, sessions can be forged.</p></div>
+<div class="trap"><b>Building something you don't care about</b><p>Week 13 is late. Motivation has to come from the project itself.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Add a password reset flow via email.</li>
+<li>Add rate limiting on log-in attempts.</li>
+<li>Let users share one item publicly with a secret link.</li>
+<li>Add pagination once there are more than about fifty rows.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>Two accounts see two different sets of data, passwords are hashed, no URL leaks another user's records, and it's live.</div>
+<div class="pager">
+<a class="pg" href="06-database-and-deploy.html"><span>&larr; Previous</span><strong>06 &middot; Database &amp; deploy</strong></a>
+<a class="pg r" href="08-add-a-brain.html"><span>Next &rarr;</span><strong>08 &middot; Add a brain</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>

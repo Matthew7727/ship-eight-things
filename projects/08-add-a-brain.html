@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08 Add a brain &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 15–16</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html" class="on"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 08 &middot; Weeks 15–16</div>
+<h2>Add a brain</h2>
+<p class="lede">An AI feature that survives the model being slow, wrong, or unavailable.</p>
+<div class="cmsg">feat: build something with a language model</div>
+
+<p>Calling a language model API is easy — it's a few lines. The engineering is everything around it: what happens when it's slow, when it returns something malformed, when it's confidently wrong, and when it costs more than you expected.</p>
+<p>That's what this fortnight is about. The API call is the least interesting part.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">Your first model call</a></li>
+<li><a href="#s2">Prompts as inputs you design</a></li>
+<li><a href="#s3">Structured output, and never trusting it</a></li>
+<li><a href="#s4">Wiring it into the app</a></li>
+<li><a href="#s5">Slow, broken, and expensive</a></li>
+<li><a href="#s6">Ship it, and look back</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>Your first model call</h3></div>
+
+<p>Get an API key from Anthropic or OpenAI, put it in <code>.env</code>, and set a spending cap on the account before you write a line of code.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>import os
+from anthropic import Anthropic
+
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+message = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=200,
+    messages=[{"role": "user", "content": "Categorise this expense: 'Coffee at Pret'"}],
+)
+print(message.content[0].text)</code></pre></div>
+<p>You pay per <strong>token</strong> — roughly a word-and-a-bit. Both what you send and what comes back. <code>max_tokens</code> caps the reply length, which caps the cost.</p>
+<div class="note machine"><div class="lbl">Hosted, not local</div><p>You can't run a useful model on 8GB of memory. That's a hardware limit, not a skill one — and hosted APIs are what nearly all production systems use anyway. A project like this costs pennies.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>A script that sends a prompt and prints the answer. Check your usage dashboard afterwards to see what it cost.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can call the API, and you know how you're being charged.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Prompts as inputs you design</h3></div>
+
+<p>A prompt is an input to your program, so treat it with the same care. Vague prompts give inconsistent output, and inconsistent output is unusable in code.</p>
+<p>What helps: be specific about the task, state the exact options, give an example, and say what to do when unsure.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>prompt = f&quot;&quot;&quot;Categorise this expense into exactly one category.
+
+Categories: food, travel, bills, entertainment, other
+
+Rules:
+- Reply with the category name only, nothing else
+- If genuinely unclear, reply: other
+
+Expense: {description}&quot;&quot;&quot;</code></pre></div>
+<p>Test it against fifteen or twenty real descriptions, including deliberately awkward ones. You're looking for consistency, not cleverness.</p>
+<p>The <code>system</code> parameter sets standing behaviour; the user message carries the specific task. Keep the instructions in the system prompt and the data in the user message — it makes both easier to change.</p>
+
+<div class="sbuild"><b>Build this</b><p>A prompt that categorises reliably across twenty test cases. Keep the awkward ones in a file — they're your test suite.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>The same input gives the same category, and you've seen where it struggles.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>Structured output, and never trusting it</h3></div>
+
+<p>Prose is no use to a program. Ask for JSON:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>prompt = &quot;&quot;&quot;Return only valid JSON, no other text:
+{"category": "food|travel|bills|entertainment|other",
+ "confidence": "high|medium|low"}&quot;&quot;&quot;</code></pre></div>
+<p>Then treat what comes back as untrusted input, because that's exactly what it is:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>import json
+
+VALID = {"food", "travel", "bills", "entertainment", "other"}
+
+def parse_response(text):
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return {"category": "other", "confidence": "low"}
+
+    if data.get("category") not in VALID:
+        return {"category": "other", "confidence": "low"}
+
+    return data</code></pre></div>
+<div class="note warn"><div class="lbl">This is the whole lesson</div><p>Models return malformed JSON, invent categories you never offered, and wrap answers in explanation you didn't ask for. Always validate. Always have a fallback. Code that assumes a well-formed response will break in production, and it'll break on a Saturday.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Structured output with full validation. Force failures by asking for nonsense and make sure your fallback holds.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your app cannot be broken by the model returning something unexpected.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>Wiring it into the app</h3></div>
+
+<p>Add the feature to project 7. Keep the model call in its own module — a function that takes text and returns a validated result. Your routes shouldn't know which provider you're using.</p>
+<div class="code"><button class="copy">Copy</button><pre><code><span class="c"># ai.py</span>
+def suggest_category(description: str) -> str:
+    ...returns a valid category, always...</code></pre></div>
+<p>That separation means you can swap providers, or replace it with a fixed answer in your tests, without touching the rest of the app. Tests that call a real API are slow, flaky and cost money.</p>
+<div class="note"><div class="lbl">Make it a suggestion, not a decision</div><p>Pre-fill the category and let the person change it. AI features that quietly decide things are infuriating when they're wrong — and they will sometimes be wrong.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>The AI feature working inside your app, in its own module, with tests that don't hit the real API.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You could swap providers by changing one file.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>Slow, broken, and expensive</h3></div>
+
+<p>Model calls take seconds, not milliseconds. Without a loading state your app looks frozen and people click twice.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>try:
+    result = suggest_category(description)
+except APITimeoutError:
+    result = None          <span class="c"># carry on without it</span>
+except APIError:
+    result = None</code></pre></div>
+<p>The pattern that matters: <strong>the AI feature failing must not break the app.</strong> If the model is down, adding an expense should still work — just without a suggested category. Degrade, don't collapse.</p>
+<p>On cost: set a spending cap, keep <code>max_tokens</code> tight, don't send more context than you need, and cache repeated inputs. If someone adds "Coffee" fifty times you shouldn't pay fifty times.</p>
+
+<div class="sbuild"><b>Build this</b><p>Loading state, timeout handling, graceful degradation, and a simple cache. Test with the API key deliberately wrong.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Break the API on purpose and the rest of the app carries on.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Ship it, and look back</h3></div>
+
+<p>Deploy with the key in the host's environment variables. Check the loading state on a slow phone connection. Watch the costs for a few days.</p>
+<p>Then write the final README — and this one deserves proper effort. What the feature does, what you learned about prompting, how you handle failure, what it costs to run, what you'd do differently.</p>
+<p>Then go and read the code you wrote in week one. Sixteen weeks ago you were working out what a variable was.</p>
+
+<div class="sbuild"><b>Build this</b><p>Deployed and documented. Then update your portfolio index so all eight projects link together.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Live, resilient, and explained well enough that someone can tell what you understand.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>Trusting the output</b><p>Validate everything. Always have a fallback.</p></div>
+<div class="trap"><b>No timeout</b><p>A hanging model call hangs your whole page.</p></div>
+<div class="trap"><b>Letting AI failure break the app</b><p>The feature is optional. The app isn't.</p></div>
+<div class="trap"><b>No spending cap</b><p>Set one before your first call, not after your first bill.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Stream the response so text appears as it's generated.</li>
+<li>Let the person correct a suggestion and store the correction.</li>
+<li>Add a natural-language search over their own data.</li>
+<li>Log every prompt and response so you can debug odd behaviour later.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>Deployed, key in environment variables, survives the API failing, has a loading state, and has a spending cap on the account.</div>
+<div class="pager">
+<a class="pg" href="07-accounts-and-auth.html"><span>&larr; Previous</span><strong>07 &middot; Accounts &amp; auth</strong></a>
+<a class="pg r" href="../index.html#stuck"><span>Next &rarr;</span><strong>Reference &middot; When you're stuck</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>

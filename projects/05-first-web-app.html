@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 First web app &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 9–10</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html" class="on"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 05 &middot; Weeks 9–10</div>
+<h2>First web app</h2>
+<p class="lede">The same tracker, but in a browser. Flask, HTML, forms, and the request cycle.</p>
+<div class="cmsg">feat: it has a URL now</div>
+
+<p>Everything so far has run in a terminal. Now you'll put a web interface on it — and because you separated the logic from the interface in project 4, most of your code carries over untouched. That's the payoff for the fortnight that felt like no progress.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">What actually happens when you visit a page</a></li>
+<li><a href="#s2">Enough HTML</a></li>
+<li><a href="#s3">Templates with real data</a></li>
+<li><a href="#s4">Forms, and getting data back</a></li>
+<li><a href="#s5">Enough CSS</a></li>
+<li><a href="#s6">Joining it up</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>What actually happens when you visit a page</h3></div>
+
+<p>You type a URL. Your browser sends a <strong>request</strong> to a server. The server sends back a <strong>response</strong>, usually HTML. Your browser draws it. Then the connection closes and the server forgets you exist.</p>
+<p>That last part matters: the web is stateless. Every request stands alone. Anything remembered between requests has to be deliberately stored — which is why sessions and databases exist.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>pip install flask</code></pre></div>
+<div class="code"><button class="copy">Copy</button><pre><code>from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Hello from Flask"
+
+if __name__ == "__main__":
+    app.run(debug=True)</code></pre></div>
+<p>Run it and visit <code>localhost:5000</code>. The <code>@app.route("/")</code> line says "when someone asks for the root URL, run this function". <code>debug=True</code> reloads on save and shows errors in the browser — helpful now, dangerous in production.</p>
+
+<div class="sbuild"><b>Build this</b><p>Flask running locally with two routes: <code>/</code> and <code>/about</code>.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain what a request and a response are, and add a new route.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Enough HTML</h3></div>
+
+<p>HTML describes structure. Tags wrap content, most come in pairs.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Expenses&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;My expenses&lt;/h1&gt;
+  &lt;p&gt;A paragraph.&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Coffee — £3.40&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;a href="/add"&gt;Add one&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+<p>The dozen tags you need: <code>h1</code>–<code>h3</code> headings, <code>p</code> paragraph, <code>ul</code>/<code>li</code> lists, <code>a</code> links, <code>div</code> generic container, <code>form</code>/<code>input</code>/<code>button</code> for input, <code>table</code>/<code>tr</code>/<code>td</code> for tables.</p>
+<p>Flask looks for HTML files in a folder called <code>templates</code>:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from flask import render_template
+
+@app.route("/")
+def home():
+    return render_template("index.html")</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>A <code>templates/index.html</code> with a heading and a hardcoded list, served by Flask.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write basic HTML and serve it from a route.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>Templates with real data</h3></div>
+
+<p>Hardcoded HTML is no use. <strong>Jinja</strong> lets you put Python-ish logic in your templates.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>@app.route("/")
+def home():
+    expenses = book.all()
+    return render_template("index.html", expenses=expenses)</code></pre></div>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;ul&gt;
+{% for e in expenses %}
+  &lt;li&gt;{{ e.description }} — £{{ e.amount }}&lt;/li&gt;
+{% endfor %}
+&lt;/ul&gt;
+
+{% if not expenses %}
+  &lt;p&gt;Nothing yet. Add your first expense.&lt;/p&gt;
+{% endif %}</code></pre></div>
+<p>Double curly braces print a value. Curly-brace-percent is a statement — a loop or a condition. Note the empty state: an empty screen should tell someone what to do next.</p>
+
+<div class="sbuild"><b>Build this</b><p>Real expenses from your <code>ExpenseBook</code> rendered in the page, with a sensible empty state.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can pass data from a route into a template and loop over it.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>Forms, and getting data back</h3></div>
+
+<p>So far data flows one way. A form sends it back.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;form action="/add" method="POST"&gt;
+  &lt;input type="text" name="description" required&gt;
+  &lt;input type="number" name="amount" step="0.01" required&gt;
+  &lt;button type="submit"&gt;Add&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+<p><strong>GET</strong> asks for something. <strong>POST</strong> sends something that changes state. Use POST for anything that adds, edits or deletes.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from flask import request, redirect, url_for
+
+@app.route("/add", methods=["POST"])
+def add():
+    description = request.form["description"]
+    amount = float(request.form["amount"])
+    book.add(description, amount, "general")
+    return redirect(url_for("home"))</code></pre></div>
+<div class="note"><div class="lbl">Why redirect after a POST</div><p>If you render a page directly from a POST, refreshing re-submits the form and adds the expense twice. Redirecting sends the browser to a fresh GET, so refreshing is harmless. This pattern has a name — post/redirect/get — and forgetting it causes duplicate-submission bugs everywhere.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>A working add form, and a delete button on each row. Both POST, both redirect.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can take form input, act on it, and redirect properly.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>Enough CSS</h3></div>
+
+<p>Put a stylesheet at <code>static/style.css</code> and link it:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"&gt;</code></pre></div>
+<p>Ninety per cent of "looks fine" comes from four things: a readable font, a max width so lines aren't enormous, consistent spacing, and enough contrast.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>body {
+  font-family: system-ui, sans-serif;
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 20px;
+  line-height: 1.6;
+  color: #222;
+}</code></pre></div>
+<div class="note warn"><div class="lbl">Four hours, then stop</div><p>CSS is genuinely absorbing and will eat your fortnight if you let it. Set a timer. Make it clean and legible, then go back to the parts that teach you more.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Styled well enough that you'd show someone. Not beautiful. Legible and tidy.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>It doesn't look like an unstyled 1998 web page, and you spent under four hours on that.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Joining it up</h3></div>
+
+<p>Pull the whole thing together: list, add, delete, filter by category, a total at the top.</p>
+<p>Keep the separation you built in project 4 — routes handle web things (reading the form, redirecting), the <code>ExpenseBook</code> handles logic. If you find yourself calculating totals inside a route, move it.</p>
+<p>Reuse the shared layout rather than repeating your header in every file:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;!-- base.html --&gt;
+&lt;body&gt;
+  &lt;h1&gt;Expenses&lt;/h1&gt;
+  {% block content %}{% endblock %}
+&lt;/body&gt;
+
+&lt;!-- index.html --&gt;
+{% extends "base.html" %}
+{% block content %}
+  ...the page...
+{% endblock %}</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>Full working app. README with a screenshot — use <code>⇧⌘4</code> to grab one.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>All the terminal features work in a browser, and your logic code has no Flask in it.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>The CSS rabbit hole</b><p>Four hours. Timer on.</p></div>
+<div class="trap"><b>Logic inside routes</b><p>A route should read the request, call your logic, and return a response. If it's doing maths, move it.</p></div>
+<div class="trap"><b>Rendering straight from a POST</b><p>Refresh re-submits. Redirect instead.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Add an edit page for an existing expense.</li>
+<li>Add flash messages confirming an action worked.</li>
+<li>Make it usable on a phone with a CSS media query.</li>
+<li>Add a chart of spending by category with a JavaScript charting library.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>Runs at <code>localhost:5000</code>, you can add and delete in a browser, refreshing never duplicates anything, and it looks deliberately made.</div>
+<div class="pager">
+<a class="pg" href="04-refactor-and-test.html"><span>&larr; Previous</span><strong>04 &middot; Refactor &amp; test</strong></a>
+<a class="pg r" href="06-database-and-deploy.html"><span>Next &rarr;</span><strong>06 &middot; Database &amp; deploy</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>

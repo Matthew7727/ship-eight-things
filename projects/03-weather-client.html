@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 Weather client &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="../index.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Weeks 5–6</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Guide</div>
+    <a href="../index.html#how">How this works</a>
+    <a href="../index.html#rhythm">The weekly rhythm</a>
+    <a href="../index.html#machine">Your machine</a>
+    <a href="../index.html#install">Installing everything</a>
+    <a href="../index.html#github">Git &amp; GitHub</a>
+    <a href="../index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="../projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="../projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="../projects/03-weather-client.html" class="on"><span class="n">03</span>Weather client</a>
+    <a href="../projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="../projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="../projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="../projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="../projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="../index.html#stuck">When you're stuck</a>
+    <a href="../index.html#git-ref">Git commands</a>
+    <a href="../index.html#errors">Reading an error</a>
+    <a href="../index.html#readme">README template</a>
+    <a href="../index.html#ai">Using AI</a>
+    <a href="../index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<section><a class="back" href="../index.html">&larr; All projects</a>
+<div class="eyebrow">Project 03 &middot; Weeks 5–6</div>
+<h2>Weather client</h2>
+<p class="lede">Your first program that reaches outside your own machine. APIs, keys, and things going wrong.</p>
+<div class="cmsg">feat: talk to the internet</div>
+
+<p>Everything you've built so far runs entirely on your laptop. This one talks to a server somewhere else, which introduces a whole category of problems: the network fails, the server is slow, the data isn't the shape you expected, and you have a secret key you must not leak.</p>
+<p>All of that is normal professional work. This is the project where your code stops being self-contained.</p>
+
+<div class="jump"><div class="jt">Sessions</div><ol>
+<li><a href="#s1">Installing packages, and your first request</a></li>
+<li><a href="#s2">Getting a key, and keeping it secret</a></li>
+<li><a href="#s3">Reading the docs, and query parameters</a></li>
+<li><a href="#s4">Digging into nested data</a></li>
+<li><a href="#s5">When things go wrong</a></li>
+<li><a href="#s6">Making it shareable</a></li>
+</ol></div>
+<article class="session" id="s1">
+<div class="shead"><span class="snum">Session 1</span><h3>Installing packages, and your first request</h3></div>
+
+<p>Python comes with a lot built in, but not everything. <code>pip</code> installs extra packages into your virtual environment.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>source .venv/bin/activate   <span class="c"># always activate first</span>
+pip install requests</code></pre></div>
+<div class="note warn"><div class="lbl">If pip says it's already installed but Python can't find it</div><p>You've installed into a different environment than the one you're running. Check your prompt starts with <code>(.venv)</code>. This is the most common environment confusion there is.</p></div>
+<p>Now make a request:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>import requests
+
+response = requests.get("https://api.github.com")
+print(response.status_code)   <span class="c"># 200 means OK</span>
+print(response.json())</code></pre></div>
+<p>Status codes worth knowing: <strong>200</strong> fine, <strong>401</strong> your key is wrong, <strong>404</strong> that doesn't exist, <strong>429</strong> you're asking too often, <strong>500</strong> their problem not yours.</p>
+
+<div class="sbuild"><b>Build this</b><p>Install <code>requests</code>, call any public API, print the status code and the response.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can install a package and make an HTTP request from Python.</p></div>
+</article>
+<article class="session" id="s2">
+<div class="shead"><span class="snum">Session 2</span><h3>Getting a key, and keeping it secret</h3></div>
+
+<p>Sign up for a free OpenWeatherMap account and get an API key. It's a string that identifies you — treat it exactly like a password.</p>
+<p>It must never go in your code, because your code goes on GitHub. Instead, put it in a file called <code>.env</code>:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>WEATHER_API_KEY=your_actual_key_here</code></pre></div>
+<p>Make sure <code>.env</code> is listed in your <code>.gitignore</code> — check with <code>git status</code>, it should not appear. Then read it in Python:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>pip install python-dotenv</code></pre></div>
+<div class="code"><button class="copy">Copy</button><pre><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv("WEATHER_API_KEY")</code></pre></div>
+<p>Also commit a <code>.env.example</code> with the key names but no values, so anyone cloning your repo knows what they need.</p>
+<div class="note warn"><div class="lbl">If you commit the key anyway</div><p>It happens. Go to the provider, revoke that key, generate a new one. Don't just delete the line and commit again — it's still in your history, and bots scan public repos for exactly this within minutes.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Key in <code>.env</code>, <code>.env</code> ignored by git, <code>.env.example</code> committed, key loading correctly in Python.</p></div>
+<div class="scheck"><b>You should now be able to</b><p><code>git status</code> never shows <code>.env</code>, and your program can read the key.</p></div>
+</article>
+<article class="session" id="s3">
+<div class="shead"><span class="snum">Session 3</span><h3>Reading the docs, and query parameters</h3></div>
+
+<p>Nobody memorises APIs. You read the documentation, find the endpoint you need, and work out what to send it.</p>
+<p>Extra information goes on the end of a URL as <strong>query parameters</strong> — <code>?city=Manchester&amp;units=metric</code>. <code>requests</code> builds those for you:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>params = {
+    "q": "Manchester",
+    "appid": api_key,
+    "units": "metric",
+}
+response = requests.get(BASE_URL, params=params)</code></pre></div>
+<p>That's much safer than gluing strings together, and it handles spaces and odd characters properly.</p>
+<div class="note"><div class="lbl">A habit worth forming</div><p>Print the whole response the first time. Don't guess the shape of the data — look at it. <code>print(json.dumps(data, indent=2))</code> makes it readable.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Fetch real weather for a hardcoded city. Print the raw response and study it before writing anything else.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can read API docs well enough to construct a working request.</p></div>
+</article>
+<article class="session" id="s4">
+<div class="shead"><span class="snum">Session 4</span><h3>Digging into nested data</h3></div>
+
+<p>API responses are dictionaries inside lists inside dictionaries. Getting a value means walking down through them:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>data = response.json()
+
+temperature = data["main"]["temp"]
+description = data["weather"][0]["description"]</code></pre></div>
+<p>Read that second line as: from <code>data</code>, take the <code>weather</code> key, which is a list; take its first item, which is a dictionary; take the <code>description</code> from that.</p>
+<p>Every step is a place it can break. If a field might be missing, <code>.get()</code> won't crash:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>wind = data.get("wind", {}).get("speed", "unknown")</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>Pull out temperature, description, humidity and wind speed. Print them as a tidy summary. Then make the city a command-line input.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can navigate nested JSON confidently and know where it might break.</p></div>
+</article>
+<article class="session" id="s5">
+<div class="shead"><span class="snum">Session 5</span><h3>When things go wrong</h3></div>
+
+<p>Your program works. Now try it with the wifi off, with a made-up city, with the key deleted. It'll crash three different ways, and handling that is what separates a script from a tool.</p>
+<div class="code"><button class="copy">Copy</button><pre><code>try:
+    response = requests.get(BASE_URL, params=params, timeout=10)
+    response.raise_for_status()
+except requests.exceptions.ConnectionError:
+    print("Can't reach the weather service. Check your connection.")
+except requests.exceptions.Timeout:
+    print("The weather service took too long to answer.")
+except requests.exceptions.HTTPError:
+    if response.status_code == 404:
+        print("No city by that name.")
+    elif response.status_code == 401:
+        print("API key rejected.")
+    else:
+        print("Something went wrong at their end.")</code></pre></div>
+<p>Note the <code>timeout</code>. Without one, your program can hang forever waiting for a server that's never going to answer. Always set one on a network call.</p>
+<div class="note"><div class="lbl">What a good error message does</div><p>It says what happened and what to do about it. "Error" says neither. Write them for a person who has no idea how your program works.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>Handle no internet, bad city, bad key and timeout — each with its own message. Test all four deliberately.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your program never shows a raw traceback to the person using it.</p></div>
+</article>
+<article class="session" id="s6">
+<div class="shead"><span class="snum">Session 6</span><h3>Making it shareable</h3></div>
+
+<p>Someone else needs to be able to run this. Record what it depends on:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>pip freeze > requirements.txt</code></pre></div>
+<p>Commit that file. Now anyone can recreate your environment with <code>pip install -r requirements.txt</code>.</p>
+<p>Check it works by pretending to be them: clone your own repo into a different folder, make a fresh virtual environment, install from the file and run it. This catches things you forgot — it usually catches at least one.</p>
+
+<div class="sbuild"><b>Build this</b><p><code>requirements.txt</code> committed, README covering how to get a key and set up <code>.env</code>, and a genuine clean-clone test.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>A stranger could clone your repo and have it running in five minutes.</p></div>
+</article>
+<h3 class="sec">Traps to avoid</h3>
+<div class="trap"><b>Assuming the response shape</b><p>Print it. Every time. APIs change and documentation lags behind.</p></div>
+<div class="trap"><b>No timeout</b><p>A network call without a timeout can hang forever. Always set one.</p></div>
+<div class="trap"><b>Hammering the API while debugging</b><p>Free tiers have limits. Save one response to a JSON file and work against that while you build the parsing.</p></div>
+<h3 class="sec">If you finish early</h3><ul class="stretch">
+<li>Add a five-day forecast, not just today.</li>
+<li>Cache the last response so repeated runs don't re-fetch within a few minutes.</li>
+<li>Accept several cities at once and compare them.</li>
+<li>Add a <code>--json</code> flag that outputs raw data instead of a summary.</li>
+</ul>
+<div class="done big"><b>Definition of done</b>Handles a nonsense city gracefully, key lives in <code>.env</code>, <code>.env</code> is gitignored, <code>requirements.txt</code> is committed, and a clean clone runs first time.</div>
+<div class="pager">
+<a class="pg" href="02-expense-tracker.html"><span>&larr; Previous</span><strong>02 &middot; Expense tracker</strong></a>
+<a class="pg r" href="04-refactor-and-test.html"><span>Next &rarr;</span><strong>04 &middot; Refactor &amp; test</strong></a>
+</div></section>
+</main>
+<script src="../assets/app.js"></script>
+</body>
+</html>
