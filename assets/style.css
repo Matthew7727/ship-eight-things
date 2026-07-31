@@ -145,6 +145,43 @@ td code{font-size:12.5px}
   cursor:pointer;color:var(--ink);box-shadow:0 2px 10px rgba(21,23,46,.09)}
 #veil{display:none;position:fixed;inset:0;background:rgba(21,23,46,.4);z-index:55}
 
+/* welcome page */
+.welcome-hero{padding:56px 0 48px;border-bottom:1px solid var(--line);margin-bottom:52px}
+.welcome-hero .wave{font-size:40px;display:block;margin-bottom:16px}
+.welcome-hero h1{font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.welcome-hero h1 .name{color:var(--indigo)}
+.welcome-hero p{font-size:18px;line-height:1.6;color:var(--ink-2);max-width:56ch;margin-bottom:0}
+
+.resume-card{display:flex;align-items:center;gap:16px;background:var(--indigo);color:#fff;border-radius:12px;padding:18px 22px;margin:32px 0 0;text-decoration:none;transition:.18s;max-width:560px}
+.resume-card:hover{background:var(--indigo-deep);transform:translateY(-1px);box-shadow:0 6px 22px rgba(58,52,196,.28)}
+.resume-card .rc-icon{font-size:26px;flex-shrink:0}
+.resume-card .rc-body{flex:1}
+.resume-card .rc-label{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;opacity:.75;margin-bottom:3px}
+.resume-card .rc-title{font-family:var(--display);font-size:17px;font-weight:700;line-height:1.2}
+.resume-card .rc-sub{font-size:13px;opacity:.8;margin-top:2px}
+.resume-card .rc-arrow{font-size:22px;flex-shrink:0;opacity:.9}
+.resume-card.empty{background:var(--indigo-wash);color:var(--indigo-deep)}
+.resume-card.empty:hover{background:var(--indigo-wash);transform:none;box-shadow:none;cursor:default}
+
+.path-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 52px}
+.path-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 20px;text-decoration:none;color:inherit;transition:.16s;display:flex;flex-direction:column}
+.path-card:hover{border-color:var(--indigo);box-shadow:0 3px 18px rgba(58,52,196,.07);transform:translateY(-2px)}
+.path-card .pc-num{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--indigo);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.path-card .pc-icon{font-size:30px;margin-bottom:12px}
+.path-card h3{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 8px}
+.path-card p{font-size:13.5px;color:var(--ink-2);margin-bottom:0;flex:1}
+.path-card .pc-go{font-family:var(--mono);font-size:11.5px;color:var(--indigo);margin-top:14px}
+
+/* step-by-step callout */
+.step{display:flex;gap:16px;margin:22px 0;max-width:70ch}
+.step .s-num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--surface);background:var(--indigo);border-radius:50%;width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step .s-body{}
+.step .s-body h4{margin:0 0 4px;font-size:15px}
+.step .s-body p{margin-bottom:0;font-size:14.5px}
+
+/* keyboard key styling */
+kbd{font-family:var(--mono);font-size:12.5px;background:var(--surface);border:1px solid var(--line);border-bottom:2px solid #c8cad8;border-radius:5px;padding:2px 7px;color:var(--ink)}
+
 @media(max-width:920px){
   #sidebar{transform:translateX(-100%);transition:transform .22s ease;width:290px}
   #sidebar.open{transform:translateX(0)}
@@ -155,4 +192,6 @@ td code{font-size:12.5px}
   .grid2,.pager{grid-template-columns:1fr}
   .pg.r{text-align:left}
   .cweeks{margin-left:0;width:100%}
+  .path-cards{grid-template-columns:1fr}
+  .welcome-hero h1{font-size:32px}
 }
