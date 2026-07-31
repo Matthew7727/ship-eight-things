@@ -60,6 +60,7 @@
 <li><a href="#s3">The safety net</a></li>
 <li><a href="#s4">Classes</a></li>
 <li><a href="#s5">Splitting into files</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 <li><a href="#s6">Refactor for real</a></li>
 </ol></div>
 <article class="session" id="s1">
@@ -88,10 +89,12 @@ def test_total_of_two_expenses():
 def test_total_of_empty_list_is_zero():
     assert calculate_total([]) == 0</code></pre></div>
 <p>Run them with <code>pytest</code> in your terminal. Green means passing, red means something's wrong.</p>
-<p>Each test has three parts: set up the situation, do the thing, check the result. Name tests so a failure tells you what broke without reading the code.</p>
+<p>Run <code>pytest -v</code> for verbose output — it prints each test name and whether it passed or failed. Use <code>pytest -k "total"</code> to run only tests with "total" in their name — useful when you want to focus on one area.</p>
+<p>When a test fails, read the output carefully. It tells you: which test failed, which line, what the actual value was, and what was expected. The first number on the assertion line is always what your code returned; the second is what you expected. That ordering matters.</p>
+<p>Each test has three parts: set up the situation, do the thing, check the result. Name tests so a failure tells you what broke without reading the code — <code>test_total_with_negative_amount</code> is better than <code>test_case_7</code>.</p>
 
-<div class="sbuild"><b>Build this</b><p>Write tests for every function that returns a value. Aim for the normal case, an empty case, and one odd case each.</p></div>
-<div class="scheck"><b>You should now be able to</b><p><code>pytest</code> runs and passes, and you understand what each test is protecting.</p></div>
+<div class="sbuild"><b>Build this</b><p>Write tests for every function that returns a value. For each function, cover: the normal case, an empty list or zero input, a negative amount, a single-item list, a list with duplicate categories, and a description containing special characters or unicode. Run with <code>pytest -v</code> so you can see all the names. Aim for at least 12 tests before you move on.</p></div>
+<div class="scheck"><b>You should now be able to</b><p><code>pytest -v</code> runs and passes, you can read a failing test's output and understand exactly what went wrong, and you know what <code>-k</code> does.</p></div>
 </article>
 <article class="session" id="s3">
 <div class="shead"><span class="snum">Session 3</span><h3>The safety net</h3></div>
@@ -99,10 +102,22 @@ def test_total_of_empty_list_is_zero():
 <p>Tests only help if they cover the behaviour you're about to change. So before refactoring anything, get the current behaviour under test — including the bits you think are ugly.</p>
 <p>You'll hit a problem: some functions can't be tested because they do too much. A function that reads input, calculates and prints has no return value to assert on. That's not a testing problem, it's a design problem, and the test is what revealed it.</p>
 <div class="note"><div class="lbl">The useful insight</div><p>Hard-to-test code is badly structured code. Testability isn't a separate quality you add — it's a symptom of good separation. If you can't test it, split the calculating from the printing and test the calculating.</p></div>
-<p>Test what the function <em>does</em>, not how it does it. A test that breaks when you rename an internal variable is a test that will annoy you forever.</p>
+<p>Test what the function <em>does</em>, not how it does it. A test that breaks when you rename an internal variable is a test that will annoy you forever. This is called the <strong>test boundary</strong> — you test inputs and outputs, not the internal implementation. Anything inside the function can be reorganised, renamed, or replaced as long as the observable behaviour stays the same.</p>
+<p>When you need to test something that calls other functions (like a save function that calls the OS), <code>unittest.mock</code> lets you replace those collaborators with a fake:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from unittest.mock import mock_open, patch
 
-<div class="sbuild"><b>Build this</b><p>Every calculation function under test. Split any function that mixes input, logic and output — logic in the middle, testable.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can change the inside of any calculation function and the tests will tell you if you broke it.</p></div>
+def test_save_writes_correct_json():
+    expenses = [{"description": "Coffee", "amount": 3.40}]
+    m = mock_open()
+    with patch("builtins.open", m):
+        save_expenses(expenses, "test.json")
+    handle = m()
+    written = handle.write.call_args[0][0]
+    assert "Coffee" in written</code></pre></div>
+<p>This is a more advanced technique — don't spend more than an hour on it this session. The point is knowing it exists so you're not stuck when a function you want to test touches a file or the network.</p>
+
+<div class="sbuild"><b>Build this</b><p>Every calculation function under test. Split any function that mixes input, logic and output so the logic is in the middle and testable. If a function truly can't be isolated, note it in a comment and move on — you'll refactor it properly in session 6.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can change the inside of any calculation function and the tests will tell you if you broke it. You can explain the test boundary.</p></div>
 </article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>Classes</h3></div>
@@ -125,10 +140,17 @@ def test_total_of_empty_list_is_zero():
 book.add("Coffee", 3.40, "food")
 print(book.total())</code></pre></div>
 <p><code>__init__</code> runs when you create one. <code>self</code> means "this particular book" — it's how each instance keeps its own data. Functions inside a class are called methods.</p>
+<p>Methods with double underscores on both sides (like <code>__init__</code>) are called <strong>dunder methods</strong> — Python calls them automatically in certain situations. Two more worth knowing now:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>def __repr__(self):
+    return f"ExpenseBook({len(self.expenses)} expenses)"
+
+def __len__(self):
+    return len(self.expenses)</code></pre></div>
+<p><code>__repr__</code> controls what you see when you print an object or view it in a debugger — invaluable for understanding what's happening. <code>__len__</code> makes <code>len(book)</code> work. These aren't magic — they're just methods Python knows to call in the right situations.</p>
 <p>Classes aren't automatically better. They're useful when data and behaviour belong together — which is exactly the case here.</p>
 
-<div class="sbuild"><b>Build this</b><p>Rebuild the tracker around an <code>ExpenseBook</code> class. Keep the tests green the whole way through.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can explain what <code>self</code> does without reciting a definition.</p></div>
+<div class="sbuild"><b>Build this</b><p>Build <code>ExpenseBook</code> with these methods: <code>add</code>, <code>remove</code> (by index), <code>total</code>, <code>by_category</code> (returns a dict of category → total), <code>filter</code> (takes a predicate function), <code>to_dict</code> (returns the expenses as a list of dicts for serialisation), <code>from_dict</code> (class method that builds a book from a list of dicts), <code>__repr__</code>, and <code>__len__</code>. Keep the tests green the whole way through.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain what <code>self</code> does without reciting a definition, and you can explain what dunder methods are and name three examples.</p></div>
 </article>
 <article class="session" id="s5">
 <div class="shead"><span class="snum">Session 5</span><h3>Splitting into files</h3></div>
@@ -144,9 +166,20 @@ print(book.total())</code></pre></div>
 <div class="code"><button class="copy">Copy</button><pre><code>from expense_book import ExpenseBook
 from storage import load, save</code></pre></div>
 <p>The division that matters: <code>main.py</code> is the only file that talks to a human. Everything else just works with data. That's why the rest is testable — and it's the same separation that will let you put a web interface on it in project 5 without rewriting the logic.</p>
+<p>When you split into multiple files in the same folder, Python treats that folder as a <strong>package</strong> if it contains an <code>__init__.py</code> file (even an empty one). Without it, imports can get confusing when you run tests from different directories. Add an empty <code>__init__.py</code> and your import paths become consistent.</p>
+<p>One thing to watch: <strong>circular imports</strong>. If <code>expense_book.py</code> imports from <code>storage.py</code> and <code>storage.py</code> imports from <code>expense_book.py</code>, Python can't resolve it — you get an <code>ImportError</code> or silent failures. The fix is to organise so data flows one direction: <code>storage.py</code> knows nothing about <code>ExpenseBook</code>, it just handles files. <code>expense_book.py</code> uses storage but storage doesn't use the book.</p>
 
-<div class="sbuild"><b>Build this</b><p>Split into modules. Tests still green. Everything still works.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Your logic files contain no <code>print</code> or <code>input</code> at all.</p></div>
+<div class="sbuild"><b>Build this</b><p>Split into modules with an <code>__init__.py</code>. Tests still green. Everything still works. Logic files contain no <code>print</code> or <code>input</code> at all.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your logic files contain no <code>print</code> or <code>input</code>. You can explain what <code>__init__.py</code> does and what a circular import is.</p></div>
+</article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — type hints and mypy</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You haven't been shown how to do this. Use the Python docs, the mypy docs, and the error messages. That process — reading docs, interpreting errors, making them go away — is what engineering actually is most of the time.</p></div>
+<p>Add type hints to every function and class in your codebase. Then install <code>mypy</code> and run it:</p>
+<pre><code>pip install mypy
+mypy expense_book.py storage.py</code></pre>
+<p>Fix every error <code>mypy</code> raises. The goal is zero errors with <code>--strict</code> off (don't add <code>--strict</code>, just run plain <code>mypy</code>). Some errors will be obvious once you read them. Others will require looking things up. That's the point.</p>
+<div class="scheck"><b>You're done when</b><p><code>mypy expense_book.py storage.py</code> outputs "Success: no issues found" and all your tests still pass.</p></div>
 </article>
 <article class="session" id="s6">
 <div class="shead"><span class="snum">Session 6</span><h3>Refactor for real</h3></div>
@@ -159,9 +192,24 @@ from storage import load, save</code></pre></div>
 </ol>
 <p>Never make two changes at once. When something breaks you want to know exactly what caused it.</p>
 <div class="note warn"><div class="lbl">The temptation to start over</div><p>At some point you'll want to delete it and rewrite from scratch. Don't. Rewriting is easy and teaches you nothing; changing working code without breaking it is the actual skill, and it's the one you'll use every week of your career.</p></div>
+<p>Once you've fixed the list from session 1, add a GitHub Actions workflow so tests run automatically on every push:</p>
+<div class="code"><pre><code><span class="c"># .github/workflows/tests.yml</span>
+name: Tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: pytest</code></pre></div>
+<p>Push it. Watch the Actions tab go green. Add the badge to your README so it shows the current status.</p>
 
-<div class="sbuild"><b>Build this</b><p>Work through the list. Commit after each fix. Finish by re-reading the file you wrote in session 1 and adding a note on what changed.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>15+ tests pass, the code is across several files, and you ran the tests before every commit.</p></div>
+<div class="sbuild"><b>Build this</b><p>Work through the session-1 list. Commit after each fix. Set up GitHub Actions. Finish by re-reading the notes file from session 1 and adding a paragraph on what changed and what you'd do differently if you were starting over.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>20+ tests pass, code is across at least 4 modules, no <code>print</code>/<code>input</code> outside <code>main.py</code>, GitHub Actions is green, and the README has the CI badge.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>Deleting and rewriting</b><p>Not refactoring. The skill is changing code safely, in steps, with the tests green.</p></div>
@@ -170,10 +218,9 @@ from storage import load, save</code></pre></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
 <li>Add a test that checks loading and saving round-trips correctly.</li>
 <li>Use <code>pytest</code> fixtures to avoid repeating setup in every test.</li>
-<li>Add type hints to your functions and run <code>mypy</code> over it.</li>
-<li>Set up GitHub Actions to run your tests automatically on every push.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>15+ passing tests, code split across modules, no printing inside the logic, and a commit history showing small steps rather than one giant rewrite.</div>
+<div class="done big"><b>Definition of done</b>20+ passing tests, code split across at least 4 modules, no <code>print</code>/<code>input</code> outside <code>main.py</code>, GitHub Actions is green, and a commit history showing small steps.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your refactored tracker. The MR must include a passing CI badge in the README (the Actions workflow must be green before you open the MR). The diff must show no deleted tests — only additions and modifications. The MR will not be merged if any test is removed rather than updated.</div>
 <div class="pager">
 <a class="pg" href="03-weather-client.html"><span>&larr; Previous</span><strong>03 &middot; Weather client</strong></a>
 <a class="pg r" href="05-first-web-app.html"><span>Next &rarr;</span><strong>05 &middot; First web app</strong></a>

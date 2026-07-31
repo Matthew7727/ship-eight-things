@@ -60,6 +60,7 @@
 <li><a href="#s3">Logging in, and staying logged in</a></li>
 <li><a href="#s4">Protecting pages</a></li>
 <li><a href="#s5">The bug almost everyone ships</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 <li><a href="#s6">Finish and deploy</a></li>
 </ol></div>
 <article class="session" id="s1">
@@ -96,11 +97,13 @@ CREATE TABLE books (
 hashed = generate_password_hash(password)      <span class="c"># on sign-up</span>
 ok = check_password_hash(hashed, attempt)      <span class="c"># on log-in</span></code></pre></div>
 <p>That's the whole thing. The library handles salting and choosing a slow algorithm — both of which matter and neither of which you should implement yourself.</p>
-<div class="note warn"><div class="lbl">Why this is worth understanding, not just copying</div><p>Databases leak. Regularly. If yours leaks with plain-text passwords, you've handed over credentials that many people reuse on their email and their bank. Hashing means an attacker gets a pile of useless strings instead. It's the difference between an embarrassing incident and a serious one.</p></div>
-<p>Hashing is one-way; encryption is two-way. Passwords are hashed. If you ever meet a service that can email you your existing password, they've done it wrong.</p>
+<p>Here's why they matter. Old hash functions like MD5 and SHA-1 were designed to be <em>fast</em> — great for checksums, terrible for passwords. An attacker with a leaked database and a modern GPU can try billions of MD5 hashes per second. Password hashing functions like bcrypt are deliberately <em>slow</em> — they have a <strong>cost factor</strong> that controls how much work each hash requires. More work = slower attack.</p>
+<p>A <strong>rainbow table</strong> is a pre-computed lookup of common passwords → their hashes. Without protection, if two users have the same password, their hashes look identical — and a single rainbow table entry cracks both. A <strong>salt</strong> is a random value mixed into the hash so that the same password produces a different hash every time. <code>generate_password_hash</code> generates a unique salt automatically.</p>
+<p>The terminology: <strong>hashing</strong> is one-way (no key, can't reverse). <strong>Encryption</strong> is two-way (has a key, can be decrypted). <strong>Encoding</strong> (like base64) is a format change with no security — it's not secret. Passwords are hashed. If you ever meet a service that can email you your existing password, they've stored it in plain text or encrypted it — both wrong.</p>
+<div class="note warn"><div class="lbl">Why this is worth understanding, not just copying</div><p>Databases leak. Regularly. If yours leaks with plain-text passwords, you've handed over credentials that many people reuse on their email and their bank. Hashing means an attacker gets a pile of useless strings. It's the difference between an embarrassing incident and a serious one.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Working sign-up: form, validation, hash, store. Check the database — you should see gibberish where the passwords are.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can explain hashing versus encryption, and why salting exists.</p></div>
+<div class="sbuild"><b>Build this</b><p>Working sign-up with: an email format check (must contain @ and a dot after it), a uniqueness check (return a clear error if the email is already registered), a password confirmation field that must match, a minimum password length of 8, and a <code>users</code> table with <code>id</code>, <code>email</code>, <code>password_hash</code>, <code>created_at</code>. Check the database after sign-up — you should see gibberish where the passwords are.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain hashing vs encryption vs encoding, why MD5 is wrong for passwords, what a salt does, and what bcrypt's cost factor is for.</p></div>
 </article>
 <article class="session" id="s3">
 <div class="shead"><span class="snum">Session 3</span><h3>Logging in, and staying logged in</h3></div>
@@ -113,11 +116,13 @@ session["user_id"] = user["id"]
 
 <span class="c"># logging out</span>
 session.clear()</code></pre></div>
-<p>Flask signs the cookie with your <code>SECRET_KEY</code> so nobody can tamper with it. Generate a real random one and keep it in your environment variables — never in the code.</p>
+<p>Flask signs the cookie with your <code>SECRET_KEY</code> so nobody can tamper with it. The cookie itself is readable — it's just base64-encoded JSON. But the signature means that if someone changes even one character, Flask rejects it. So the contents aren't hidden, but they can't be faked without knowing the key.</p>
+<p><strong>Session fixation</strong> is an attack where a malicious site tricks a user into using a session ID they've already seen. The defence is to generate a new session after login — Flask does this when you call <code>session.regenerate()</code> or clear and rebuild. Worth knowing the name.</p>
+<p><strong>CSRF</strong> (Cross-Site Request Forgery) is when an attacker tricks a user's browser into making a POST request to your site while they're logged in. Since the browser sends cookies automatically, the request looks legitimate. The defence is a CSRF token — a random value included in every form that must match a value in the session. Flask-WTF handles this for you. It's worth knowing what it's protecting against even if you're not using Flask-WTF yet.</p>
 <div class="note warn"><div class="lbl">Vague log-in errors are deliberate</div><p>Say "email or password is incorrect", never "no account with that email". The second version lets someone test which addresses are registered. This is called user enumeration and it's worth knowing the name.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Log in, log out, and a page that shows who you are when you're logged in.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can log in, close the tab, come back and still be logged in — and explain what's in the cookie.</p></div>
+<div class="sbuild"><b>Build this</b><p>Log in, log out, and a page that shows who you are when you're logged in. Make sure the error message says "email or password is incorrect" — never tell the user which part was wrong.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can log in, close the tab, come back and still be logged in. You can explain what's in the cookie, what session fixation is, and what CSRF is.</p></div>
 </article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>Protecting pages</h3></div>
@@ -138,9 +143,14 @@ def login_required(f):
 def books():
     ...</code></pre></div>
 <p>Decorators look strange the first time. All this one does is wrap your function in a check that runs first.</p>
+<p>Apply <code>@login_required</code> to every route that shows or changes data. Test it by logging out and typing the URL directly — every single protected URL should redirect you to login.</p>
+<p>Now write a second decorator for item-level routes — one that checks not just that you're logged in, but that the item in the URL belongs to you. This query is the right pattern:</p>
+<div class="code"><button class="copy">Copy</button><pre><code><span class="c"># correct — checks both login and ownership in the database</span>
+"SELECT * FROM books WHERE id = ? AND user_id = ?"</code></pre></div>
+<p>Build this as a helper function rather than a decorator if that's cleaner — what matters is that every item-level route runs the ownership check.</p>
 
-<div class="sbuild"><b>Build this</b><p>Every page that shows or changes data requires a login. Test by logging out and typing the URL directly.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>There's no URL a logged-out person can reach that shows anything private.</p></div>
+<div class="sbuild"><b>Build this</b><p><code>@login_required</code> applied to every route that shows or changes data. Every item-level route (view, edit, delete by ID) checks ownership in the database query itself — not just in application code. Test both by logging out and by creating two accounts.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>There's no URL a logged-out person can reach that shows anything private, and no logged-in person can access another user's items.</p></div>
 </article>
 <article class="session" id="s5">
 <div class="shead"><span class="snum">Session 5</span><h3>The bug almost everyone ships</h3></div>
@@ -152,21 +162,42 @@ def books():
 
 <span class="c"># correct</span>
 "SELECT * FROM books WHERE id = ? AND user_id = ?"</code></pre></div>
-<p>Every query touching user data needs that second condition. Authentication is who you are; authorisation is what you're allowed to touch. Confusing them is one of the most common real-world security holes there is.</p>
-<div class="note warn"><div class="lbl">Authentication vs authorisation</div><p><strong>Authentication</strong> answers "are you logged in?" &mdash; your login check. <strong>Authorisation</strong> answers "are you allowed to touch <em>this</em>?" &mdash; the ownership check. Most beginners implement authentication but skip authorisation. The result: any logged-in user can edit or delete any other user's data by guessing IDs in the URL. Always check both.</p></div>
+<p>IDOR applies everywhere you touch data by ID. Three concrete examples:</p>
+<ul>
+<li>Viewing: <code>/books/7</code> — can user B read user A's book?</li>
+<li>Editing: <code>POST /books/7/edit</code> — can user B modify user A's book title?</li>
+<li>Deleting: <code>POST /books/7/delete</code> — can user B delete user A's book entirely?</li>
+</ul>
+<p>The fix must be at the database query level. Checking <code>if item["user_id"] == session["user_id"]</code> in Python after fetching the row is a common approach and it works — but checking in the SQL query is better because it avoids fetching the row at all. A row that doesn't belong to you should simply not come back from the database.</p>
+<div class="note warn"><div class="lbl">Authentication vs authorisation</div><p><strong>Authentication</strong> answers "are you logged in?" — your login check. <strong>Authorisation</strong> answers "are you allowed to touch <em>this</em>?" — the ownership check. Most beginners implement authentication but skip authorisation. The result: any logged-in user can edit or delete any other user's data by guessing IDs in the URL. Always check both.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Audit every route. Create two accounts and genuinely try to break into one from the other — including edit and delete, not just viewing.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Two accounts, tested by hand, and no URL exposes anyone else's data.</p></div>
+<div class="sbuild"><b>Build this</b><p>Audit every route. Create two accounts and genuinely try to break into one from the other — including view, edit and delete, not just viewing. Every item-level query must include the <code>AND user_id = ?</code> check. Document your audit in the README: which routes you checked and what you found.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Two accounts, tested by hand, and no URL exposes or modifies anyone else's data. You can explain the difference between authentication and authorisation.</p></div>
+</article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — rate limiting on login</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You know SQL, sessions, and the request cycle. Now apply them to a real security problem. No example code.</p></div>
+<p>Add rate limiting to the login route. The requirements:</p>
+<ul>
+<li>After 5 failed login attempts from the same IP address within 10 minutes, lock that IP out for 30 minutes</li>
+<li>Show a clear message explaining why login is blocked and when the lockout ends</li>
+<li>Successful logins reset the failed attempt count for that IP</li>
+<li>You'll need to store attempt counts somewhere — a new database table is one option</li>
+</ul>
+<p>Think through the edge cases: what if the server clock changes? What if someone legitimately fails 4 times then succeeds? What if someone bypasses this using a VPN or shared WiFi? Implement the feature, then add a section to your README noting the limitations.</p>
+<div class="scheck"><b>You're done when</b><p>Five failed attempts in 10 minutes triggers a lockout, the message is clear and includes when the lockout ends, and the README documents the limitations.</p></div>
 </article>
 <article class="session" id="s6">
 <div class="shead"><span class="snum">Session 6</span><h3>Finish and deploy</h3></div>
 
 <p>Deploy it, then write the README as though a hiring manager will read it — because one might.</p>
-<p>Cover: what it does and why you built it, a screenshot, the live link, how to run it locally, the data model, and an honest "what I'd do differently". That last section is the one that makes people take you seriously.</p>
+<p>Cover: what it does and why you built it, a screenshot, the live link, how to run it locally, the data model (even a hand-drawn photo), and an honest "what I'd do differently". That last section is the one that makes people take you seriously.</p>
 <p>Add test accounts to the README so someone can look around without signing up.</p>
+<p>Add a section titled "Security decisions" that explains: why passwords are hashed and not encrypted, why the login error is vague, how IDOR is prevented in the queries, and what the rate limiting limitation is. This section demonstrates that you made deliberate choices, not accidental ones.</p>
+<p>Add a section titled "What's still missing" that honestly lists what a production app would need that yours doesn't have — email verification, password reset flow, rate limiting improvements, HTTPS-only cookies, CSP headers. Honesty here is a strength, not a weakness.</p>
 
-<div class="sbuild"><b>Build this</b><p>Deployed, README written properly, link sent to someone who'll actually use it.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Live, secure, and documented well enough to show a stranger.</p></div>
+<div class="sbuild"><b>Build this</b><p>Deployed, README written for a hiring manager, test accounts included, "Security decisions" section, "What's still missing" section, and the link sent to someone who'll actually use it.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Live, secure as far as it goes, and documented well enough to show a stranger.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>Writing your own password hashing</b><p>Use the library. Then read about why.</p></div>
@@ -175,11 +206,11 @@ def books():
 <div class="trap"><b>Building something you don't care about</b><p>Week 13 is late. Motivation has to come from the project itself.</p></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
 <li>Add a password reset flow via email.</li>
-<li>Add rate limiting on log-in attempts.</li>
 <li>Let users share one item publicly with a secret link.</li>
-<li>Add pagination once there are more than about fifty rows.</li>
+<li>Add HTTPS-only cookies (<code>SESSION_COOKIE_SECURE = True</code>) and explain what this protects against.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>Two accounts see two different sets of data, passwords are hashed, no URL leaks another user's records, and it's live.</div>
+<div class="done big"><b>Definition of done</b>Two accounts see two different sets of data, passwords are hashed, no URL leaks or modifies another user's records, rate limiting is in place, and it's live.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your auth app. The MR description must include a security checklist, which you must complete honestly: (1) passwords hashed — confirmed by checking the database directly; (2) no user enumeration on login — confirmed by testing both "wrong email" and "wrong password"; (3) every protected route tested by logging out and navigating directly; (4) IDOR tested with two accounts on every route that touches data by ID (list which routes). The MR will not be merged until all four are checked off with evidence.</div>
 <div class="pager">
 <a class="pg" href="06-database-and-deploy.html"><span>&larr; Previous</span><strong>06 &middot; Database &amp; deploy</strong></a>
 <a class="pg r" href="08-add-a-brain.html"><span>Next &rarr;</span><strong>08 &middot; Add a brain</strong></a>

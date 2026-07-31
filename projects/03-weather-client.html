@@ -60,25 +60,32 @@
 <li><a href="#s3">Reading the docs, and query parameters</a></li>
 <li><a href="#s4">Digging into nested data</a></li>
 <li><a href="#s5">When things go wrong</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 <li><a href="#s6">Making it shareable</a></li>
 </ol></div>
 <article class="session" id="s1">
 <div class="shead"><span class="snum">Session 1</span><h3>Installing packages, and your first request</h3></div>
 
-<p>Python comes with a lot built in, but not everything. <code>pip</code> installs extra packages into your virtual environment.</p>
+<p>Before installing anything, understand what HTTP actually is. Every time your browser visits a page, it sends a message over the network that looks roughly like this:</p>
+<div class="code"><pre><code>GET /api/weather?city=London HTTP/1.1
+Host: api.example.com
+User-Agent: Mozilla/5.0</code></pre></div>
+<p>That's a <strong>request</strong>: a method (<code>GET</code>), a path, a protocol version, and some headers. The server sends back a <strong>response</strong>: a status code, headers, and a body. <code>requests</code> is a Python library that builds and sends these messages for you, so you don't have to format them by hand.</p>
+<p>You can see the raw version using <code>curl</code> in your terminal — it does what <code>requests</code> does, but from the command line. Try it before you write a single line of Python:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>curl -i https://api.github.com</code></pre></div>
+<p>The <code>-i</code> flag shows the headers. You'll see the status line, the headers, and the JSON body — that's the exact thing <code>requests</code> parses for you.</p>
+<p>Status code ranges worth memorising: <strong>2xx</strong> = success (200 OK, 201 Created), <strong>3xx</strong> = redirect, <strong>4xx</strong> = your fault (400 Bad Request, 401 Unauthorised, 404 Not Found, 429 Too Many Requests), <strong>5xx</strong> = their fault (500 Internal Server Error).</p>
 <div class="code"><button class="copy">Copy</button><pre><code>source .venv/bin/activate   <span class="c"># always activate first</span>
 pip install requests</code></pre></div>
 <div class="note warn"><div class="lbl">If pip says it's already installed but Python can't find it</div><p>You've installed into a different environment than the one you're running. Check your prompt starts with <code>(.venv)</code>. This is the most common environment confusion there is.</p></div>
-<p>Now make a request:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>import requests
 
 response = requests.get("https://api.github.com")
 print(response.status_code)   <span class="c"># 200 means OK</span>
 print(response.json())</code></pre></div>
-<p>Status codes worth knowing: <strong>200</strong> fine, <strong>401</strong> your key is wrong, <strong>404</strong> that doesn't exist, <strong>429</strong> you're asking too often, <strong>500</strong> their problem not yours.</p>
 
-<div class="sbuild"><b>Build this</b><p>Install <code>requests</code>, call any public API, print the status code and the response.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can install a package and make an HTTP request from Python.</p></div>
+<div class="sbuild"><b>Build this</b><p>First: run the <code>curl</code> command above and read what comes back. Then: install <code>requests</code>, call any public API, print the status code and the response body. Before you move on, look at the <code>response.headers</code> dict — it tells you things like the content type and the server software.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain what an HTTP request and response are, install a package, and make a request from Python. You know the status code ranges.</p></div>
 </article>
 <article class="session" id="s2">
 <div class="shead"><span class="snum">Session 2</span><h3>Getting a key, and keeping it secret</h3></div>
@@ -86,23 +93,37 @@ print(response.json())</code></pre></div>
 <p>Sign up for a free OpenWeatherMap account and get an API key. It's a string that identifies you — treat it exactly like a password.</p>
 <p>It must never go in your code, because your code goes on GitHub. Instead, put it in a file called <code>.env</code>:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>WEATHER_API_KEY=your_actual_key_here</code></pre></div>
-<p>Make sure <code>.env</code> is listed in your <code>.gitignore</code> — check with <code>git status</code>, it should not appear. Then read it in Python:</p>
-<div class="code"><button class="copy">Copy</button><pre><code>pip install python-dotenv</code></pre></div>
+<p>An <strong>environment variable</strong> is a key-value pair the operating system makes available to any program it runs. They're not Python-specific — every language and every tool can read them. When you run <code>python3 weather.py</code>, Python can see everything in your environment. The <code>.env</code> file is just a convenient way to set them for one project without polluting your whole system.</p>
+<p>Two ways to read them in Python:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>import os
-from dotenv import load_dotenv
+
+os.environ["WEATHER_API_KEY"]   <span class="c"># raises KeyError if missing</span>
+os.getenv("WEATHER_API_KEY")    <span class="c"># returns None if missing</span>
+os.getenv("WEATHER_API_KEY", "fallback")  <span class="c"># returns fallback if missing</span></code></pre></div>
+<p>Use <code>os.environ</code> when the key must be present — you want a hard crash on startup if it's missing, not a silent <code>None</code> that fails somewhere else later. Use <code>os.getenv</code> when a fallback makes sense.</p>
+<p>Make sure <code>.env</code> is listed in your <code>.gitignore</code> — check with <code>git status</code>, it should not appear. Then load it:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>pip install python-dotenv</code></pre></div>
+<div class="code"><button class="copy">Copy</button><pre><code>from dotenv import load_dotenv
 
 load_dotenv()
-api_key = os.getenv("WEATHER_API_KEY")</code></pre></div>
+api_key = os.environ["WEATHER_API_KEY"]</code></pre></div>
 <p>Also commit a <code>.env.example</code> with the key names but no values, so anyone cloning your repo knows what they need.</p>
 <div class="note warn"><div class="lbl">If you commit the key anyway</div><p>It happens. Go to the provider, revoke that key, generate a new one. Don't just delete the line and commit again — it's still in your history, and bots scan public repos for exactly this within minutes.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Key in <code>.env</code>, <code>.env</code> ignored by git, <code>.env.example</code> committed, key loading correctly in Python.</p></div>
-<div class="scheck"><b>You should now be able to</b><p><code>git status</code> never shows <code>.env</code>, and your program can read the key.</p></div>
+<div class="sbuild"><b>Build this</b><p>Key in <code>.env</code>, <code>.env</code> ignored by git, <code>.env.example</code> committed, key loading correctly in Python using <code>os.environ</code> (so it crashes clearly if missing rather than silently passing <code>None</code> to the API call).</p></div>
+<div class="scheck"><b>You should now be able to</b><p><code>git status</code> never shows <code>.env</code>, your program reads the key, and you can explain the difference between <code>os.environ</code> and <code>os.getenv</code>.</p></div>
 </article>
 <article class="session" id="s3">
 <div class="shead"><span class="snum">Session 3</span><h3>Reading the docs, and query parameters</h3></div>
 
-<p>Nobody memorises APIs. You read the documentation, find the endpoint you need, and work out what to send it.</p>
+<p>Nobody memorises APIs. You read the documentation, and there's a method to it. When you find a new API, work through these questions in order:</p>
+<ol>
+<li><strong>Base URL.</strong> What's the root address? (e.g. <code>https://api.openweathermap.org/data/2.5</code>)</li>
+<li><strong>Endpoint.</strong> What path gives you what you need? (e.g. <code>/weather</code> for current, <code>/forecast</code> for multi-day)</li>
+<li><strong>Required vs optional parameters.</strong> Which ones must you send? Which ones change the format?</li>
+<li><strong>Example response.</strong> Find a sample in the docs. Look at the actual shape before you write any parsing code.</li>
+<li><strong>Rate limits and error formats.</strong> How many calls per minute? What does a 401 response body look like?</li>
+</ol>
 <p>Extra information goes on the end of a URL as <strong>query parameters</strong> — <code>?city=Manchester&amp;units=metric</code>. <code>requests</code> builds those for you:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>params = {
     "q": "Manchester",
@@ -113,8 +134,8 @@ response = requests.get(BASE_URL, params=params)</code></pre></div>
 <p>That's much safer than gluing strings together, and it handles spaces and odd characters properly.</p>
 <div class="note"><div class="lbl">A habit worth forming</div><p>Print the whole response the first time. Don't guess the shape of the data — look at it. <code>print(json.dumps(data, indent=2))</code> makes it readable.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Fetch real weather for a hardcoded city. Print the raw response and study it before writing anything else.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can read API docs well enough to construct a working request.</p></div>
+<div class="sbuild"><b>Build this</b><p>Two things: (1) Fetch real weather for a hardcoded city, print the full raw response with <code>json.dumps(data, indent=2)</code>, and study it carefully before writing anything else. (2) Write a separate <code>parse.py</code> that imports the raw response (save it to a JSON file first so you're not hitting the API repeatedly) and extracts every field the docs mention — not just temperature and description, but wind direction, pressure, visibility, cloudiness, everything. Print the complete picture.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can read API docs methodically and construct a working request. You've looked at the full response shape before writing any parsing.</p></div>
 </article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>Digging into nested data</h3></div>
@@ -127,9 +148,10 @@ description = data["weather"][0]["description"]</code></pre></div>
 <p>Read that second line as: from <code>data</code>, take the <code>weather</code> key, which is a list; take its first item, which is a dictionary; take the <code>description</code> from that.</p>
 <p>Every step is a place it can break. If a field might be missing, <code>.get()</code> won't crash:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>wind = data.get("wind", {}).get("speed", "unknown")</code></pre></div>
+<p>Think about this defensively. APIs change — fields get added, renamed, or removed. A field present in 99% of responses might be absent in the 1% that causes your program to crash at 2am. The rule: use <code>.get()</code> with a sensible fallback for any field that isn't guaranteed in the API documentation. If the docs say "optional", use <code>.get()</code>.</p>
 
-<div class="sbuild"><b>Build this</b><p>Pull out temperature, description, humidity and wind speed. Print them as a tidy summary. Then make the city a command-line input.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can navigate nested JSON confidently and know where it might break.</p></div>
+<div class="sbuild"><b>Build this</b><p>Pull out temperature, description, humidity, wind speed, and the next-12-hours precipitation total. Format the output as a terminal dashboard — aligned labels, sensible units, clear layout. Then make the city a command-line argument using <code>sys.argv</code> or <code>argparse</code>.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can navigate nested JSON confidently, know where it might break, and apply defensive access to optional fields.</p></div>
 </article>
 <article class="session" id="s5">
 <div class="shead"><span class="snum">Session 5</span><h3>When things go wrong</h3></div>
@@ -155,6 +177,19 @@ except requests.exceptions.HTTPError:
 <div class="sbuild"><b>Build this</b><p>Handle no internet, bad city, bad key and timeout — each with its own message. Test all four deliberately.</p></div>
 <div class="scheck"><b>You should now be able to</b><p>Your program never shows a raw traceback to the person using it.</p></div>
 </article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — five-day forecast</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You know how to call an API, read docs, parse nested JSON, and handle errors. Now do all of it without guidance. Read the docs, print the raw response, figure out the shape, then build it.</p></div>
+<p>Add a five-day forecast to your weather client. The OpenWeatherMap <code>/forecast</code> endpoint returns data in 3-hour intervals. You need to:</p>
+<ol>
+<li>Read the docs for the <code>/forecast</code> endpoint</li>
+<li>Fetch the data and print the raw response to understand the shape</li>
+<li>Group the 3-hour intervals into days</li>
+<li>For each day, print one summary line: the date, the high temperature, the low temperature, and the dominant weather condition (the one that appears most often across the day's intervals)</li>
+</ol>
+<p>Activate with a <code>--forecast</code> flag or a separate command. Handle errors the same way as the current weather command.</p>
+<div class="scheck"><b>You're done when</b><p>Running the program with a real city name prints a 5-day forecast with one clean summary line per day.</p></div>
+</article>
 <article class="session" id="s6">
 <div class="shead"><span class="snum">Session 6</span><h3>Making it shareable</h3></div>
 
@@ -162,21 +197,23 @@ except requests.exceptions.HTTPError:
 <div class="code"><button class="copy">Copy</button><pre><code>pip freeze > requirements.txt</code></pre></div>
 <p>Commit that file. Now anyone can recreate your environment with <code>pip install -r requirements.txt</code>.</p>
 <p>Check it works by pretending to be them: clone your own repo into a different folder, make a fresh virtual environment, install from the file and run it. This catches things you forgot — it usually catches at least one.</p>
+<p>Add a <code>--json</code> flag so the program can output raw data instead of a formatted summary. This is useful for piping into other tools or debugging. If <code>--json</code> is passed, skip all formatting and just print the raw API response.</p>
+<p>Also save one real API response to a file called <code>sample_response.json</code> and commit it. This lets you develop the parsing code offline without burning API calls on every run.</p>
 
-<div class="sbuild"><b>Build this</b><p><code>requirements.txt</code> committed, README covering how to get a key and set up <code>.env</code>, and a genuine clean-clone test.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>A stranger could clone your repo and have it running in five minutes.</p></div>
+<div class="sbuild"><b>Build this</b><p><code>requirements.txt</code> committed, README covering how to get a key and set up <code>.env</code>, a genuine clean-clone test that you've actually done, a <code>--json</code> flag for raw output, and <code>sample_response.json</code> in the repo for offline development.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>A stranger could clone your repo and have it running in five minutes. You can work on the parsing code without internet access.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>Assuming the response shape</b><p>Print it. Every time. APIs change and documentation lags behind.</p></div>
 <div class="trap"><b>No timeout</b><p>A network call without a timeout can hang forever. Always set one.</p></div>
 <div class="trap"><b>Hammering the API while debugging</b><p>Free tiers have limits. Save one response to a JSON file and work against that while you build the parsing.</p></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
-<li>Add a five-day forecast, not just today.</li>
 <li>Cache the last response so repeated runs don't re-fetch within a few minutes.</li>
-<li>Accept several cities at once and compare them.</li>
-<li>Add a <code>--json</code> flag that outputs raw data instead of a summary.</li>
+<li>Accept several cities at once and compare them side by side.</li>
+<li>Show wind direction as a compass point (N, NE, E…) not just degrees.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>Handles a nonsense city gracefully, key lives in <code>.env</code>, <code>.env</code> is gitignored, <code>requirements.txt</code> is committed, and a clean clone runs first time.</div>
+<div class="done big"><b>Definition of done</b>Handles a nonsense city gracefully, key lives in <code>.env</code>, <code>.env</code> is gitignored, <code>requirements.txt</code> is committed, a clean clone runs first time, the <code>--json</code> flag works, and the 5-day forecast challenge is complete.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your weather client. The MR description must include: a sample output screenshot showing the dashboard and the 5-day forecast, a confirmation that running <code>git log -p | grep -i "api_key\|appid"</code> returns nothing from your code, and a brief note on what you'd do differently if the free tier had a strict 60-calls-per-hour limit. The MR will not be merged if the key appears in any committed file.</div>
 <div class="pager">
 <a class="pg" href="02-expense-tracker.html"><span>&larr; Previous</span><strong>02 &middot; Expense tracker</strong></a>
 <a class="pg r" href="04-refactor-and-test.html"><span>Next &rarr;</span><strong>04 &middot; Refactor &amp; test</strong></a>

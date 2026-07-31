@@ -61,6 +61,7 @@
 <li><a href="#s4">The crash — and files</a></li>
 <li><a href="#s5">JSON — saving data that has shape</a></li>
 <li><a href="#s6">Filtering, totals, and writing it up</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 </ol></div>
 <article class="session" id="s1">
 <div class="shead"><span class="snum">Session 1</span><h3>Lists</h3></div>
@@ -102,9 +103,20 @@ expense["amount"] = 3.60       <span class="c"># change it</span></code></pre></
 for e in expenses:
     print(f"{e['description']}: £{e['amount']}")</code></pre></div>
 <p>Asking for a key that isn't there gives a <code>KeyError</code>. Use <code>e.get("category", "unknown")</code> when a field might be missing.</p>
+<p>This structure is called a <strong>schema</strong> — a fixed shape that every record follows. Consistent schemas are what make filtering, sorting and summarising possible. If one expense has "category" and another has "cat", your code has to handle both cases forever. Pick one and stick to it.</p>
+<p>Python has a nicer way to define schemas called a <code>dataclass</code>. It's worth knowing exists, even if you don't use it yet:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from dataclasses import dataclass
 
-<div class="sbuild"><b>Build this</b><p>Rework your tracker so each expense is a dictionary with description, amount and category. Print them as a neat table.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You're comfortable with a list of dictionaries and can get at any field inside it.</p></div>
+@dataclass
+class Expense:
+    description: str
+    amount: float
+    category: str
+    date: str</code></pre></div>
+<p>A dataclass gives you a proper type for your data, automatic <code>__repr__</code> for printing, and type checking. For this project, plain dictionaries are fine. But the concept of "giving your data a fixed shape" is something you'll apply everywhere.</p>
+
+<div class="sbuild"><b>Build this</b><p>Rework your tracker so each expense is a dictionary with description, amount, category, and a date. For the date, use <code>datetime.strptime</code> to validate what the user types — reject anything that isn't a real date in <code>YYYY-MM-DD</code> format and ask again. Print them as a neat table with aligned columns.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You're comfortable with a list of dictionaries, can validate input using <code>datetime.strptime</code>, and can explain what a schema is.</p></div>
 </article>
 <article class="session" id="s3">
 <div class="shead"><span class="snum">Session 3</span><h3>A menu that keeps running</h3></div>
@@ -123,10 +135,12 @@ for e in expenses:
     else:
         print("Didn't understand that.")</code></pre></div>
 <p><code>while True</code> loops forever; <code>break</code> is the only way out. Notice the menu loop doesn't <em>do</em> anything itself — it decides which function to call. That's the structure to aim for.</p>
+<p>Think of it as an <strong>event loop</strong>: it waits, receives an action, dispatches it, and waits again. Every GUI, every web server, every game loop is this same pattern at some level. It's one of the most fundamental patterns in all of programming.</p>
 <div class="note"><div class="lbl">One function, one job</div><p>You want separate functions for adding, listing, deleting and totalling. If you end up with one function called <code>do_everything()</code>, you'll fight it for the rest of the project.</p></div>
+<p>Menus with typed numbers work fine for learning. In real tools you'd often use <code>argparse</code> instead — a standard library that lets users pass flags on the command line like <code>python3 tracker.py --list</code>. Worth knowing it exists when you outgrow menus.</p>
 
-<div class="sbuild"><b>Build this</b><p>Menu loop with add, list, delete and total. Each one its own function.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Your program runs until told to stop, and each menu option calls a separate, sensibly named function.</p></div>
+<div class="sbuild"><b>Build this</b><p>Menu loop with five options: add, list, delete by index (ask which number to remove), edit an existing entry (ask which number, then ask for new values), and total. Each as its own function. The menu prints the options clearly every iteration.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your program runs until told to stop, each menu option calls a separate function, and you can explain what an event loop is.</p></div>
 </article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>The crash — and files</h3></div>
@@ -169,9 +183,15 @@ with open("expenses.json", "r") as f:
     except FileNotFoundError:
         return []</code></pre></div>
 <p>No file means no expenses yet, so return an empty list. That's not a workaround — it's the correct behaviour.</p>
+<p>The word for converting in-memory data into a format that can be written to a file or sent over a network is <strong>serialisation</strong>. Loading it back is <strong>deserialisation</strong>. JSON, CSV, XML are all serialisation formats. This is worth knowing because not everything serialises cleanly. Try this:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from datetime import datetime
+expense = {"description": "Coffee", "date": datetime.now()}
+json.dumps(expense)   <span class="c"># TypeError: Object of type datetime is not JSON serializable</span></code></pre></div>
+<p>JSON can only handle strings, numbers, booleans, lists and dicts — no Python-specific objects. The solution is to convert to a string before saving (<code>date.isoformat()</code>) and parse it back when loading (<code>datetime.fromisoformat(...)</code>). This is why your dates are stored as strings.</p>
+<p>Use <code>json.dumps(data, indent=2)</code> (with an <code>s</code> — "dump string") any time you want to print structured data for debugging. It's much more readable than a plain <code>print</code>.</p>
 
-<div class="sbuild"><b>Build this</b><p>Wire it in. Load on start, save after every change. Close it, reopen it, and watch your data still be there.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Your data survives a restart. This is the project's whole purpose.</p></div>
+<div class="sbuild"><b>Build this</b><p>Wire it in. Load on start, save after every change. Close it, reopen it, and watch your data still be there. Make sure the dates round-trip correctly — save a date as a string, load it back, and confirm it's the same.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your data survives a restart. You can explain what serialisation is and why <code>datetime</code> objects need special handling.</p></div>
 </article>
 <article class="session" id="s6">
 <div class="shead"><span class="snum">Session 6</span><h3>Filtering, totals, and writing it up</h3></div>
@@ -179,23 +199,49 @@ with open("expenses.json", "r") as f:
 <p>Now the data persists, make it useful. Filtering a list by a condition:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>food = [e for e in expenses if e["category"] == "food"]</code></pre></div>
 <p>That's a <strong>list comprehension</strong> — read it as "e for every e in expenses, where the category is food". It's the same as a <code>for</code> loop with an <code>if</code>, written on one line. Write it the long way first if that's clearer, then try shortening it.</p>
+<p>You can also transform while filtering — this gives you just the descriptions of food expenses:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>food_descriptions = [e["description"] for e in expenses if e["category"] == "food"]</code></pre></div>
 <p>Totalling one field across a list:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>total = sum(e["amount"] for e in expenses)</code></pre></div>
+<p>List comprehensions are powerful but can become unreadable. Use them for simple cases. A regular loop is fine — and often clearer — when the logic gets complex. Don't write something clever that you'll struggle to read in two weeks.</p>
+<p>Filtering by date range means comparing dates. Since you stored them as strings in <code>YYYY-MM-DD</code> format, string comparison works correctly — <code>"2024-03-15" &gt; "2024-01-01"</code> is <code>True</code>. This is one of the reasons that date format matters.</p>
+<p>For CSV export, Python has a <code>csv</code> module that handles quoting and escaping for you:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>import csv
 
-<div class="sbuild"><b>Build this</b><p>Add: total by category, a filter by category, and a sort by amount. Then the README — include what happened when you first closed the program.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can filter and summarise a list of dictionaries, and your README tells the story of the project.</p></div>
+with open("expenses.csv", "w", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=["description", "amount", "category", "date"])
+    writer.writeheader()
+    writer.writerows(expenses)</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>Add five things: (1) total by category, (2) filter by category, (3) filter by date range (ask for a start and end date), (4) sort by date or by amount (ask which), (5) export the full list to a CSV file. Then the README — include what happened when you first closed the program and what you'd add if you had another week.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can filter, sort and summarise a list of dictionaries, export to CSV, and your README tells the story of the project.</p></div>
+</article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — monthly summary</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You've built filtering, grouping and date handling. Now combine them. There is no example code. Work it out.</p></div>
+<p>Add option 6 to the menu: monthly summary. When selected, it should print a table grouped by month and category — something like:</p>
+<pre><code>March 2024
+  food      £84.20
+  travel    £32.00
+  bills     £110.00
+
+April 2024
+  food      £61.40
+  travel    £15.50</code></pre>
+<p>Think about how to group expenses by month before you touch the code. The <code>datetime</code> docs and a bit of thinking about how "group by" logic works in your head will get you there. When you've got it working, add it as a new menu option and commit it.</p>
+<div class="scheck"><b>You're done when</b><p>The monthly summary shows correct totals per category per month, handles months with no expenses gracefully, and is formatted readably.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>One giant function</b><p>If <code>add_expense()</code> is also saving the file and printing a summary, split it up. One job each.</p></div>
 <div class="trap"><b>Forgetting to save</b><p>Data changes in memory but never reaches disk. Save after every change that matters.</p></div>
 <div class="trap"><b>Floats and money</b><p><code>0.1 + 0.2</code> doesn't give exactly <code>0.3</code> in any language. For this project just round when displaying. Real financial software stores pennies as whole numbers.</p></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
-<li>Add a date to each expense using the <code>datetime</code> module.</li>
-<li>Show a monthly total, grouped by month.</li>
 <li>Add a budget per category and warn when it's exceeded.</li>
-<li>Export to CSV so it opens in a spreadsheet.</li>
+<li>Add a search by keyword across descriptions.</li>
+<li>Add a recurring expense flag and auto-add them on startup.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>You can close the program, reopen it, and your expenses are still there. Add, list, delete, total and filter all work, and each lives in its own function.</div>
+<div class="done big"><b>Definition of done</b>You can close the program, reopen it, and your expenses are still there. Add, list, delete, edit, total, filter by category, filter by date range, sort, CSV export, and monthly summary all work — each in its own function.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your tracker. The MR description must include a terminal paste showing the full menu working end-to-end (add some expenses, list them, filter, export), a confirmation that data survives a restart, and a screenshot of the CSV opening in a spreadsheet. The MR will not be merged if any of those three are missing.</div>
 <div class="pager">
 <a class="pg" href="01-terminal-toolkit.html"><span>&larr; Previous</span><strong>01 &middot; Terminal toolkit</strong></a>
 <a class="pg r" href="03-weather-client.html"><span>Next &rarr;</span><strong>03 &middot; Weather client</strong></a>

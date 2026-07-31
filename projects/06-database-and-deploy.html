@@ -58,6 +58,7 @@
 <li><a href="#s1">SQL basics</a></li>
 <li><a href="#s2">SQL from Python — and injection</a></li>
 <li><a href="#s3">Swapping the storage out</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 <li><a href="#s4">Getting ready to deploy</a></li>
 <li><a href="#s5">Deploying</a></li>
 <li><a href="#s6">After it's live</a></li>
@@ -85,9 +86,12 @@ SELECT * FROM expenses ORDER BY amount DESC;
 SELECT SUM(amount) FROM expenses;
 SELECT category, SUM(amount) FROM expenses GROUP BY category;</code></pre></div>
 <p>That last one is worth sitting with. <code>GROUP BY</code> collapses rows into groups and calculates across each — it's how every "spending by category" report ever built works.</p>
+<p>A <strong>transaction</strong> is a unit of work that either fully succeeds or fully rolls back. Every SQL change — INSERT, UPDATE, DELETE — is part of a transaction. <code>COMMIT</code> finalises it; without it, the change isn't written. <code>ROLLBACK</code> undoes everything since the last commit. SQLite auto-commits many things, but knowing this matters when you write code that makes multiple changes that must all succeed or all fail together.</p>
+<p>An <strong>index</strong> makes queries faster on the columns you search most. Without an index, a query scans every row. With one, it jumps straight to matching rows. The cost is extra space and slightly slower writes. Add an index on any column you frequently put in a WHERE clause:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>CREATE INDEX idx_expenses_category ON expenses(category);</code></pre></div>
 
-<div class="sbuild"><b>Build this</b><p>Create the table by hand, insert ten rows, and write queries answering: what did I spend in total, what's my biggest expense, what's the total per category.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can write SELECT, INSERT, WHERE, ORDER BY and GROUP BY from memory.</p></div>
+<div class="sbuild"><b>Build this</b><p>Create the table by hand, insert at least 10 rows across at least 3 categories, and write queries answering: total spend, biggest single expense, total per category, all expenses above average amount. That last one uses a subquery: <code>WHERE amount &gt; (SELECT AVG(amount) FROM expenses)</code>. Write it, understand it, and be ready to explain it.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write SELECT, INSERT, WHERE, ORDER BY, GROUP BY and a subquery from memory. You can explain what a transaction is and when to use an index.</p></div>
 </article>
 <article class="session" id="s2">
 <div class="shead"><span class="snum">Session 2</span><h3>SQL from Python — and injection</h3></div>
@@ -109,11 +113,12 @@ cursor.execute(f"SELECT * FROM expenses WHERE category = '{category}'")
 
 <span class="c"># do this</span>
 cursor.execute("SELECT * FROM expenses WHERE category = ?", (category,))</code></pre></div>
-<div class="note warn"><div class="lbl">Why this matters</div><p>In the first version, someone typing <code>' OR '1'='1</code> as a category changes what your query means and gets everything back. Worse inputs delete tables. This is SQL injection, it's been in the top ten web vulnerabilities for twenty years, and the fix is simply always using <code>?</code> placeholders. Look up "Little Bobby Tables" for the famous version.</p></div>
+<div class="note warn"><div class="lbl">Why this matters</div><p>Imagine a user types <code>' OR '1'='1</code> as their category. With the first version your query becomes <code>WHERE category = '' OR '1'='1'</code> — which matches every row. Now imagine they type <code>'; DROP TABLE expenses; --</code>. This is <strong>SQL injection</strong>, it's been in the OWASP top ten vulnerabilities for over twenty years, and banks have been compromised by it. The fix is always using <code>?</code> placeholders — the database driver escapes the values safely. Look up "Little Bobby Tables" for the famous version. This applies in every language, every database, forever.</p></div>
+<p>Parameterised queries (using <code>?</code>) aren't just about security — they're also more reliable with edge cases like apostrophes in names, percent signs, and unicode. Use them for all values, always.</p>
 <p>The comma in <code>(category,)</code> isn't a typo — it makes it a tuple of one item.</p>
 
-<div class="sbuild"><b>Build this</b><p>A <code>database.py</code> with functions to add, list, delete and total, all using placeholders.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can explain SQL injection and you've written no query using an f-string.</p></div>
+<div class="sbuild"><b>Build this</b><p><code>database.py</code> with functions for: add, list all, delete by ID, total, filter by category, get by ID, update, and <code>init_db()</code> that creates the table if it doesn't exist. Every single query uses <code>?</code> placeholders. Zero f-strings in SQL. If you want to verify: <code>grep -n "f\"SELECT\|f\"INSERT\|f\"UPDATE\|f\"DELETE" database.py</code> should return nothing.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain SQL injection with a concrete example, and you've written no query using string formatting.</p></div>
 </article>
 <article class="session" id="s3">
 <div class="shead"><span class="snum">Session 3</span><h3>Swapping the storage out</h3></div>
@@ -130,6 +135,22 @@ cursor.execute("SELECT * FROM expenses WHERE category = ?", (category,))</code><
 <div class="sbuild"><b>Build this</b><p>App fully on SQLite. Tests updated and green. JSON code deleted.</p></div>
 <div class="scheck"><b>You should now be able to</b><p>Only your storage layer changed, and you can articulate why that's a good sign.</p></div>
 </article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — your first database migration</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You know SQL, you know Python, you know what a foreign key is from the schema in session 1. Now use all of it. There is no example code.</p></div>
+<p>Add a second table called <code>categories</code> with an <code>id</code> and a <code>name</code>. Move the category strings out of the <code>expenses</code> table and replace them with a <code>category_id</code> foreign key referencing <code>categories.id</code>.</p>
+<p>Write a <strong>migration script</strong> called <code>migrate.py</code> that:</p>
+<ol>
+<li>Creates the <code>categories</code> table</li>
+<li>Populates it with the distinct category values from the existing <code>expenses</code> data</li>
+<li>Adds a <code>category_id</code> column to <code>expenses</code></li>
+<li>Updates every row to point to the correct category ID</li>
+<li>Removes the old <code>category</code> text column</li>
+</ol>
+<p>After running the script, your app should still work — it will need updating to JOIN the two tables when it needs the category name. Add that JOIN query and make sure all existing features still pass their tests.</p>
+<p>Commit the migration script. In a real codebase this is how schemas evolve — you never edit the original CREATE TABLE, you write a migration that transforms the data.</p>
+<div class="scheck"><b>You're done when</b><p>The migration script runs cleanly on a fresh copy of the database, the app works with the new schema, and the tests are green.</p></div>
+</article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>Getting ready to deploy</h3></div>
 
@@ -138,13 +159,17 @@ cursor.execute("SELECT * FROM expenses WHERE category = ?", (category,))</code><
 <li><strong>Debug off.</strong> <code>debug=True</code> shows your source code to anyone who triggers an error. Read the mode from an environment variable.</li>
 <li><strong>No hardcoded paths.</strong> <code>/Users/you/code/...</code> doesn't exist on a server.</li>
 <li><strong>Port from the environment.</strong> The host decides, not you: <code>port = int(os.environ.get("PORT", 5000))</code></li>
-<li><strong>A real web server.</strong> Flask's built-in one is for development only. <code>pip install gunicorn</code>.</li>
+<li><strong>A real web server.</strong> Flask's built-in server is for development only. It handles one request at a time and isn't built for production traffic. <code>gunicorn</code> is a WSGI server — a proper production server that handles multiple concurrent requests and is designed to be run in front of actual users. <code>pip install gunicorn</code>.</li>
 <li><strong>Requirements current.</strong> <code>pip freeze &gt; requirements.txt</code></li>
 </ul>
+<p>A <strong>WSGI</strong> server is a standard interface between a Python web app and a web server. Flask implements WSGI. Gunicorn knows how to call it. The deployment platform knows how to call Gunicorn. That's the full stack.</p>
+<p>The <strong>SECRET_KEY</strong> Flask uses to sign session cookies must be a long random string stored as an environment variable — never in your code. If it's in your code, anyone who reads your repo can forge session cookies and impersonate any user. Generate one:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>python3 -c "import secrets; print(secrets.token_hex(32))"</code></pre></div>
+<p>Set that as an environment variable, never commit it.</p>
 <div class="note"><div class="lbl">SQLite in production</div><p>Most hosts wipe the filesystem on restart, which takes your database with it. Fine for a demo; use the host's managed Postgres if you want the data to survive. Either is a legitimate choice — just make it knowingly.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Everything configurable via environment variables. Nothing hardcoded. Runs locally under gunicorn.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Nothing in your code assumes it's on your laptop.</p></div>
+<div class="sbuild"><b>Build this</b><p>Everything configurable via environment variables. Nothing hardcoded. <code>SECRET_KEY</code> generated and stored in <code>.env</code>. Runs locally under gunicorn (<code>gunicorn app:app</code>). A <code>Procfile</code> containing <code>web: gunicorn app:app</code> so the deployment platform knows how to start it.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Nothing in your code assumes it's on your laptop. You can explain what WSGI is and why gunicorn is needed.</p></div>
 </article>
 <article class="session" id="s5">
 <div class="shead"><span class="snum">Session 5</span><h3>Deploying</h3></div>
@@ -166,11 +191,12 @@ cursor.execute("SELECT * FROM expenses WHERE category = ?", (category,))</code><
 <div class="shead"><span class="snum">Session 6</span><h3>After it's live</h3></div>
 
 <p>Watch someone use it without helping. You'll learn more in five minutes than in a week of guessing.</p>
-<p>Then tidy: fix whatever they got confused by, check it works on a phone screen, make sure an error shows a friendly page rather than a stack trace, and put the live link at the very top of your README.</p>
+<p>Then tidy: fix whatever they got confused by, check it works on a phone screen, add a custom 404 page and a custom 500 error page so users never see a stack trace, and put the live link at the very top of your README.</p>
+<p>Write a short note in your README on what would break if two people used it at the same time. This is about SQLite's limitation: it allows one writer at a time. Two concurrent POST requests — two people adding expenses simultaneously — can cause a locking error. You don't need to fix it, but you need to know about it and say so explicitly.</p>
 <p>Take a moment on this one. Twelve weeks ago you couldn't open a terminal.</p>
 
-<div class="sbuild"><b>Build this</b><p>Live link in the README, a screenshot, and a note on what you'd do differently.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>It works on a phone and doesn't leak stack traces to strangers.</p></div>
+<div class="sbuild"><b>Build this</b><p>Live URL in the README, a screenshot, a simple hand-drawn data model diagram (photograph it), a custom 404 page, a custom 500 error page, a note on the SQLite concurrency limitation, and a paragraph on what you'd do differently.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>It works on a phone, doesn't leak stack traces, and the README is honest about the app's limitations.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>f-strings in SQL</b><p>Always <code>?</code> placeholders. No exceptions, ever.</p></div>
@@ -178,12 +204,12 @@ cursor.execute("SELECT * FROM expenses WHERE category = ?", (category,))</code><
 <div class="trap"><b>Committing the database file</b><p>Add <code>*.db</code> to <code>.gitignore</code>.</p></div>
 <div class="trap"><b>Assuming deploy will be quick</b><p>Set aside a whole session and expect to spend it reading logs.</p></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
-<li>Add a second table for categories with a foreign key, and JOIN them.</li>
-<li>Add a monthly summary page with GROUP BY on the date.</li>
-<li>Add a custom 404 page.</li>
+<li>Add a monthly summary page using GROUP BY on the date.</li>
 <li>Set up automatic deploys on every push to main.</li>
+<li>Switch to Postgres on the host's managed database so data survives restarts.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>Someone else can open your app on their phone. Data is in a real database, every query uses placeholders, and debug mode is off.</div>
+<div class="done big"><b>Definition of done</b>Someone else can open your app on their phone. Data is in a real database, every query uses placeholders, debug mode is off, and the database migration challenge is complete.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your deployed app. The MR description must include: the successful deployment build log (paste it as a code block), the live URL, and a confirmation that every SQL query in the diff uses <code>?</code> placeholders (run <code>grep -rn "f\"SELECT\|f\"INSERT\|f\"UPDATE\|f\"DELETE" .</code> — it must return nothing). The MR will not be merged if a single f-string SQL query is found.</div>
 <div class="pager">
 <a class="pg" href="05-first-web-app.html"><span>&larr; Previous</span><strong>05 &middot; First web app</strong></a>
 <a class="pg r" href="07-accounts-and-auth.html"><span>Next &rarr;</span><strong>07 &middot; Accounts &amp; auth</strong></a>
