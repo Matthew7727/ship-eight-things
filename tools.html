@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install tools &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="welcome.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Install tools</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Start here</div>
+    <a href="welcome.html">Welcome</a>
+    <a href="mac-intro.html">Mac intro</a>
+    <a href="tools.html" class="on">Install tools</a>
+    <div class="group">Guide</div>
+    <a href="index.html#how">How this works</a>
+    <a href="index.html#rhythm">The weekly rhythm</a>
+    <a href="index.html#github">Git &amp; GitHub</a>
+    <a href="index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="index.html#stuck">When you're stuck</a>
+    <a href="index.html#git-ref">Git commands</a>
+    <a href="index.html#errors">Reading an error</a>
+    <a href="index.html#readme">README template</a>
+    <a href="index.html#ai">Using AI</a>
+    <a href="index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<a class="back" href="mac-intro.html">&larr; Mac intro</a>
+<div class="eyebrow">Step 02</div>
+<h2>Install tools</h2>
+<p class="lede">Everything you need to write, run, and share code. You do this once and never again.</p>
+
+<div class="note">
+  <div class="lbl">Before you start</div>
+  <p>Every command on this page is typed into <strong>Terminal</strong>. Open it with <kbd>&#8984; Space</kbd>, type "Terminal", press Enter. Each command is followed by pressing Enter to run it. Wait for each one to finish before running the next.</p>
+</div>
+
+<div class="jump"><div class="jt">On this page</div><ol>
+<li><a href="#xcode">Apple developer tools</a></li>
+<li><a href="#homebrew">Homebrew — the package manager</a></li>
+<li><a href="#python">Python</a></li>
+<li><a href="#node">Node.js &amp; npm</a></li>
+<li><a href="#git">Git</a></li>
+<li><a href="#vscode">VS Code — your editor</a></li>
+<li><a href="#terminal-kit">Terminal survival kit</a></li>
+<li><a href="#verify">Checking everything works</a></li>
+</ol></div>
+
+<section id="xcode">
+  <div class="eyebrow">Step 1</div>
+  <h2>Apple's developer tools</h2>
+  <p>This installs Apple's command-line developer tools &mdash; a collection of low-level programs that almost everything else depends on. Git, compilers, and other tools won't work without it.</p>
+  <p>Type this command and press Enter:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>xcode-select --install</code></pre></div>
+  <p>A dialogue box will pop up asking you to install. Click <strong>Install</strong> (not "Get Xcode" &mdash; you don't need the full Xcode app). This takes a few minutes depending on your internet connection. When it says "The software was installed", you're done.</p>
+
+  <p>Confirm it worked:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>xcode-select --version</code></pre></div>
+  <p>You should see something like <code>xcode-select version 2395</code>. Any version number means success.</p>
+</section>
+
+<section id="homebrew">
+  <div class="eyebrow">Step 2</div>
+  <h2>Homebrew</h2>
+  <p>Homebrew is the package manager for macOS. Think of it as an app store for developer tools &mdash; it lets you install, update, and remove programs with a single command. Almost everything you'll install goes through Homebrew.</p>
+
+  <p>Copy this entire command (it's long &mdash; that's normal) and paste it into Terminal, then press Enter:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre></div>
+
+  <p>It will ask for your Mac login password. Type it &mdash; you won't see the characters as you type, that's normal. Press Enter when done. The installer runs for a few minutes.</p>
+
+  <p>When it finishes, it will print two more commands near the bottom of the output. They start with <code>echo</code> and <code>eval</code>. <strong>Run both of them.</strong> They tell your terminal where to find Homebrew. On Apple Silicon, Homebrew lives at <code>/opt/homebrew</code> rather than the old location, and your terminal needs pointing at it.</p>
+
+  <p>Here's what those two lines look like (yours will be identical):</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
+
+  <p>Let's break down what those two lines do, because understanding them is worth it:</p>
+  <ul>
+    <li><code>echo '...' &gt;&gt; ~/.zprofile</code> &mdash; the <code>echo</code> command prints text, and the <code>&gt;&gt;</code> means "append it to the end of this file" rather than printing it on screen. <code>~/.zprofile</code> is a file that runs automatically every time you open a new terminal window. So this line is adding the Homebrew setup to that startup file, meaning it'll work forever, not just in this session.</li>
+    <li><code>eval "$(...)"</code> &mdash; runs the Homebrew setup right now, in the current terminal session, so you don't have to close and reopen it first.</li>
+  </ul>
+
+  <p>Check it worked:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>brew --version</code></pre></div>
+  <p>You should see <code>Homebrew 4.x.x</code> or similar. If you see "command not found", close Terminal completely, reopen it, and try again.</p>
+
+  <div class="note">
+    <div class="lbl">Updating Homebrew later</div>
+    <p>Run <code>brew update</code> to fetch the latest package list, and <code>brew upgrade</code> to update everything. Do this every month or so. Run <code>brew cleanup</code> to remove old versions and free up disk space.</p>
+  </div>
+</section>
+
+<section id="python">
+  <div class="eyebrow">Step 3</div>
+  <h2>Python</h2>
+  <p>macOS comes with a Python, but it belongs to the operating system and you shouldn't build on top of it &mdash; Apple may change or remove it in a future update. Install your own fresh copy instead.</p>
+
+  <p>Install Python via Homebrew:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>brew install python</code></pre></div>
+
+  <p>Check it installed:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>python3 --version</code></pre></div>
+  <p>You should see <code>Python 3.12.x</code> or newer. The <code>3</code> in <code>python3</code> matters &mdash; on macOS, <code>python</code> (without the 3) may still point to the system Python.</p>
+
+  <p>Also check <code>pip3</code>, which is Python's package installer (you'll use it constantly):</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>pip3 --version</code></pre></div>
+  <p>You'll see a version number and a path. The path should include <code>homebrew</code> somewhere in it &mdash; confirming you're using the Homebrew Python, not the system one.</p>
+
+  <div class="note">
+    <div class="lbl">What is pip?</div>
+    <p><code>pip</code> stands for "Pip Installs Packages". It's how you add third-party Python libraries to your project. For example, <code>pip3 install requests</code> adds a library for making HTTP requests. You'll use this from Project 3 onwards.</p>
+  </div>
+</section>
+
+<section id="node">
+  <div class="eyebrow">Step 4</div>
+  <h2>Node.js &amp; npm</h2>
+  <p>Node.js lets you run JavaScript outside of a browser &mdash; directly on your machine. You'll use it from Project 5 onwards when you start building web apps. npm (Node Package Manager) comes bundled with it and works like pip but for the JavaScript world.</p>
+
+  <p>Install both via Homebrew:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>brew install node</code></pre></div>
+
+  <p>Check Node.js installed:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>node --version</code></pre></div>
+  <p>You should see <code>v22.x.x</code> or newer.</p>
+
+  <p>Check npm is there too:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>npm --version</code></pre></div>
+  <p>You should see a version number like <code>10.x.x</code>.</p>
+
+  <div class="note">
+    <div class="lbl">You won't use Node heavily at first</div>
+    <p>The first four projects are pure Python. Node.js is here because it's easier to install it now than to interrupt a project later. When it becomes relevant, the project guide will explain it.</p>
+  </div>
+</section>
+
+<section id="git">
+  <div class="eyebrow">Step 5</div>
+  <h2>Git</h2>
+  <p>Git is version control &mdash; it tracks every change you make to your code, lets you go back in time, and makes it possible to share code with others. It's the single most important tool in professional software development. You'll use it every session.</p>
+
+  <p>macOS ships with a version of Git, but it's old. Install a current one:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>brew install git</code></pre></div>
+
+  <p>Check it installed:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git --version</code></pre></div>
+  <p>You should see <code>git version 2.4x.x</code> or similar. If it still shows <code>2.39</code>, close and reopen Terminal so it picks up the Homebrew version.</p>
+
+  <h3>Tell Git who you are</h3>
+  <p>Git needs to know your name and email address to attach to your commits. Use the same email you'll use for GitHub.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git config --global user.name "Tom"
+git config --global user.email "your@email.com"
+git config --global init.defaultBranch main</code></pre></div>
+  <p>Let's read those commands:</p>
+  <ul>
+    <li><code>git config --global</code> &mdash; changes a setting that applies to all your git repos on this machine (<code>--global</code> means "not just this folder, everywhere").</li>
+    <li><code>user.name "Tom"</code> &mdash; sets the name that appears on your commits. Swap in your actual name.</li>
+    <li><code>user.email "..."</code> &mdash; sets the email. Must match your GitHub account or commits won't link to your profile.</li>
+    <li><code>init.defaultBranch main</code> &mdash; makes new repos start with a branch called <code>main</code> (the modern default) instead of the older <code>master</code>.</li>
+  </ul>
+
+  <p>Check your settings saved:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git config --list</code></pre></div>
+  <p>You'll see a list of your settings. Scroll up to find <code>user.name</code> and <code>user.email</code>.</p>
+</section>
+
+<section id="vscode">
+  <div class="eyebrow">Step 6</div>
+  <h2>VS Code</h2>
+  <p>VS Code (Visual Studio Code) is the code editor. It's free, fast, runs on everything, and is by far the most widely used editor in industry today. This is where you'll write all your code.</p>
+
+  <div class="code"><button class="copy">Copy</button><pre><code>brew install --cask visual-studio-code</code></pre></div>
+
+  <p>The <code>--cask</code> flag tells Homebrew to install a full Mac application (as opposed to a command-line tool). This takes a minute or two to download.</p>
+
+  <p>Open VS Code when it's done. You'll find it in your Applications folder or via Spotlight (<kbd>&#8984; Space</kbd> &rarr; "VS Code").</p>
+
+  <h3>Install the shell command</h3>
+  <p>This lets you open VS Code from the terminal by typing <code>code .</code>, which you'll do constantly.</p>
+  <p>In VS Code, press <kbd>&#8679; &#8984; P</kbd> (Shift + Command + P) to open the Command Palette. Type "shell command" and click <em>Shell Command: Install 'code' command in PATH</em>. Done.</p>
+
+  <p>Test it works:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>code --version</code></pre></div>
+  <p>Any version number means it's working.</p>
+
+  <h3>Install exactly these extensions</h3>
+  <p>Extensions add language support, linting, and extra tools. Every extension uses a small amount of memory, so install only what you need. For now, install these four and nothing else:</p>
+
+  <table>
+    <tr><th>Extension name</th><th>What it does</th></tr>
+    <tr><td><strong>Python</strong> (by Microsoft)</td><td>Core Python language support &mdash; syntax highlighting, running files, test integration</td></tr>
+    <tr><td><strong>Pylance</strong></td><td>Smart autocomplete and inline error highlighting for Python</td></tr>
+    <tr><td><strong>Ruff</strong></td><td>Catches style mistakes and formats your code on save &mdash; keeps your code readable without you thinking about it</td></tr>
+    <tr><td><strong>GitLens</strong></td><td>Shows the history of every line &mdash; who changed it and when. Invaluable once you're working on a project for a few weeks</td></tr>
+  </table>
+
+  <p>To install: click the Extensions icon in VS Code's left sidebar (four squares), search for each name, click Install.</p>
+
+  <div class="note machine">
+    <div class="lbl">Memory discipline</div>
+    <p>Each extension costs memory on your 8&nbsp;GB machine. Only install more later if something is genuinely annoying you. "Looks nice" is not a reason to install an extension.</p>
+  </div>
+
+  <h3>Two settings to change in VS Code</h3>
+  <p>Open Settings with <kbd>&#8984; ,</kbd>. Search for each of these and update them:</p>
+  <ul>
+    <li><strong>Format on Save</strong> &mdash; set to <em>checked</em>. This makes Ruff format your code every time you save. You'll want this.</li>
+    <li><strong>Word Wrap</strong> &mdash; set to <em>on</em>. Long lines won't run off the right edge of the screen.</li>
+  </ul>
+</section>
+
+<section id="terminal-kit">
+  <div class="eyebrow">Step 7</div>
+  <h2>Terminal survival kit</h2>
+  <p>You need about ten commands to do most of what this guide requires. Everything else you can look up when you need it. Here's what they are and exactly what each one does:</p>
+
+  <table>
+    <tr><th>Command</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><code>pwd</code></td><td>Print Working Directory &mdash; shows you where you are right now</td><td><code>pwd</code> → <code>/Users/tom/code</code></td></tr>
+    <tr><td><code>ls</code></td><td>List &mdash; shows the files and folders in the current directory</td><td><code>ls</code> shows the contents, <code>ls -la</code> shows hidden files too</td></tr>
+    <tr><td><code>cd</code></td><td>Change Directory &mdash; moves you into a folder</td><td><code>cd projects</code> to go in, <code>cd ..</code> to go up one level, <code>cd ~</code> to go home</td></tr>
+    <tr><td><code>mkdir</code></td><td>Make Directory &mdash; creates a new folder</td><td><code>mkdir my-project</code></td></tr>
+    <tr><td><code>touch</code></td><td>Creates an empty file</td><td><code>touch hello.py</code></td></tr>
+    <tr><td><code>rm</code></td><td>Remove &mdash; deletes a file permanently (no Trash)</td><td><code>rm old-file.py</code></td></tr>
+    <tr><td><code>mv</code></td><td>Move (also renames)</td><td><code>mv old-name.py new-name.py</code></td></tr>
+    <tr><td><code>cp</code></td><td>Copy a file</td><td><code>cp file.py backup.py</code></td></tr>
+    <tr><td><code>cat</code></td><td>Print the contents of a file to the terminal</td><td><code>cat notes.txt</code></td></tr>
+    <tr><td><code>code .</code></td><td>Open the current folder in VS Code</td><td>(run from inside your project folder)</td></tr>
+    <tr><td><code>python3 file.py</code></td><td>Run a Python file</td><td><code>python3 hello.py</code></td></tr>
+    <tr><td><code>ctrl + C</code></td><td>Stop whatever is running &mdash; your escape hatch</td><td>(hold Control, press C)</td></tr>
+  </table>
+
+  <div class="note">
+    <div class="lbl">Two habits worth forming immediately</div>
+    <p>Press <strong>Tab</strong> to autocomplete file and folder names. It prevents typos and is much faster. Press the <strong>up arrow</strong> to get your last command back without retyping it. These two habits save enormous time.</p>
+  </div>
+
+  <h3>How paths work</h3>
+  <p>A path is an address for a file or folder on your disk. Understanding paths removes a lot of confusion.</p>
+  <ul>
+    <li><code>/</code> at the very start means the root of the disk (the very top level). <code>/Users/tom/code/project/main.py</code> is an <strong>absolute path</strong> &mdash; it works from anywhere.</li>
+    <li>A path <em>without</em> a leading <code>/</code> is a <strong>relative path</strong> &mdash; it's relative to where you are now. If you're already in <code>/Users/tom/code/</code>, then <code>project/main.py</code> means the same file.</li>
+    <li><code>~</code> is a shortcut for your home folder: <code>/Users/tom</code>. So <code>~/code</code> means <code>/Users/tom/code</code>.</li>
+    <li><code>.</code> means "the current folder". <code>ls .</code> is the same as <code>ls</code>.</li>
+    <li><code>..</code> means "the folder above this one". <code>cd ..</code> moves you up one level.</li>
+  </ul>
+</section>
+
+<section id="verify">
+  <div class="eyebrow">Verification</div>
+  <h2>Checking everything works</h2>
+  <p>Run these one by one. Each should print a version number &mdash; no error messages.</p>
+
+  <div class="code"><button class="copy">Copy</button><pre><code>xcode-select --version  <span class="c"># Apple developer tools</span>
+brew --version          <span class="c"># Homebrew</span>
+python3 --version       <span class="c"># Python</span>
+pip3 --version          <span class="c"># Python's package manager</span>
+node --version          <span class="c"># Node.js</span>
+npm --version           <span class="c"># Node's package manager</span>
+git --version           <span class="c"># Git</span>
+code --version          <span class="c"># VS Code shell command</span></code></pre></div>
+
+  <p>If any of them say "command not found", go back to that section and check you ran every step. The most common cause is closing Terminal too early before a command finished &mdash; or missing the two Homebrew path commands after installation.</p>
+
+  <div class="note">
+    <div class="lbl">If something went wrong</div>
+    <p>Close Terminal completely, reopen it, and try the failing command again. A fresh terminal window picks up any path changes that the current one might have missed. If it still fails, check you ran the command exactly as written &mdash; copy-paste it rather than typing by hand.</p>
+  </div>
+
+  <h3>What to do next</h3>
+  <p>Now that your machine is set up, go to the <a href="index.html#github">main guide</a> to set up Git and GitHub, and create your first repo. That's the final piece before Project 1 starts.</p>
+</section>
+
+<div class="pager">
+  <a class="pg" href="mac-intro.html"><span>&larr; Previous</span><strong>Mac intro</strong></a>
+  <a class="pg r" href="index.html#how"><span>Next &rarr;</span><strong>The guide &middot; How this works</strong></a>
+</div>
+
+</main>
+<script src="assets/app.js"></script>
+</body>
+</html>

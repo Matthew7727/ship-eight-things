@@ -36,6 +36,8 @@
         if (e.isIntersecting) {
           links.forEach(function (a) { a.classList.remove('on'); });
           if (map[e.target.id]) map[e.target.id].classList.add('on');
+          // ---- save progress ----
+          saveProgress(e.target.id);
         }
       });
     }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
@@ -58,4 +60,64 @@
     a.addEventListener('click', function () { if (window.innerWidth <= 920) close(); });
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+  // ---- progress tracking (pick up where you left off) ----
+  var STORAGE_KEY = 'tomGuideProgress';
+
+  function pageTitle() {
+    return document.title || '';
+  }
+
+  function currentPagePath() {
+    // Normalise to a root-relative path so it works regardless of origin
+    return window.location.pathname;
+  }
+
+  function saveProgress(sectionId) {
+    try {
+      var sectionEl = document.getElementById(sectionId);
+      var heading = sectionEl ? sectionEl.querySelector('h2, h3') : null;
+      var sectionTitle = heading ? heading.textContent.trim() : sectionId;
+      var data = {
+        path: currentPagePath(),
+        hash: sectionId ? '#' + sectionId : '',
+        pageTitle: pageTitle(),
+        sectionTitle: sectionTitle,
+        ts: Date.now()
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) { /* localStorage may be unavailable */ }
+  }
+
+  // Save that we visited this page (without a specific section) on first load
+  // so even a quick visit to a page is tracked.
+  (function seedPageVisit() {
+    try {
+      var existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      // Only overwrite if this page is different or there's no record yet
+      if (!existing || existing.path !== currentPagePath()) {
+        // Don't overwrite if there's a more specific (section-level) save on
+        // the same page – that would be a step backwards.
+        var data = {
+          path: currentPagePath(),
+          hash: window.location.hash || '',
+          pageTitle: pageTitle(),
+          sectionTitle: '',
+          ts: Date.now()
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+    } catch (e) { /* ignore */ }
+  })();
+
+  // Expose a helper for the welcome page to read progress
+  window.TomGuide = {
+    getProgress: function () {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
+      catch (e) { return null; }
+    },
+    clearProgress: function () {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    }
+  };
 })();

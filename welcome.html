@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome, Tom &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="welcome.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">16 weeks &middot; 8 projects</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Start here</div>
+    <a href="welcome.html" class="on">Welcome</a>
+    <a href="mac-intro.html">Mac intro</a>
+    <a href="tools.html">Install tools</a>
+    <div class="group">Guide</div>
+    <a href="index.html#how">How this works</a>
+    <a href="index.html#rhythm">The weekly rhythm</a>
+    <a href="index.html#github">Git &amp; GitHub</a>
+    <a href="index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="index.html#stuck">When you're stuck</a>
+    <a href="index.html#git-ref">Git commands</a>
+    <a href="index.html#errors">Reading an error</a>
+    <a href="index.html#readme">README template</a>
+    <a href="index.html#ai">Using AI</a>
+    <a href="index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+
+<div class="welcome-hero">
+  <span class="wave">👋</span>
+  <h1>Hey <span class="name">Tom</span>,<br>welcome to the guide.</h1>
+  <p>Four months. Eight projects. A new Mac, a blank screen, and by November — a genuine software engineer. Everything you need is in here.</p>
+  <div id="resume-wrap">
+    <!-- filled in by JS if progress exists -->
+  </div>
+</div>
+
+<div class="eyebrow">Your journey</div>
+<h2>Three steps before you write any code</h2>
+<p>The guide is split into three parts. Work through them in order &mdash; they build on each other.</p>
+
+<div class="path-cards">
+  <a class="path-card" href="mac-intro.html">
+    <div class="pc-num">Step 01</div>
+    <div class="pc-icon">🍎</div>
+    <h3>Mac intro</h3>
+    <p>Brand new to Mac? Start here. Learn the desktop, keyboard shortcuts, Finder, and how to find your way around before anything else.</p>
+    <span class="pc-go">Read the intro &rarr;</span>
+  </a>
+  <a class="path-card" href="tools.html">
+    <div class="pc-num">Step 02</div>
+    <div class="pc-icon">🔧</div>
+    <h3>Install tools</h3>
+    <p>Get VS Code, Python, Node.js, Git, and Homebrew set up. Takes about 30 minutes. You only do this once.</p>
+    <span class="pc-go">Set up your machine &rarr;</span>
+  </a>
+  <a class="path-card" href="index.html#how">
+    <div class="pc-num">Step 03</div>
+    <div class="pc-icon">🚢</div>
+    <h3>The guide</h3>
+    <p>Eight projects over 16 weeks. Every concept explained at the line level at first, then gradually less hand-holding as your confidence builds.</p>
+    <span class="pc-go">Start the guide &rarr;</span>
+  </a>
+</div>
+
+<section id="about">
+  <div class="eyebrow">What this is</div>
+  <h2>How the guide works</h2>
+  <p>This isn't a course. There are no exercises with tidy answers, no progress bars, no certificates. You learn by building things that don't work yet &mdash; and making them work.</p>
+  <p>Each of the eight projects is designed so the <em>next</em> one is impossible without learning something new. The frustration at each step is the curriculum. The guide explains why things work, not just what to type.</p>
+
+  <h3>What you'll have at the end</h3>
+  <ul>
+    <li>Eight repositories with four months of daily commit history</li>
+    <li>At least three applications live on the internet with real URLs</li>
+    <li>A working understanding of Python, the terminal, git, HTTP, SQL, deployment, and building with language models</li>
+    <li>The habit of getting yourself unstuck &mdash; which is the thing that actually makes someone employable</li>
+  </ul>
+
+  <div class="note">
+    <div class="lbl">The one rule</div>
+    <p>You must be able to explain every line you commit. Not "it works." <strong>Why</strong> it works. If you can't explain it, it doesn't get committed yet. This rule sounds annoying. It's the whole point.</p>
+  </div>
+
+  <h3>How the detail level changes</h3>
+  <p>In the early sessions of Project 1, every line of code is explained. Every terminal command comes with a plain-English translation. Nothing is assumed.</p>
+  <p>By Project 4 you'll be going back to fix your own code from two weeks earlier &mdash; and by that point you won't need everything spelled out. The guide scales back the hand-holding gradually, in line with what you should know by then.</p>
+  <p>If something goes unexplained and you don't understand it, that's the cue to look it up &mdash; that's also part of the job.</p>
+</section>
+
+<section id="timeline">
+  <div class="eyebrow">The plan</div>
+  <h2>August to November</h2>
+  <table>
+    <tr><th>Weeks</th><th>Project</th><th>What you learn</th></tr>
+    <tr><td>1&ndash;2</td><td>Terminal toolkit</td><td>Variables, loops, functions, the terminal</td></tr>
+    <tr><td>3&ndash;4</td><td>Expense tracker</td><td>Files, lists, dictionaries, data that persists</td></tr>
+    <tr><td>5&ndash;6</td><td>Weather client</td><td>APIs, HTTP, error handling, secrets</td></tr>
+    <tr><td>7&ndash;8</td><td>Refactor &amp; test</td><td>Code quality, automated tests, reading your own mess</td></tr>
+    <tr><td>9&ndash;10</td><td>First web app</td><td>Flask, HTML, forms, the browser request cycle</td></tr>
+    <tr><td>11&ndash;12</td><td>Database &amp; deploy</td><td>SQL, deployment, a real URL</td></tr>
+    <tr><td>13&ndash;14</td><td>Accounts &amp; auth</td><td>User accounts, sessions, security basics</td></tr>
+    <tr><td>15&ndash;16</td><td>Add a brain</td><td>Language model APIs, async, resilience</td></tr>
+  </table>
+</section>
+
+</main>
+<script src="assets/app.js"></script>
+<script>
+// ---- populate the "pick up where you left off" card ----
+(function () {
+  var wrap = document.getElementById('resume-wrap');
+  if (!wrap) return;
+
+  function render() {
+    var p = window.TomGuide && window.TomGuide.getProgress();
+    if (!p || !p.path) {
+      // First visit — show a friendly start card
+      wrap.innerHTML = '<a class="resume-card empty" href="mac-intro.html">' +
+        '<span class="rc-icon">🍎</span>' +
+        '<div class="rc-body">' +
+          '<div class="rc-label">Begin</div>' +
+          '<div class="rc-title">Start with the Mac intro</div>' +
+          '<div class="rc-sub">Brand new? This is the place to begin.</div>' +
+        '</div>' +
+        '<span class="rc-arrow">&#8594;</span>' +
+        '</a>';
+      return;
+    }
+
+    var href = p.path + (p.hash || '');
+    var pageLabel = p.pageTitle.replace(/\s*[—–-].*$/, '').trim();
+    var sectionLabel = p.sectionTitle ? ' &rsaquo; ' + p.sectionTitle : '';
+    var ago = timeAgo(p.ts);
+
+    wrap.innerHTML = '<a class="resume-card" href="' + href + '">' +
+      '<span class="rc-icon">&#128204;</span>' +
+      '<div class="rc-body">' +
+        '<div class="rc-label">Pick up where you left off &middot; ' + ago + '</div>' +
+        '<div class="rc-title">' + pageLabel + sectionLabel + '</div>' +
+        '<div class="rc-sub">Tap to jump straight back in</div>' +
+      '</div>' +
+      '<span class="rc-arrow">&#8594;</span>' +
+      '</a>';
+  }
+
+  function timeAgo(ts) {
+    var diff = Date.now() - ts;
+    var mins = Math.floor(diff / 60000);
+    if (mins < 2) return 'just now';
+    if (mins < 60) return mins + ' mins ago';
+    var hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + (hrs === 1 ? ' hour' : ' hours') + ' ago';
+    var days = Math.floor(hrs / 24);
+    if (days === 1) return 'yesterday';
+    if (days < 7) return days + ' days ago';
+    return Math.floor(days / 7) + (Math.floor(days / 7) === 1 ? ' week' : ' weeks') + ' ago';
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

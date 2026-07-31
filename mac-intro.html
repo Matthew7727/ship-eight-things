@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mac intro &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="welcome.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Mac intro</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Start here</div>
+    <a href="welcome.html">Welcome</a>
+    <a href="mac-intro.html" class="on">Mac intro</a>
+    <a href="tools.html">Install tools</a>
+    <div class="group">Guide</div>
+    <a href="index.html#how">How this works</a>
+    <a href="index.html#rhythm">The weekly rhythm</a>
+    <a href="index.html#github">Git &amp; GitHub</a>
+    <a href="index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="index.html#stuck">When you're stuck</a>
+    <a href="index.html#git-ref">Git commands</a>
+    <a href="index.html#errors">Reading an error</a>
+    <a href="index.html#readme">README template</a>
+    <a href="index.html#ai">Using AI</a>
+    <a href="index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<a class="back" href="welcome.html">&larr; Welcome</a>
+<div class="eyebrow">Step 01</div>
+<h2>Mac intro</h2>
+<p class="lede">You've got a new MacBook Neo. This page gets you comfortable with it before any code appears.</p>
+
+<div class="jump"><div class="jt">On this page</div><ol>
+<li><a href="#anatomy">What you're looking at</a></li>
+<li><a href="#shortcuts">Keyboard shortcuts</a></li>
+<li><a href="#trackpad">Trackpad gestures</a></li>
+<li><a href="#spotlight">Spotlight — your best friend</a></li>
+<li><a href="#finder">Finder and files</a></li>
+<li><a href="#system-settings">System Settings</a></li>
+<li><a href="#terminal-first-look">The Terminal — first look</a></li>
+<li><a href="#before-coding">Settings to change before you code</a></li>
+</ol></div>
+
+<section id="anatomy">
+  <div class="eyebrow">The basics</div>
+  <h2>What you're looking at</h2>
+  <p>When you first turn on the Mac and finish setup, you land on the <strong>desktop</strong>. Here's what everything is:</p>
+
+  <h3>The menu bar</h3>
+  <p>The strip at the very top of the screen. It always belongs to whichever app is active at the moment. The leftmost item is the Apple menu &mdash; <kbd>&#63743;</kbd> &mdash; which is where you find Shut Down, Restart, and System Settings. On the right you'll see the time, battery, and Wi-Fi.</p>
+
+  <h3>The Dock</h3>
+  <p>The row of icons at the bottom of the screen. Clicking an icon opens that app. If a dot appears beneath an icon, the app is currently running. You can drag icons in and out of the Dock to customise it. Right-click any icon for options including keeping it in the Dock permanently.</p>
+
+  <h3>Apps</h3>
+  <p>On a Mac, closing a window doesn't necessarily quit the app &mdash; the app keeps running in the background (you'll see the dot under its Dock icon). To actually quit: press <kbd>&#8984; Q</kbd> or use the menu bar &rarr; <em>AppName</em> &rarr; Quit. This trips up people switching from Windows.</p>
+
+  <div class="note">
+    <div class="lbl">Mac vs Windows key names</div>
+    <p><strong>Command &#8984;</strong> is the Mac equivalent of Ctrl on Windows. <strong>Option &#8997;</strong> is Alt. The keyboard symbol &#8679; is Shift. Where Windows uses Ctrl+C to copy, Mac uses &#8984;+C.</p>
+  </div>
+
+  <h3>The MacBook Neo chip</h3>
+  <p>Your machine runs an A18 Pro chip &mdash; the same silicon that powers Apple's latest iPhones. It's fast, efficient, and very capable. The unified memory means the CPU and GPU share the same 8&nbsp;GB pool, so it's worth not running too many heavy apps at once. More on that in the coding setup later.</p>
+</section>
+
+<section id="shortcuts">
+  <div class="eyebrow">Keyboard</div>
+  <h2>Keyboard shortcuts</h2>
+  <p>You don't need to memorise these all at once. The first five are the ones to nail first &mdash; you'll use them dozens of times a day.</p>
+
+  <h3>Essential — learn these first</h3>
+  <table>
+    <tr><th>Shortcut</th><th>What it does</th></tr>
+    <tr><td><kbd>&#8984; C</kbd></td><td>Copy the selected text or file</td></tr>
+    <tr><td><kbd>&#8984; V</kbd></td><td>Paste what you copied</td></tr>
+    <tr><td><kbd>&#8984; X</kbd></td><td>Cut (copy and delete)</td></tr>
+    <tr><td><kbd>&#8984; Z</kbd></td><td>Undo — press repeatedly to go back further</td></tr>
+    <tr><td><kbd>&#8984; &#8679; Z</kbd></td><td>Redo — undoes an undo</td></tr>
+    <tr><td><kbd>&#8984; Space</kbd></td><td>Open Spotlight (search for anything)</td></tr>
+    <tr><td><kbd>&#8984; Tab</kbd></td><td>Switch between open apps</td></tr>
+    <tr><td><kbd>&#8984; Q</kbd></td><td>Quit the current app</td></tr>
+    <tr><td><kbd>&#8984; W</kbd></td><td>Close the current window or tab</td></tr>
+    <tr><td><kbd>&#8984; S</kbd></td><td>Save the current file</td></tr>
+  </table>
+
+  <h3>Window management</h3>
+  <table>
+    <tr><th>Shortcut</th><th>What it does</th></tr>
+    <tr><td><kbd>&#8984; M</kbd></td><td>Minimise window to the Dock</td></tr>
+    <tr><td><kbd>&#8984; H</kbd></td><td>Hide the app (like minimise but faster)</td></tr>
+    <tr><td><kbd>&#8984; `</kbd></td><td>Cycle between windows of the same app</td></tr>
+    <tr><td><kbd>&#8963; &#8593;</kbd></td><td>Mission Control — see all open windows at once</td></tr>
+    <tr><td><kbd>&#8963; &#8595;</kbd></td><td>See all windows of the current app</td></tr>
+    <tr><td>Green button (top-left)</td><td>Enter full screen. Press <kbd>Esc</kbd> to leave.</td></tr>
+  </table>
+
+  <h3>Text editing (you'll use these constantly in code)</h3>
+  <table>
+    <tr><th>Shortcut</th><th>What it does</th></tr>
+    <tr><td><kbd>&#8984; A</kbd></td><td>Select all</td></tr>
+    <tr><td><kbd>&#8984; F</kbd></td><td>Find text on the page or in a document</td></tr>
+    <tr><td><kbd>&#8984; &#8592;</kbd></td><td>Jump to the start of the line</td></tr>
+    <tr><td><kbd>&#8984; &#8594;</kbd></td><td>Jump to the end of the line</td></tr>
+    <tr><td><kbd>&#8997; &#8592;</kbd></td><td>Jump one word left</td></tr>
+    <tr><td><kbd>&#8997; &#8594;</kbd></td><td>Jump one word right</td></tr>
+    <tr><td><kbd>&#8984; &#8679; &#8592;</kbd></td><td>Select from cursor to start of line</td></tr>
+    <tr><td><kbd>&#8984; &#8679; &#8594;</kbd></td><td>Select from cursor to end of line</td></tr>
+    <tr><td><kbd>fn Delete</kbd></td><td>Delete the character to the right (forward delete)</td></tr>
+  </table>
+
+  <div class="note">
+    <div class="lbl">Screenshot shortcuts</div>
+    <p><kbd>&#8984; &#8679; 3</kbd> captures the whole screen. <kbd>&#8984; &#8679; 4</kbd> lets you drag a region. <kbd>&#8984; &#8679; 5</kbd> opens a full screenshot toolbar. Files land on the Desktop by default.</p>
+  </div>
+</section>
+
+<section id="trackpad">
+  <div class="eyebrow">Trackpad</div>
+  <h2>Trackpad gestures</h2>
+  <p>The Mac trackpad is one of the best in the industry. The gestures are worth learning &mdash; they make navigation much faster.</p>
+
+  <table>
+    <tr><th>Gesture</th><th>What it does</th></tr>
+    <tr><td>One finger tap</td><td>Click</td></tr>
+    <tr><td>Two finger tap</td><td>Right-click (same as Ctrl+click)</td></tr>
+    <tr><td>Two finger scroll</td><td>Scroll up/down (or left/right)</td></tr>
+    <tr><td>Two finger swipe left/right</td><td>Go back/forward in Safari and Finder</td></tr>
+    <tr><td>Three finger swipe up</td><td>Mission Control — see all windows</td></tr>
+    <tr><td>Three finger swipe left/right</td><td>Switch between desktops (Spaces)</td></tr>
+    <tr><td>Pinch in with thumb + three fingers</td><td>Show the Desktop</td></tr>
+    <tr><td>Pinch out with thumb + three fingers</td><td>Launchpad — grid of all your apps</td></tr>
+    <tr><td>Two finger pinch in/out</td><td>Zoom in/out (in Photos, Maps, etc.)</td></tr>
+    <tr><td>Click and hold (Force Click)</td><td>Peek at a link or file preview</td></tr>
+  </table>
+
+  <div class="note machine">
+    <div class="lbl">Tip</div>
+    <p>If the trackpad feels too fast or slow, go to <strong>System Settings &rarr; Trackpad</strong> and adjust the tracking speed. Scrolling direction can also be changed here if the default ("natural") feels backwards.</p>
+  </div>
+</section>
+
+<section id="spotlight">
+  <div class="eyebrow">Search</div>
+  <h2>Spotlight — your best friend</h2>
+  <p>Press <kbd>&#8984; Space</kbd> from anywhere. A search bar appears in the middle of the screen. Start typing.</p>
+  <p>Spotlight finds apps, files, emails, contacts, and can do quick calculations and unit conversions. Once you get used to it, you'll open most things this way rather than clicking through the Dock or Finder.</p>
+
+  <h3>Things Spotlight is great for</h3>
+  <ul>
+    <li><strong>Opening apps</strong> — type "Terminal", hit Enter. No Dock hunting.</li>
+    <li><strong>Finding files</strong> — type the filename, or part of it.</li>
+    <li><strong>Quick maths</strong> — type <code>15 * 8</code> and it shows the answer inline.</li>
+    <li><strong>Unit conversion</strong> — type <code>100 USD in GBP</code> or <code>5 km in miles</code>.</li>
+    <li><strong>Opening System Settings panels</strong> — type "Keyboard" and jump straight there.</li>
+  </ul>
+
+  <div class="note">
+    <div class="lbl">Pro tip</div>
+    <p>For a more powerful version of Spotlight with more features, many developers install <strong>Raycast</strong> (free) or Alfred later in their career. You don't need it now, but it's worth knowing it exists.</p>
+  </div>
+</section>
+
+<section id="finder">
+  <div class="eyebrow">Files</div>
+  <h2>Finder and files</h2>
+  <p>Finder is the Mac's file manager &mdash; the equivalent of Windows Explorer. The icon is the blue-and-white face in your Dock.</p>
+
+  <h3>Finding your way around</h3>
+  <p>The left sidebar shows your most-used locations: Desktop, Documents, Downloads, and any connected drives. Click one to see its contents.</p>
+  <p>The top of the window has a toolbar with view options:</p>
+  <ul>
+    <li><strong>Icon view</strong> &mdash; thumbnails, good for photos</li>
+    <li><strong>List view</strong> &mdash; rows with file details, best for code projects</li>
+    <li><strong>Column view</strong> &mdash; drill down through folders side by side</li>
+  </ul>
+
+  <h3>Important Finder settings</h3>
+  <p>These two settings will save you genuine confusion once you start coding:</p>
+
+  <div class="step">
+    <div class="s-num">1</div>
+    <div class="s-body">
+      <h4>Show file extensions</h4>
+      <p>Open Finder &rarr; click <strong>Finder</strong> in the menu bar &rarr; <strong>Settings</strong> &rarr; <strong>Advanced</strong> &rarr; tick <em>"Show all filename extensions"</em>. Without this, you can't tell <code>notes.txt</code> from <code>notes.py</code> &mdash; they look identical.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="s-num">2</div>
+    <div class="s-body">
+      <h4>Show the path bar</h4>
+      <p>In any Finder window: <strong>View</strong> menu &rarr; <strong>Show Path Bar</strong>. A breadcrumb trail appears at the bottom of the window telling you exactly where you are. Essential when you're working with folders inside folders.</p>
+    </div>
+  </div>
+
+  <h3>Hidden files</h3>
+  <p>Files and folders whose names start with a dot (like <code>.git</code> or <code>.venv</code>) are hidden from Finder by default. You can toggle them with <kbd>&#8984; &#8679; .</kbd> (Command + Shift + full stop). You'll see them in the terminal all the time, so it's useful to know they exist.</p>
+
+  <h3>Common file operations</h3>
+  <table>
+    <tr><th>Action</th><th>How</th></tr>
+    <tr><td>Rename a file</td><td>Click once to select, press Return, type new name, press Return again</td></tr>
+    <tr><td>Copy a file</td><td><kbd>&#8984; C</kbd> then <kbd>&#8984; V</kbd> in the destination folder</td></tr>
+    <tr><td>Move a file</td><td>Drag it, or <kbd>&#8984; C</kbd> then <kbd>&#8984; &#8997; V</kbd> to move instead of copy</td></tr>
+    <tr><td>Delete a file</td><td><kbd>&#8984; Delete</kbd> &mdash; goes to Trash, not deleted yet</td></tr>
+    <tr><td>Empty Trash</td><td>Right-click Trash in Dock &rarr; Empty Trash</td></tr>
+    <tr><td>New folder</td><td><kbd>&#8984; &#8679; N</kbd></td></tr>
+    <tr><td>Get info (file size, etc.)</td><td><kbd>&#8984; I</kbd></td></tr>
+  </table>
+</section>
+
+<section id="system-settings">
+  <div class="eyebrow">Configuration</div>
+  <h2>System Settings</h2>
+  <p>Open with <kbd>&#63743;</kbd> (Apple menu, top-left) &rarr; <strong>System Settings</strong>. Or type "System Settings" in Spotlight.</p>
+  <p>It's organised into categories in a sidebar on the left. Here are the ones you'll visit most:</p>
+
+  <h3>Apple ID</h3>
+  <p>Sign in with your Apple ID to get iCloud Drive, iMessage on your Mac, the App Store, and backup. If you already use an iPhone, use the same Apple ID.</p>
+
+  <h3>Wi-Fi</h3>
+  <p>Connect to your home network here. Once connected, the Mac remembers it and reconnects automatically.</p>
+
+  <h3>Displays</h3>
+  <p>Adjust the resolution and scaling. The default "Looks like 1512 × 982" setting is good for most work. Increase text size here if things feel small.</p>
+
+  <h3>Keyboard</h3>
+  <p>Two things to change before you start coding:</p>
+  <ul>
+    <li><strong>Key Repeat Rate</strong> &rarr; drag to Fast. You'll be holding down arrow keys a lot. Slow repeat is maddening.</li>
+    <li><strong>Delay Until Repeat</strong> &rarr; drag to Short.</li>
+  </ul>
+
+  <h3>Trackpad</h3>
+  <p>Adjust tracking speed here. Many coders turn it up to near the maximum. Also check <strong>Secondary click</strong> is set to "Click or Tap with Two Fingers" so right-click works.</p>
+
+  <h3>Notifications</h3>
+  <p>You'll want to turn off most notifications when coding. Use <strong>Focus</strong> modes (also in System Settings) to silence everything while working. <kbd>&#8984; &#8679; &#63743; N</kbd> won't work but you can enable a Focus mode from the menu bar's Control Centre icon.</p>
+
+  <h3>Privacy &amp; Security</h3>
+  <p>When you first run a downloaded app or terminal tool, macOS may block it and show a security warning. Go here and click <strong>Open Anyway</strong>. This happens a lot with developer tools &mdash; it's normal and expected.</p>
+</section>
+
+<section id="terminal-first-look">
+  <div class="eyebrow">The terminal</div>
+  <h2>The Terminal &mdash; first look</h2>
+  <p>The Terminal is a text window where you type commands directly at your computer. It's where almost all developer work happens. It sounds old-fashioned; it is, and it's also far more powerful and precise than clicking through windows.</p>
+
+  <p><strong>To open it:</strong> Press <kbd>&#8984; Space</kbd>, type "Terminal", press Enter. A window appears with a prompt &mdash; something like:</p>
+  <div class="code"><pre><code>tom@MacBook-Pro ~ %</code></pre></div>
+  <p>That's your computer waiting for a command. The <code>~</code> means you're in your home folder. The <code>%</code> is the prompt itself &mdash; it just means "ready".</p>
+
+  <h3>Your first command</h3>
+  <p>Type this and press Enter &mdash; it means "print working directory" (i.e. where am I right now?):</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>pwd</code></pre></div>
+  <p>It will print something like <code>/Users/tom</code>. That's your home folder on disk.</p>
+
+  <h3>Why the terminal exists</h3>
+  <p>Some things can only be done from the terminal: installing developer tools, running programs, creating and moving files in bulk, talking to servers. Once you get comfortable with it, many things are faster here than in any app.</p>
+  <p>The full guide to terminal commands is in the <a href="index.html#install">Installing tools page</a> and the <a href="tools.html">tools setup</a>. For now, just know where to find it and that it doesn't bite.</p>
+
+  <div class="note warn">
+    <div class="lbl">One rule</div>
+    <p>If you ever find a command online that starts with <code>sudo</code>, pause and read it carefully before running it. <code>sudo</code> means "run this as administrator" &mdash; it has the power to change anything on your machine. Copy-pasting random <code>sudo</code> commands is how things get broken. If in doubt, ask first.</p>
+  </div>
+</section>
+
+<section id="before-coding">
+  <div class="eyebrow">Before you code</div>
+  <h2>Settings to change now</h2>
+  <p>A short checklist. Do these once and you won't have to think about them again.</p>
+
+  <div class="step">
+    <div class="s-num">1</div>
+    <div class="s-body">
+      <h4>Show file extensions in Finder</h4>
+      <p>Finder &rarr; Settings &rarr; Advanced &rarr; "Show all filename extensions". Already covered above, but worth repeating &mdash; this one will catch you out if you skip it.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="s-num">2</div>
+    <div class="s-body">
+      <h4>Speed up key repeat</h4>
+      <p>System Settings &rarr; Keyboard &rarr; Key Repeat Rate to Fast, Delay Until Repeat to Short. You'll feel the difference immediately.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="s-num">3</div>
+    <div class="s-body">
+      <h4>Enable three-finger drag</h4>
+      <p>System Settings &rarr; Accessibility &rarr; Pointer Control &rarr; Trackpad Options &rarr; enable "Use trackpad for dragging" and set style to "Three Finger Drag". Makes moving windows and selecting text much easier.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="s-num">4</div>
+    <div class="s-body">
+      <h4>Keep the Dock on the left or bottom</h4>
+      <p>The default is the bottom, which is fine. If you want more vertical screen space while coding, move it to the left: System Settings &rarr; Desktop &amp; Dock &rarr; Position on screen &rarr; Left.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="s-num">5</div>
+    <div class="s-body">
+      <h4>Check for macOS updates</h4>
+      <p>System Settings &rarr; General &rarr; Software Update. A fresh Mac may have an update waiting. Get this out of the way now rather than during a coding session.</p>
+    </div>
+  </div>
+
+  <div class="note machine">
+    <div class="lbl">Memory note for the MacBook Neo</div>
+    <p>With 8&nbsp;GB of unified memory, keep Chrome for debugging only &mdash; use Safari for everyday browsing. Running Chrome with dozens of tabs alongside VS Code will push the machine into swap and everything will feel sluggish. Browser discipline is one of the most practical habits you can build.</p>
+  </div>
+</section>
+
+<div class="pager">
+  <a class="pg" href="welcome.html"><span>&larr; Previous</span><strong>Welcome</strong></a>
+  <a class="pg r" href="tools.html"><span>Next &rarr;</span><strong>Install tools</strong></a>
+</div>
+
+</main>
+<script src="assets/app.js"></script>
+</body>
+</html>
