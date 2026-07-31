@@ -24,8 +24,6 @@
     <div class="group">Guide</div>
     <a href="../index.html#how">How this works</a>
     <a href="../index.html#rhythm">The weekly rhythm</a>
-    <a href="../index.html#machine">Your machine</a>
-    <a href="../index.html#install">Installing everything</a>
     <a href="../index.html#github">Git &amp; GitHub</a>
     <a href="../index.html#firstrepo">Your first repo</a>
     <div class="group">Projects</div>
@@ -89,6 +87,7 @@ print(age + 1)         <span class="c"># TypeError!</span></code></pre></div>
 <p>Python is telling you it can't add a number to a piece of text. You have to convert it first — <code>int()</code> for whole numbers, <code>float()</code> for decimals:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>age = int(input("Age: "))
 print(age + 1)         <span class="c"># 35</span></code></pre></div>
+<div class="note warn"><div class="lbl">input() always returns text</div><p><code>input()</code> gives you a string every time, no matter what the person typed. "34" looks like a number, but to Python it's the same as "hello" until you convert it. This rule never changes. Whenever you need a number from the user, always wrap in <code>int()</code> or <code>float()</code>.</p></div>
 <p>Maths works how you'd expect: <code>+ - * /</code>. Two extras worth knowing: <code>**</code> is "to the power of", and <code>round(x, 2)</code> rounds to two decimal places, which you'll want for anything involving money.</p>
 
 <div class="sbuild"><b>Build this</b><p>Build <code>converter.py</code>: ask for a temperature in Celsius, print it in Fahrenheit. Then add kilometres to miles. Round the answers sensibly.</p></div>

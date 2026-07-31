@@ -24,8 +24,6 @@
     <div class="group">Guide</div>
     <a href="index.html#how" class="on">How this works</a>
     <a href="index.html#rhythm">The weekly rhythm</a>
-    <a href="index.html#machine">Your machine</a>
-    <a href="index.html#install">Installing everything</a>
     <a href="index.html#github">Git &amp; GitHub</a>
     <a href="index.html#firstrepo">Your first repo</a>
     <div class="group">Projects</div>
@@ -87,88 +85,6 @@
   </div>
 </section>
 
-<section id="machine">
-  <div class="eyebrow">Setup</div>
-  <h2>Your machine</h2>
-  <p>The MacBook Neo runs an A18 Pro chip &mdash; the first Mac to use Apple's phone-and-tablet silicon rather than an M-series chip &mdash; with 8GB of memory. For everything in this guide, that's a perfectly capable development machine. The processor is not going to be your limit.</p>
-  <p><strong>The memory is.</strong> 8GB is the constraint that shapes a few decisions, and it's worth knowing now rather than discovering it in month three when everything mysteriously starts crawling.</p>
-
-  <div class="note machine">
-    <div class="lbl">Four calls made for this machine</div>
-    <p><strong>Skip Docker Desktop.</strong> It's a memory hog and you don't need containers for anything here. When they come up much later, use a cloud environment instead.</p>
-    <p><strong>Don't try to run local AI models.</strong> With 8GB of unified memory at 60GB/s, anything you can fit will be too weak to be useful. Project 8 uses a hosted API. This is a limitation of the machine, not of you.</p>
-    <p><strong>Browser discipline.</strong> Safari for reading and research, Chrome only when you're actively debugging a web page. Chrome with thirty tabs plus VS Code will push you into swap and everything will feel broken.</p>
-    <p><strong>Extension discipline.</strong> Every VS Code extension costs memory. Install the four below and nothing else until something specific is genuinely annoying you.</p>
-  </div>
-
-  <p>If you have the 256GB model, keep an eye on disk space &mdash; the developer tools alone take a few gigabytes, and project folders accumulate faster than you'd think. Run <code>brew cleanup</code> occasionally and delete old virtual environments you're not using.</p>
-
-  <h3>Before you install anything</h3>
-  <p>Two macOS settings that will save you real confusion later:</p>
-  <ul>
-    <li><strong>Show file extensions.</strong> Finder &rarr; Settings &rarr; Advanced &rarr; tick "Show all filename extensions". Otherwise you can't tell <code>notes.txt</code> from <code>notes.py</code>.</li>
-    <li><strong>Speed up key repeat.</strong> System Settings &rarr; Keyboard &rarr; drag Key Repeat Rate to fast and Delay Until Repeat to short. You'll be holding down arrow keys a lot.</li>
-  </ul>
-</section>
-
-<section id="install">
-  <div class="eyebrow">Setup</div>
-  <h2>Installing everything</h2>
-  <p>Open Terminal &mdash; press <code>&#8984; + Space</code>, type "Terminal", hit enter. Everything below gets typed in there. Type the commands out rather than pasting where you can; you'll remember them.</p>
-
-  <h3>1 &mdash; Apple's developer tools</h3>
-  <p>A one-off download that a lot of other things depend on. A window will pop up asking you to confirm. It takes a few minutes.</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>xcode-select --install</code></pre></div>
-
-  <h3>2 &mdash; Homebrew</h3>
-  <p>The package manager for macOS. It's how you install developer tools without hunting for download links. It'll ask for your password &mdash; that's normal, and it's the only time anything here will.</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre></div>
-  <p>When it finishes it will tell you to run two more commands. Run these &mdash; on Apple Silicon, Homebrew installs to <code>/opt/homebrew</code> and your terminal needs telling where to find it:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' &gt;&gt; ~/.zprofile
-eval "$(/opt/homebrew/bin/brew shellenv)"
-brew --version</code></pre></div>
-  <p>If that last line prints a version number, you're good. If it says "command not found", close Terminal completely and reopen it.</p>
-
-  <h3>3 &mdash; Python</h3>
-  <p>macOS ships with a Python, but it's there for the system's own use and you shouldn't build on it. Install your own:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>brew install python
-python3 --version</code></pre></div>
-
-  <h3>4 &mdash; Git</h3>
-  <p>Also pre-installed, also worth replacing with a current version:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>brew install git
-git --version</code></pre></div>
-
-  <h3>5 &mdash; VS Code</h3>
-  <div class="code"><button class="copy">Copy</button><pre><code>brew install --cask visual-studio-code</code></pre></div>
-  <p>Open it, then press <code>&#8679;&#8984;P</code>, type "shell command", and pick <em>Install 'code' command in PATH</em>. Now you can type <code>code .</code> in any folder to open it.</p>
-  <p>Install exactly these four extensions and stop:</p>
-  <ul>
-    <li><strong>Python</strong> (Microsoft) &mdash; the language support</li>
-    <li><strong>Pylance</strong> &mdash; autocomplete and error highlighting</li>
-    <li><strong>Ruff</strong> &mdash; catches mistakes and formats your code</li>
-    <li><strong>GitLens</strong> &mdash; shows you the history of every line</li>
-  </ul>
-
-  <h3>6 &mdash; Terminal survival kit</h3>
-  <p>You need about eight commands. Everything else you can look up.</p>
-  <table>
-    <tr><th>Command</th><th>What it does</th></tr>
-    <tr><td><code>pwd</code></td><td>Where am I?</td></tr>
-    <tr><td><code>ls</code></td><td>What's in here? (<code>ls -la</code> shows hidden files too)</td></tr>
-    <tr><td><code>cd folder</code></td><td>Go into a folder. <code>cd ..</code> goes back up. <code>cd ~</code> goes home.</td></tr>
-    <tr><td><code>mkdir name</code></td><td>Make a folder</td></tr>
-    <tr><td><code>touch file.py</code></td><td>Make an empty file</td></tr>
-    <tr><td><code>code .</code></td><td>Open this folder in VS Code</td></tr>
-    <tr><td><code>python3 file.py</code></td><td>Run a Python file</td></tr>
-    <tr><td><code>ctrl + c</code></td><td>Stop whatever is running. Your escape hatch.</td></tr>
-  </table>
-  <div class="note">
-    <div class="lbl">Two habits worth forming now</div>
-    <p>Press <strong>Tab</strong> to autocomplete file and folder names &mdash; it prevents typos and it's much faster. Press the <strong>up arrow</strong> to get your last command back rather than retyping it.</p>
-  </div>
-</section>
-
 <section id="github">
   <div class="eyebrow">Setup</div>
   <h2>Git &amp; GitHub</h2>
@@ -219,6 +135,11 @@ source .venv/bin/activate
 code .</code></pre></div>
 
   <p>Your terminal prompt now starts with <code>(.venv)</code> &mdash; that means the virtual environment is active. You need to run <code>source .venv/bin/activate</code> every time you come back to this project in a new terminal. Forgetting this is the single most common beginner confusion, and it usually shows up as "but I installed that package already".</p>
+
+  <div class="note warn">
+    <div class="lbl">Activate every session</div>
+    <p>A virtual environment is not permanent. Every time you open a new terminal window or tab, you have to run <code>source .venv/bin/activate</code> again. If you don't, <code>python3</code> won't find the packages you installed, and you'll see <code>ModuleNotFoundError</code>. The <code>(.venv)</code> at the start of your prompt is your confirmation it's active.</p>
+  </div>
 
   <p>Create a file called <code>.gitignore</code> with this in it, so git ignores things that shouldn't be tracked:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>.venv/

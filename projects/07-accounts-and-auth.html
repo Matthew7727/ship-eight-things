@@ -24,8 +24,6 @@
     <div class="group">Guide</div>
     <a href="../index.html#how">How this works</a>
     <a href="../index.html#rhythm">The weekly rhythm</a>
-    <a href="../index.html#machine">Your machine</a>
-    <a href="../index.html#install">Installing everything</a>
     <a href="../index.html#github">Git &amp; GitHub</a>
     <a href="../index.html#firstrepo">Your first repo</a>
     <div class="group">Projects</div>
@@ -155,6 +153,7 @@ def books():
 <span class="c"># correct</span>
 "SELECT * FROM books WHERE id = ? AND user_id = ?"</code></pre></div>
 <p>Every query touching user data needs that second condition. Authentication is who you are; authorisation is what you're allowed to touch. Confusing them is one of the most common real-world security holes there is.</p>
+<div class="note warn"><div class="lbl">Authentication vs authorisation</div><p><strong>Authentication</strong> answers "are you logged in?" &mdash; your login check. <strong>Authorisation</strong> answers "are you allowed to touch <em>this</em>?" &mdash; the ownership check. Most beginners implement authentication but skip authorisation. The result: any logged-in user can edit or delete any other user's data by guessing IDs in the URL. Always check both.</p></div>
 
 <div class="sbuild"><b>Build this</b><p>Audit every route. Create two accounts and genuinely try to break into one from the other — including edit and delete, not just viewing.</p></div>
 <div class="scheck"><b>You should now be able to</b><p>Two accounts, tested by hand, and no URL exposes anyone else's data.</p></div>
