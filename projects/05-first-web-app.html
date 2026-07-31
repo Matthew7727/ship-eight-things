@@ -24,8 +24,6 @@
     <div class="group">Guide</div>
     <a href="../index.html#how">How this works</a>
     <a href="../index.html#rhythm">The weekly rhythm</a>
-    <a href="../index.html#machine">Your machine</a>
-    <a href="../index.html#install">Installing everything</a>
     <a href="../index.html#github">Git &amp; GitHub</a>
     <a href="../index.html#firstrepo">Your first repo</a>
     <div class="group">Projects</div>
@@ -68,6 +66,7 @@
 
 <p>You type a URL. Your browser sends a <strong>request</strong> to a server. The server sends back a <strong>response</strong>, usually HTML. Your browser draws it. Then the connection closes and the server forgets you exist.</p>
 <p>That last part matters: the web is stateless. Every request stands alone. Anything remembered between requests has to be deliberately stored — which is why sessions and databases exist.</p>
+<div class="note warn"><div class="lbl">The web is stateless</div><p>Every time your browser loads a page, it's a completely fresh request — the server has no memory of your previous visit. This isn't a quirk; it's a fundamental design of HTTP. Anything you want to persist between pages (who's logged in, what's in a basket, what a user typed) must be explicitly stored somewhere: a database, a session cookie, or URL parameters. If something disappears when you refresh, this is why.</p></div>
 <div class="code"><button class="copy">Copy</button><pre><code>pip install flask</code></pre></div>
 <div class="code"><button class="copy">Copy</button><pre><code>from flask import Flask
 app = Flask(__name__)

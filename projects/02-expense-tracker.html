@@ -24,8 +24,6 @@
     <div class="group">Guide</div>
     <a href="../index.html#how">How this works</a>
     <a href="../index.html#rhythm">The weekly rhythm</a>
-    <a href="../index.html#machine">Your machine</a>
-    <a href="../index.html#install">Installing everything</a>
     <a href="../index.html#github">Git &amp; GitHub</a>
     <a href="../index.html#firstrepo">Your first repo</a>
     <div class="group">Projects</div>
@@ -135,6 +133,7 @@ for e in expenses:
 
 <p>Close your program. Open it again. Everything's gone.</p>
 <p>Variables live in memory, and memory is wiped when the program ends. To keep anything you have to write it to a file on disk.</p>
+<div class="note warn"><div class="lbl">RAM is temporary</div><p>Every variable, list, and dictionary in your program lives in RAM — the machine's short-term memory. The moment your program exits, all of it vanishes. A file on disk is the only way to make something survive between runs. This is why Project 2 exists.</p></div>
 <div class="code"><button class="copy">Copy</button><pre><code><span class="c"># writing</span>
 with open("notes.txt", "w") as f:
     f.write("hello")
