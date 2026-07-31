@@ -58,14 +58,16 @@
 <li><a href="#s2">Enough HTML</a></li>
 <li><a href="#s3">Templates with real data</a></li>
 <li><a href="#s4">Forms, and getting data back</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 <li><a href="#s5">Enough CSS</a></li>
 <li><a href="#s6">Joining it up</a></li>
 </ol></div>
 <article class="session" id="s1">
 <div class="shead"><span class="snum">Session 1</span><h3>What actually happens when you visit a page</h3></div>
 
-<p>You type a URL. Your browser sends a <strong>request</strong> to a server. The server sends back a <strong>response</strong>, usually HTML. Your browser draws it. Then the connection closes and the server forgets you exist.</p>
-<p>That last part matters: the web is stateless. Every request stands alone. Anything remembered between requests has to be deliberately stored — which is why sessions and databases exist.</p>
+<p>Let's trace exactly what happens when you type a URL and press enter. First, DNS translates the hostname into an IP address — a number that locates the server. Your browser opens a TCP connection to that IP on port 80 (HTTP) or 443 (HTTPS). Over that connection it sends an HTTP request. The server sends back an HTTP response containing HTML. Your browser parses and renders it. Then the connection closes.</p>
+<p>A <strong>port</strong> is like a numbered door on a server — different services listen on different ports. Web servers listen on 80 or 443. When Flask runs locally it uses port 5000 by default because 80 requires system permissions. That's why you visit <code>localhost:5000</code> — "connect to my own machine on port 5000".</p>
+<p>The last part of the cycle matters: the web is <strong>stateless</strong>. Every request stands alone. Anything remembered between requests has to be deliberately stored — which is why sessions and databases exist.</p>
 <div class="note warn"><div class="lbl">The web is stateless</div><p>Every time your browser loads a page, it's a completely fresh request — the server has no memory of your previous visit. This isn't a quirk; it's a fundamental design of HTTP. Anything you want to persist between pages (who's logged in, what's in a basket, what a user typed) must be explicitly stored somewhere: a database, a session cookie, or URL parameters. If something disappears when you refresh, this is why.</p></div>
 <div class="code"><button class="copy">Copy</button><pre><code>pip install flask</code></pre></div>
 <div class="code"><button class="copy">Copy</button><pre><code>from flask import Flask
@@ -77,10 +79,10 @@ def home():
 
 if __name__ == "__main__":
     app.run(debug=True)</code></pre></div>
-<p>Run it and visit <code>localhost:5000</code>. The <code>@app.route("/")</code> line says "when someone asks for the root URL, run this function". <code>debug=True</code> reloads on save and shows errors in the browser — helpful now, dangerous in production.</p>
+<p>Run it and visit <code>localhost:5000</code>. The <code>@app.route("/")</code> line says "when someone asks for the root URL, run this function". <code>debug=True</code> reloads on save and shows errors in the browser — helpful now, but in production it would expose your source code and internal state to anyone who triggers an error. It must be off before deployment, read from an environment variable.</p>
 
-<div class="sbuild"><b>Build this</b><p>Flask running locally with two routes: <code>/</code> and <code>/about</code>.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can explain what a request and a response are, and add a new route.</p></div>
+<div class="sbuild"><b>Build this</b><p>Flask running locally with three routes: <code>/</code>, <code>/about</code>, and <code>/health</code> (returns <code>{"status": "ok"}</code> as JSON — this is a standard pattern for checking if a service is alive). Make sure <code>debug=True</code> is read from an environment variable, not hardcoded.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can explain what a request and a response are, describe what happens at each step when you visit a URL, and add a new route. You know why debug mode must be off in production.</p></div>
 </article>
 <article class="session" id="s2">
 <div class="shead"><span class="snum">Session 2</span><h3>Enough HTML</h3></div>
@@ -129,9 +131,28 @@ def home():
   &lt;p&gt;Nothing yet. Add your first expense.&lt;/p&gt;
 {% endif %}</code></pre></div>
 <p>Double curly braces print a value. Curly-brace-percent is a statement — a loop or a condition. Note the empty state: an empty screen should tell someone what to do next.</p>
+<p>Jinja has <strong>filters</strong> that transform values in the template — use the pipe character:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>{{ e.amount | round(2) }}
+{{ e.description | upper }}
+{{ e.date | default("no date") }}</code></pre></div>
+<p>Template <strong>inheritance</strong> is how you avoid repeating the header and footer in every file. Define a base template and extend it:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;!-- base.html --&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;{% block title %}Expenses{% endblock %}&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;nav&gt;...shared nav...&lt;/nav&gt;
+  {% block content %}{% endblock %}
+&lt;/body&gt;</code></pre></div>
+<div class="code"><button class="copy">Copy</button><pre><code>&lt;!-- index.html --&gt;
+{% extends "base.html" %}
+{% block title %}My expenses{% endblock %}
+{% block content %}
+  ...page-specific content...
+{% endblock %}</code></pre></div>
+<p>Set up <code>base.html</code> now, before you have many pages. Retrofitting it later means changing every file.</p>
 
-<div class="sbuild"><b>Build this</b><p>Real expenses from your <code>ExpenseBook</code> rendered in the page, with a sensible empty state.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can pass data from a route into a template and loop over it.</p></div>
+<div class="sbuild"><b>Build this</b><p>Real expenses from your <code>ExpenseBook</code> rendered in the page, with a sensible empty state, at least one Jinja filter in use, and a <code>base.html</code> that all other templates extend.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can pass data from a route into a template, loop over it, use filters, and use template inheritance to avoid repeating shared layout.</p></div>
 </article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>Forms, and getting data back</h3></div>
@@ -142,7 +163,7 @@ def home():
   &lt;input type="number" name="amount" step="0.01" required&gt;
   &lt;button type="submit"&gt;Add&lt;/button&gt;
 &lt;/form&gt;</code></pre></div>
-<p><strong>GET</strong> asks for something. <strong>POST</strong> sends something that changes state. Use POST for anything that adds, edits or deletes.</p>
+<p><strong>GET</strong> asks for something — it's safe to repeat and bookmark. <strong>POST</strong> sends something that changes state. That distinction matters: GET requests should be <strong>idempotent</strong> — calling them once or ten times should have the same effect. POST requests aren't. Use POST for anything that adds, edits or deletes.</p>
 <div class="code"><button class="copy">Copy</button><pre><code>from flask import request, redirect, url_for
 
 @app.route("/add", methods=["POST"])
@@ -152,15 +173,43 @@ def add():
     book.add(description, amount, "general")
     return redirect(url_for("home"))</code></pre></div>
 <div class="note"><div class="lbl">Why redirect after a POST</div><p>If you render a page directly from a POST, refreshing re-submits the form and adds the expense twice. Redirecting sends the browser to a fresh GET, so refreshing is harmless. This pattern has a name — post/redirect/get — and forgetting it causes duplicate-submission bugs everywhere.</p></div>
+<p>For the category, use a <code>&lt;select&gt;</code> dropdown so the user picks from a fixed list. Define that list in your Python code and pass it to the template — don't hardcode the options in the HTML, or changing them later means changing two places:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>CATEGORIES = ["food", "travel", "bills", "entertainment", "other"]
 
-<div class="sbuild"><b>Build this</b><p>A working add form, and a delete button on each row. Both POST, both redirect.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can take form input, act on it, and redirect properly.</p></div>
+@app.route("/add")
+def add_form():
+    return render_template("add.html", categories=CATEGORIES)</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>An add form with a category dropdown (populated from a Python list), a working delete button on each row, and a separate edit page that pre-populates the form fields with the current values. All three use POST and redirect. Add flash messages confirming each action worked.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can take form input, act on it, and redirect properly. You can explain idempotency and the post/redirect/get pattern.</p></div>
+</article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — pagination</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You know routes, templates, query parameters, and slicing. Now combine them. No example code.</p></div>
+<p>Add pagination to the expense list. When there are more than 10 expenses, show them 10 per page with Previous and Next buttons. Requirements:</p>
+<ul>
+<li>The current page is passed as a URL query parameter: <code>/?page=2</code></li>
+<li>Page 1 has no Previous button; the last page has no Next button</li>
+<li>Requesting a page beyond the end shows the last page, not an error</li>
+<li>Requesting page 0 or a negative number shows the first page</li>
+<li>The total count is shown: "Showing 11–20 of 47"</li>
+</ul>
+<p>Think through the edge cases before you write the first line.</p>
+<div class="scheck"><b>You're done when</b><p>All five requirements above are met, and deliberately testing the edge cases doesn't crash anything.</p></div>
 </article>
 <article class="session" id="s5">
 <div class="shead"><span class="snum">Session 5</span><h3>Enough CSS</h3></div>
 
 <p>Put a stylesheet at <code>static/style.css</code> and link it:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>&lt;link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"&gt;</code></pre></div>
+<p>CSS is a language for describing how elements look. The fundamental concept is the <strong>box model</strong>: every element is a box with content, padding (space inside), border, and margin (space outside). Knowing this means you understand what <code>padding</code> and <code>margin</code> are actually doing, and why adjusting them moves things the way they do.</p>
+<p>The modern way to position things is <strong>flexbox</strong>. One property on a parent element aligns and distributes its children:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}</code></pre></div>
+<p>On units: <code>px</code> is an absolute pixel. <code>rem</code> is relative to the browser's base font size — so if a user increases their text size in accessibility settings, elements sized in <code>rem</code> scale with it. Use <code>rem</code> for font sizes and spacing, <code>px</code> only for things that genuinely shouldn't scale (like a 1px border).</p>
 <p>Ninety per cent of "looks fine" comes from four things: a readable font, a max width so lines aren't enormous, consistent spacing, and enough contrast.</p>
 <div class="code"><button class="copy">Copy</button><pre><code>body {
   font-family: system-ui, sans-serif;
@@ -172,41 +221,38 @@ def add():
 }</code></pre></div>
 <div class="note warn"><div class="lbl">Four hours, then stop</div><p>CSS is genuinely absorbing and will eat your fortnight if you let it. Set a timer. Make it clean and legible, then go back to the parts that teach you more.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>Styled well enough that you'd show someone. Not beautiful. Legible and tidy.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>It doesn't look like an unstyled 1998 web page, and you spent under four hours on that.</p></div>
+<div class="sbuild"><b>Build this</b><p>Styled well enough that you'd show someone. Not beautiful. Legible and tidy. Use flexbox for at least one layout. Use <code>rem</code> for font sizes. It must be usable on a narrow phone screen — test with your browser's devtools device toolbar.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>It looks deliberately made, you can explain the box model, and you used flexbox for layout.</p></div>
 </article>
 <article class="session" id="s6">
 <div class="shead"><span class="snum">Session 6</span><h3>Joining it up</h3></div>
 
-<p>Pull the whole thing together: list, add, delete, filter by category, a total at the top.</p>
+<p>Pull the whole thing together: list, add, edit, delete, filter by category, total at the top, pagination, flash messages, and a proper empty state.</p>
 <p>Keep the separation you built in project 4 — routes handle web things (reading the form, redirecting), the <code>ExpenseBook</code> handles logic. If you find yourself calculating totals inside a route, move it.</p>
-<p>Reuse the shared layout rather than repeating your header in every file:</p>
-<div class="code"><button class="copy">Copy</button><pre><code>&lt;!-- base.html --&gt;
-&lt;body&gt;
-  &lt;h1&gt;Expenses&lt;/h1&gt;
-  {% block content %}{% endblock %}
-&lt;/body&gt;
+<p>Add a friendly error page so users never see a stack trace. Flask lets you register error handlers:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html"), 404
 
-&lt;!-- index.html --&gt;
-{% extends "base.html" %}
-{% block content %}
-  ...the page...
-{% endblock %}</code></pre></div>
+@app.errorhandler(500)
+def server_error(e):
+    return render_template("500.html"), 500</code></pre></div>
+<p>Test the 500 handler deliberately: add a route that raises an exception (with <code>debug=False</code>) and confirm users see your custom page, not a traceback.</p>
 
-<div class="sbuild"><b>Build this</b><p>Full working app. README with a screenshot — use <code>⇧⌘4</code> to grab one.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>All the terminal features work in a browser, and your logic code has no Flask in it.</p></div>
+<div class="sbuild"><b>Build this</b><p>Full working app: list (paginated), add, edit, delete, filter by category, total at the top, flash messages on every action, a base template shared by all pages, mobile-usable layout, a custom 404 page, and a custom 500 page. README with a screenshot.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>All features work in a browser, your logic code has no Flask in it, and no error ever shows a stack trace to the user.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>The CSS rabbit hole</b><p>Four hours. Timer on.</p></div>
 <div class="trap"><b>Logic inside routes</b><p>A route should read the request, call your logic, and return a response. If it's doing maths, move it.</p></div>
 <div class="trap"><b>Rendering straight from a POST</b><p>Refresh re-submits. Redirect instead.</p></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
-<li>Add an edit page for an existing expense.</li>
-<li>Add flash messages confirming an action worked.</li>
-<li>Make it usable on a phone with a CSS media query.</li>
-<li>Add a chart of spending by category with a JavaScript charting library.</li>
+<li>Add a chart of spending by category using a JavaScript charting library.</li>
+<li>Add a keyboard shortcut to focus the add form.</li>
+<li>Export the filtered view (not just all expenses) to CSV.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>Runs at <code>localhost:5000</code>, you can add and delete in a browser, refreshing never duplicates anything, and it looks deliberately made.</div>
+<div class="done big"><b>Definition of done</b>Runs at <code>localhost:5000</code>, you can add, edit and delete in a browser, refreshing never duplicates anything, it looks deliberately made, pagination works, and no error ever shows a stack trace.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your web app. The MR description must include a screenshot on desktop and a screenshot on mobile (use your phone or browser devtools to simulate). Confirm you've tested that deliberately triggering an error shows a friendly page, not a traceback. The MR will not be merged if a stack trace is visible to users under any circumstance.</div>
 <div class="pager">
 <a class="pg" href="04-refactor-and-test.html"><span>&larr; Previous</span><strong>04 &middot; Refactor &amp; test</strong></a>
 <a class="pg r" href="06-database-and-deploy.html"><span>Next &rarr;</span><strong>06 &middot; Database &amp; deploy</strong></a>

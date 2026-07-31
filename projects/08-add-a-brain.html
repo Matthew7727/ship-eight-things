@@ -59,6 +59,7 @@
 <li><a href="#s2">Prompts as inputs you design</a></li>
 <li><a href="#s3">Structured output, and never trusting it</a></li>
 <li><a href="#s4">Wiring it into the app</a></li>
+<li><a href="#challenge">Challenge — no hints</a></li>
 <li><a href="#s5">Slow, broken, and expensive</a></li>
 <li><a href="#s6">Ship it, and look back</a></li>
 </ol></div>
@@ -77,11 +78,13 @@ message = client.messages.create(
     messages=[{"role": "user", "content": "Categorise this expense: 'Coffee at Pret'"}],
 )
 print(message.content[0].text)</code></pre></div>
-<p>You pay per <strong>token</strong> — roughly a word-and-a-bit. Both what you send and what comes back. <code>max_tokens</code> caps the reply length, which caps the cost.</p>
+<p>You pay per <strong>token</strong> — roughly three-quarters of a word. Both what you send (input tokens) and what comes back (output tokens) are billed. They're usually priced differently — input is cheaper. <code>max_tokens</code> caps the reply length, which caps the output cost. A small response cap matters for a categorisation feature; it matters much less for a summarisation feature that legitimately needs long output.</p>
+<p>Token counts also determine what the model can "see". Models have a <strong>context window</strong> — a maximum total of input plus output tokens per call. If you send too much context, the call fails. In practice for this project you'll be nowhere near the limit, but knowing it exists matters when you later deal with long documents or conversation histories.</p>
+<p>You can see a rough token count in the API response: <code>message.usage.input_tokens</code> and <code>message.usage.output_tokens</code>. Log these during development so you're not surprised by costs.</p>
 <div class="note machine"><div class="lbl">Hosted, not local</div><p>You can't run a useful model on 8GB of memory. That's a hardware limit, not a skill one — and hosted APIs are what nearly all production systems use anyway. A project like this costs pennies.</p></div>
 
-<div class="sbuild"><b>Build this</b><p>A script that sends a prompt and prints the answer. Check your usage dashboard afterwards to see what it cost.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can call the API, and you know how you're being charged.</p></div>
+<div class="sbuild"><b>Build this</b><p>A script that sends a prompt and prints the answer. Then print the token counts too. Check your usage dashboard afterwards and note the actual cost. This number will inform how you think about caching and <code>max_tokens</code> for the rest of the project.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can call the API, you know how you're being charged, you understand the difference between input and output tokens, and you know what a context window is.</p></div>
 </article>
 <article class="session" id="s2">
 <div class="shead"><span class="snum">Session 2</span><h3>Prompts as inputs you design</h3></div>
@@ -97,11 +100,20 @@ Rules:
 - If genuinely unclear, reply: other
 
 Expense: {description}&quot;&quot;&quot;</code></pre></div>
-<p>Test it against fifteen or twenty real descriptions, including deliberately awkward ones. You're looking for consistency, not cleverness.</p>
-<p>The <code>system</code> parameter sets standing behaviour; the user message carries the specific task. Keep the instructions in the system prompt and the data in the user message — it makes both easier to change.</p>
+<p>The API has a <code>system</code> parameter for standing behaviour and a <code>messages</code> list for the specific task. Separating them matters: the system prompt sets who the model is and what it's doing; the user message carries the data. This makes both easier to modify independently.</p>
+<p><strong>Temperature</strong> controls how random the output is. At 0 the model picks the most likely token every time — good for classification and structured output where you want consistency. At higher values it explores less likely options — good for creative tasks. For this feature, set temperature to 0 or close to it.</p>
+<p><strong>Few-shot prompting</strong> means including examples in the prompt. If you show the model three examples of the pattern you want, it follows the pattern much more reliably than if you only describe it:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>system = &quot;&quot;&quot;You categorise expenses. Reply with the category only.
 
-<div class="sbuild"><b>Build this</b><p>A prompt that categorises reliably across twenty test cases. Keep the awkward ones in a file — they're your test suite.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>The same input gives the same category, and you've seen where it struggles.</p></div>
+Examples:
+Coffee at Costa → food
+Train to London → travel
+Netflix subscription → entertainment
+Council tax → bills
+Birthday present for Mum → other&quot;&quot;&quot;</code></pre></div>
+
+<div class="sbuild"><b>Build this</b><p>Test your prompt against at least 30 real expense descriptions, including deliberately awkward ones. Keep all the failures in a file called <code>test_cases.txt</code>. Iterate the prompt until it gets at least 90% correct. Write a comment in the code explaining the key change that improved accuracy most — this is your prompt engineering log.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>The same input gives the same category, you've seen where it struggles, and you've used few-shot examples and temperature to improve consistency.</p></div>
 </article>
 <article class="session" id="s3">
 <div class="shead"><span class="snum">Session 3</span><h3>Structured output, and never trusting it</h3></div>
@@ -126,9 +138,24 @@ def parse_response(text):
 
     return data</code></pre></div>
 <div class="note warn"><div class="lbl">This is the whole lesson</div><p>Models return malformed JSON, invent categories you never offered, and wrap answers in explanation you didn't ask for. Always validate. Always have a fallback. Code that assumes a well-formed response will break in production, and it'll break on a Saturday.</p></div>
+<p>Never use <code>eval()</code> on model output — it executes arbitrary code. Even if the output looks like Python, <code>json.loads</code> is the correct tool, and it only handles JSON, not Python expressions.</p>
+<p>For more complex schemas, consider a validation library. <code>pydantic</code> lets you define the expected shape as a class and will raise a clear error if the data doesn't match:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from pydantic import BaseModel
 
-<div class="sbuild"><b>Build this</b><p>Structured output with full validation. Force failures by asking for nonsense and make sure your fallback holds.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Your app cannot be broken by the model returning something unexpected.</p></div>
+class CategoryResult(BaseModel):
+    category: str
+    confidence: str
+
+try:
+    result = CategoryResult(**data)
+    if result.category not in VALID:
+        raise ValueError
+except Exception:
+    result = CategoryResult(category="other", confidence="low")</code></pre></div>
+<p>This is optional for this project, but knowing it exists is useful — Pydantic is widely used in production AI applications for exactly this purpose.</p>
+
+<div class="sbuild"><b>Build this</b><p>Structured output with full validation. Force failures deliberately: send malformed JSON in a test, send a response with an invalid category, send an empty string. Make sure your fallback holds in every case without crashing.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Your app cannot be broken by the model returning something unexpected. You can explain why <code>eval()</code> is wrong here.</p></div>
 </article>
 <article class="session" id="s4">
 <div class="shead"><span class="snum">Session 4</span><h3>Wiring it into the app</h3></div>
@@ -137,11 +164,31 @@ def parse_response(text):
 <div class="code"><button class="copy">Copy</button><pre><code><span class="c"># ai.py</span>
 def suggest_category(description: str) -> str:
     ...returns a valid category, always...</code></pre></div>
-<p>That separation means you can swap providers, or replace it with a fixed answer in your tests, without touching the rest of the app. Tests that call a real API are slow, flaky and cost money.</p>
-<div class="note"><div class="lbl">Make it a suggestion, not a decision</div><p>Pre-fill the category and let the person change it. AI features that quietly decide things are infuriating when they're wrong — and they will sometimes be wrong.</p></div>
+<p>That separation means you can swap providers, or replace it with a fixed answer in your tests, without touching the rest of the app. Tests that call a real API are slow, flaky and cost money. Use a mock client instead:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>from unittest.mock import MagicMock
 
-<div class="sbuild"><b>Build this</b><p>The AI feature working inside your app, in its own module, with tests that don't hit the real API.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You could swap providers by changing one file.</p></div>
+def test_suggest_category_returns_food():
+    mock_client = MagicMock()
+    mock_client.messages.create.return_value.content[0].text = '{"category": "food", "confidence": "high"}'
+    result = suggest_category("Coffee", client=mock_client)
+    assert result == "food"</code></pre></div>
+<p>This requires passing the client as a parameter to your function (dependency injection). It makes the function testable and the dependency explicit.</p>
+<div class="note"><div class="lbl">Make it a suggestion, not a decision</div><p>Pre-fill the category dropdown with the AI's suggestion and let the person change it. AI features that quietly decide things are infuriating when they're wrong — and they will sometimes be wrong.</p></div>
+
+<div class="sbuild"><b>Build this</b><p>The AI feature in its own module with dependency injection, tested with a mock client (no real API calls in tests), integrated into the web app as a suggestion pre-filling the category dropdown — not auto-selecting it, not hiding the override option.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You could swap providers by changing one file. The tests pass without making any real API calls. The user always has the option to override the suggestion.</p></div>
+</article>
+<article class="session" id="challenge">
+<div class="shead"><span class="snum">Challenge</span><h3>No hints — natural-language search</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>You know the full stack now. Make a decision, implement it, and explain it. No example code.</p></div>
+<p>Add a natural-language search box to your expense app. A user types something like "all the coffees last month" and gets back matching expenses.</p>
+<p>You need to make a design decision first. There are two viable approaches:</p>
+<ul>
+<li><strong>Approach A:</strong> Send the user's query to the AI, ask it to convert the query into a SQL WHERE clause, execute that clause against the database.</li>
+<li><strong>Approach B:</strong> Fetch all expenses for the user, send them to the AI along with the query, and ask the AI to return the matching ones.</li>
+</ul>
+<p>Both approaches work. Both have real tradeoffs. Implement one, then add a section to your README titled "Natural-language search: approach and tradeoffs" that explains which you chose, why, and what the other approach would be better for.</p>
+<div class="scheck"><b>You're done when</b><p>The search box works for at least three different natural-language queries, the README explains the tradeoffs, and the feature degrades gracefully if the AI is unavailable.</p></div>
 </article>
 <article class="session" id="s5">
 <div class="shead"><span class="snum">Session 5</span><h3>Slow, broken, and expensive</h3></div>
@@ -154,19 +201,30 @@ except APITimeoutError:
 except APIError:
     result = None</code></pre></div>
 <p>The pattern that matters: <strong>the AI feature failing must not break the app.</strong> If the model is down, adding an expense should still work — just without a suggested category. Degrade, don't collapse.</p>
-<p>On cost: set a spending cap, keep <code>max_tokens</code> tight, don't send more context than you need, and cache repeated inputs. If someone adds "Coffee" fifty times you shouldn't pay fifty times.</p>
+<p>On cost: what does a reasonable <strong>SLA</strong> (service level agreement) look like for an AI feature? If your categorisation call costs 0.01p and takes 800ms, you need to decide: is that acceptable for every expense entry? Can you cache repeated descriptions? A simple exact-match cache can cut API calls significantly if users tend to add similar expenses:</p>
+<div class="code"><button class="copy">Copy</button><pre><code>_cache = {}
 
-<div class="sbuild"><b>Build this</b><p>Loading state, timeout handling, graceful degradation, and a simple cache. Test with the API key deliberately wrong.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Break the API on purpose and the rest of the app carries on.</p></div>
+def suggest_category_cached(description: str) -> str:
+    key = description.lower().strip()
+    if key in _cache:
+        return _cache[key]
+    result = suggest_category(description)
+    _cache[key] = result
+    return result</code></pre></div>
+<p>This is an in-memory cache — it resets on restart. For a production app you'd use Redis or the database. But this version is fine here and costs nothing.</p>
+<p>If you wanted lower latency and the model supports it, <strong>streaming</strong> lets you display the response as it's generated rather than waiting for the full thing. Worth knowing the concept exists.</p>
+
+<div class="sbuild"><b>Build this</b><p>Loading indicator while the AI call runs, timeout handling, graceful degradation (test deliberately with a wrong API key), and a simple in-memory cache. Log the token counts and cache hit rate to the console during development so you can see it working.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Break the API on purpose and the rest of the app carries on. You can explain what SLA means in this context and why caching helps.</p></div>
 </article>
 <article class="session" id="s6">
 <div class="shead"><span class="snum">Session 6</span><h3>Ship it, and look back</h3></div>
 
 <p>Deploy with the key in the host's environment variables. Check the loading state on a slow phone connection. Watch the costs for a few days.</p>
-<p>Then write the final README — and this one deserves proper effort. What the feature does, what you learned about prompting, how you handle failure, what it costs to run, what you'd do differently.</p>
+<p>Then write the final README — and this one deserves proper effort. What the feature does, what you learned about prompting, how you handle failure, what it costs to run, what you'd do differently. Include a <code>COST.md</code> file tracking the actual amount spent during development — check the provider's usage dashboard and note the amounts session by session. It's probably surprisingly small, which is useful to know.</p>
 <p>Then go and read the code you wrote in week one. Sixteen weeks ago you were working out what a variable was.</p>
 
-<div class="sbuild"><b>Build this</b><p>Deployed and documented. Then update your portfolio index so all eight projects link together.</p></div>
+<div class="sbuild"><b>Build this</b><p>Deployed, README written properly, a <code>COST.md</code> with real numbers from the usage dashboard (screenshot it), and all eight project repos linked from a portfolio index page or README.</p></div>
 <div class="scheck"><b>You should now be able to</b><p>Live, resilient, and explained well enough that someone can tell what you understand.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
@@ -176,11 +234,11 @@ except APIError:
 <div class="trap"><b>No spending cap</b><p>Set one before your first call, not after your first bill.</p></div>
 <h3 class="sec">If you finish early</h3><ul class="stretch">
 <li>Stream the response so text appears as it's generated.</li>
-<li>Let the person correct a suggestion and store the correction.</li>
-<li>Add a natural-language search over their own data.</li>
-<li>Log every prompt and response so you can debug odd behaviour later.</li>
+<li>Let the person correct a suggestion and store the correction to improve future suggestions.</li>
+<li>Log every prompt and response to a database table so you can debug odd behaviour later.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>Deployed, key in environment variables, survives the API failing, has a loading state, and has a spending cap on the account.</div>
+<div class="done big"><b>Definition of done</b>Deployed, key in environment variables, survives the API failing, has a loading state, has a spending cap, natural-language search challenge is complete, and <code>COST.md</code> is in the repo.</div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your AI feature. The MR description must include: a <code>COST.md</code> showing actual spend from the provider's dashboard (screenshots), and confirmation that every API call has a <code>try/except</code> wrapper and a fallback path. The MR will not be merged if a single API call is unprotected or if there is no fallback when the AI is unavailable.</div>
 <div class="pager">
 <a class="pg" href="07-accounts-and-auth.html"><span>&larr; Previous</span><strong>07 &middot; Accounts &amp; auth</strong></a>
 <a class="pg r" href="../index.html#stuck"><span>Next &rarr;</span><strong>Reference &middot; When you're stuck</strong></a>
