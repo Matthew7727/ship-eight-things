@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Windows intro &mdash; Ship Eight Things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<button id="menu" aria-label="Open navigation">&#9776; Menu</button>
+<div id="veil"></div>
+<aside id="sidebar">
+  <a class="brand" href="welcome.html">
+    <div class="mark">Aug &mdash; Nov 2026</div>
+    <div class="bt">Ship Eight Things</div>
+    <div class="sub">Windows intro</div>
+  </a>
+  <nav id="nav">
+    <div class="group">Start here</div>
+    <a href="welcome.html">Welcome</a>
+    <a href="mac-intro.html">Mac intro</a>
+    <a href="windows-intro.html" class="on">Windows intro</a>
+    <a href="tools.html">Install tools</a>
+    <div class="group">Guide</div>
+    <a href="index.html#how">How this works</a>
+    <a href="index.html#rhythm">The weekly rhythm</a>
+    <a href="index.html#github">Git &amp; GitHub</a>
+    <a href="index.html#firstrepo">Your first repo</a>
+    <div class="group">Projects</div>
+    <a href="projects/01-terminal-toolkit.html"><span class="n">01</span>Terminal toolkit</a>
+    <a href="projects/02-expense-tracker.html"><span class="n">02</span>Expense tracker</a>
+    <a href="projects/03-weather-client.html"><span class="n">03</span>Weather client</a>
+    <a href="projects/04-refactor-and-test.html"><span class="n">04</span>Refactor &amp; test</a>
+    <a href="projects/05-first-web-app.html"><span class="n">05</span>First web app</a>
+    <a href="projects/06-database-and-deploy.html"><span class="n">06</span>Database &amp; deploy</a>
+    <a href="projects/07-accounts-and-auth.html"><span class="n">07</span>Accounts &amp; auth</a>
+    <a href="projects/08-add-a-brain.html"><span class="n">08</span>Add a brain</a>
+    <div class="group">Reference</div>
+    <a href="index.html#stuck">When you're stuck</a>
+    <a href="index.html#git-ref">Git commands</a>
+    <a href="index.html#errors">Reading an error</a>
+    <a href="index.html#readme">README template</a>
+    <a href="index.html#ai">Using AI</a>
+    <a href="index.html#mentor">For the mentor</a>
+  </nav>
+</aside>
+<main>
+<a class="back" href="welcome.html">&larr; Welcome</a>
+<div class="eyebrow">Step 01</div>
+<h2>Windows intro</h2>
+<p class="lede">Get comfortable with Windows before you start coding. You will use Windows for your apps and WSL&rsquo;s Ubuntu terminal for development.</p>
+
+<div class="jump"><div class="jt">On this page</div><ol>
+<li><a href="#basics">The desktop and Start menu</a></li>
+<li><a href="#shortcuts">Keyboard shortcuts</a></li>
+<li><a href="#files">File Explorer and files</a></li>
+<li><a href="#windows">Window management</a></li>
+<li><a href="#terminal">Windows Terminal and WSL</a></li>
+<li><a href="#before-coding">Settings to change before you code</a></li>
+</ol></div>
+
+<section id="basics">
+  <div class="eyebrow">The basics</div>
+  <h2>The desktop and Start menu</h2>
+  <p>The taskbar is the strip along the bottom of the screen. It holds pinned apps, open windows, Wi-Fi, sound, battery, and the clock. Click an app icon to open it or bring it forward.</p>
+  <p>Press the <kbd>Windows</kbd> key to open Start, then type the name of an app or setting. This is the quickest way to open File Explorer, Settings, Windows Terminal, or VS Code.</p>
+  <div class="note">
+    <div class="lbl">Apps and windows</div>
+    <p>Closing a window normally closes that app. If an app remains in the notification area near the clock, right-click its icon and choose Exit if you need to stop it completely.</p>
+  </div>
+</section>
+
+<section id="shortcuts">
+  <div class="eyebrow">Keyboard</div>
+  <h2>Keyboard shortcuts</h2>
+  <table>
+    <tr><th>Shortcut</th><th>What it does</th></tr>
+    <tr><td><kbd>Ctrl C</kbd></td><td>Copy selected text or files</td></tr>
+    <tr><td><kbd>Ctrl V</kbd></td><td>Paste</td></tr>
+    <tr><td><kbd>Ctrl X</kbd></td><td>Cut</td></tr>
+    <tr><td><kbd>Ctrl Z</kbd></td><td>Undo</td></tr>
+    <tr><td><kbd>Ctrl S</kbd></td><td>Save the current file</td></tr>
+    <tr><td><kbd>Alt Tab</kbd></td><td>Switch between open apps</td></tr>
+    <tr><td><kbd>Windows E</kbd></td><td>Open File Explorer</td></tr>
+    <tr><td><kbd>Windows Shift S</kbd></td><td>Capture part of the screen</td></tr>
+    <tr><td><kbd>Windows V</kbd></td><td>Open clipboard history after enabling it</td></tr>
+  </table>
+</section>
+
+<section id="files">
+  <div class="eyebrow">Files</div>
+  <h2>File Explorer and files</h2>
+  <p>File Explorer is Windows&rsquo; file manager. Open it with <kbd>Windows E</kbd>. The left sidebar provides quick access to Desktop, Documents, Downloads, and drives.</p>
+  <div class="step">
+    <div class="s-num">1</div>
+    <div class="s-body">
+      <h4>Show file extensions</h4>
+      <p>In File Explorer, choose <strong>View &rarr; Show &rarr; File name extensions</strong>. You must be able to distinguish <code>notes.txt</code> from <code>notes.py</code>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="s-num">2</div>
+    <div class="s-body">
+      <h4>Keep code in Linux, not in Downloads</h4>
+      <p>The projects in this guide belong in your WSL home folder, such as <code>~/code</code>, not under <code>C:\Users\...</code>. You will open that folder from VS Code through WSL in the next step.</p>
+    </div>
+  </div>
+  <p>Use File Explorer for ordinary files. For project files, use VS Code and the Ubuntu terminal so file names, permissions, and tools behave consistently.</p>
+</section>
+
+<section id="windows">
+  <div class="eyebrow">Windows</div>
+  <h2>Window management</h2>
+  <p>Windows can snap apps into a tidy layout. Drag a window to an edge or press <kbd>Windows Left</kbd> or <kbd>Windows Right</kbd> to place it on that side. Press <kbd>Windows Up</kbd> to maximise and <kbd>Windows Down</kbd> to restore or minimise.</p>
+  <p>Hover over the maximise button to choose a snap layout. Keeping VS Code and a browser side by side is useful when following the guide.</p>
+</section>
+
+<section id="terminal">
+  <div class="eyebrow">The terminal</div>
+  <h2>Windows Terminal and WSL</h2>
+  <p>Windows Terminal is the app that hosts command-line shells. For this guide, use its <strong>Ubuntu</strong> profile, supplied by Windows Subsystem for Linux (WSL). It gives you a real Linux development environment while keeping Windows for desktop apps.</p>
+  <p>Open Start, type <strong>Ubuntu</strong>, and press Enter after completing the setup on the next page. A prompt ending in <code>$</code> means Ubuntu is ready for a command.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>pwd</code></pre></div>
+  <p>It prints your current folder, normally something like <code>/home/your-name</code>. A <code>~</code> means that same home folder.</p>
+  <div class="note warn">
+    <div class="lbl">Use the right terminal</div>
+    <p>Run guide commands in Ubuntu unless a step explicitly says to use PowerShell as Administrator. PowerShell commands and Linux commands look similar in places but are not interchangeable.</p>
+  </div>
+</section>
+
+<section id="before-coding">
+  <div class="eyebrow">Before you code</div>
+  <h2>Settings to change now</h2>
+  <div class="step">
+    <div class="s-num">1</div>
+    <div class="s-body">
+      <h4>Run Windows Update</h4>
+      <p>Open <strong>Settings &rarr; Windows Update</strong>, install available updates, and restart if prompted. WSL setup is more reliable on an up-to-date system.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="s-num">2</div>
+    <div class="s-body">
+      <h4>Turn on clipboard history</h4>
+      <p>Open <strong>Settings &rarr; System &rarr; Clipboard</strong> and enable Clipboard history. Press <kbd>Windows V</kbd> to reuse copied commands when you need it.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="s-num">3</div>
+    <div class="s-body">
+      <h4>Keep notifications quiet while coding</h4>
+      <p>Open <strong>Settings &rarr; System &rarr; Notifications</strong> and use Do not disturb for focused sessions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="pager">
+  <a class="pg" href="welcome.html"><span>&larr; Previous</span><strong>Welcome</strong></a>
+  <a class="pg r" href="tools.html#windows-wsl"><span>Next &rarr;</span><strong>Install tools for Windows</strong></a>
+</div>
+</main>
+<script src="assets/app.js"></script>
+</body>
+</html>

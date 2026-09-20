@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome, Tom &mdash; Ship Eight Things</title>
+<title>Welcome &mdash; Ship Eight Things</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -20,6 +20,7 @@
     <div class="group">Start here</div>
     <a href="welcome.html" class="on">Welcome</a>
     <a href="mac-intro.html">Mac intro</a>
+    <a href="windows-intro.html">Windows intro</a>
     <a href="tools.html">Install tools</a>
     <div class="group">Guide</div>
     <a href="index.html#how">How this works</a>
@@ -48,14 +49,14 @@
 
 <div class="welcome-hero">
   <span class="wave">👋</span>
-  <h1>Hey <span class="name">Tom</span>,<br>welcome to the guide.</h1>
+  <h1>Welcome to<br>the guide.</h1>
   <p>Four months. Eight projects. A new machine, a blank screen, and by November — a genuine software engineer. Everything you need is in here.</p>
   <div id="resume-wrap">
     <!-- filled in by JS if progress exists -->
   </div>
 </div>
 
-<div class="eyebrow">Your journey</div>
+<div class="eyebrow" id="platforms">Your journey</div>
 <h2>Three steps before you write any code</h2>
 <p>The guide is split into three parts. Work through them in order &mdash; they build on each other.</p>
 
@@ -64,14 +65,21 @@
     <div class="pc-num">Step 01</div>
     <div class="pc-icon">🍎</div>
     <h3>Mac intro</h3>
-    <p>Brand new to Mac? Start here. Learn the desktop, keyboard shortcuts, Finder, and how to find your way around before anything else. On Windows, skip this and go straight to Install tools.</p>
+    <p>Brand new to Mac? Start here. Learn the desktop, keyboard shortcuts, Finder, and how to find your way around before anything else.</p>
+    <span class="pc-go">Read the intro &rarr;</span>
+  </a>
+  <a class="path-card" href="windows-intro.html">
+    <div class="pc-num">Step 01</div>
+    <div class="pc-icon">🪟</div>
+    <h3>Windows intro</h3>
+    <p>New to Windows or WSL? Learn the desktop, shortcuts, files, and how Windows and Ubuntu work together before installing tools.</p>
     <span class="pc-go">Read the intro &rarr;</span>
   </a>
   <a class="path-card" href="tools.html">
-    <div class="pc-num">Step 02</div>
+    <div class="pc-num">Step 02 (after your platform intro)</div>
     <div class="pc-icon">🔧</div>
     <h3>Install tools</h3>
-    <p>Get VS Code, Python, Node.js, Git, and your terminal environment set up. Includes a Windows path using WSL. Takes about 30 minutes. You only do this once.</p>
+    <p>Get VS Code, Python, Node.js, Git, and your terminal environment set up. Includes complete Mac and Windows WSL paths. Takes about 30 minutes. You only do this once.</p>
     <span class="pc-go">Set up your machine &rarr;</span>
   </a>
   <a class="path-card" href="index.html#how">
@@ -133,15 +141,15 @@
   if (!wrap) return;
 
   function render() {
-    var p = window.TomGuide && window.TomGuide.getProgress();
+    var p = window.ShipEightGuide && window.ShipEightGuide.getProgress();
     if (!p || !p.path) {
       // First visit — show a friendly start card
-      wrap.innerHTML = '<a class="resume-card empty" href="mac-intro.html">' +
-        '<span class="rc-icon">🍎</span>' +
+      wrap.innerHTML = '<a class="resume-card empty" href="welcome.html#platforms">' +
+        '<span class="rc-icon">🧭</span>' +
         '<div class="rc-body">' +
           '<div class="rc-label">Begin</div>' +
-          '<div class="rc-title">Start with the Mac intro</div>' +
-          '<div class="rc-sub">Brand new? This is the place to begin.</div>' +
+          '<div class="rc-title">Choose your platform</div>' +
+          '<div class="rc-sub">Start with the intro for your computer.</div>' +
         '</div>' +
         '<span class="rc-arrow">&#8594;</span>' +
         '</a>';

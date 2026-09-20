@@ -18,7 +18,14 @@ def nav(active, depth):
     """depth 0 = root, 1 = inside /projects/"""
     up = "../" if depth else ""
     root = up + "index.html"
-    out = ['<div class="group">Guide</div>']
+    out = [
+        '<div class="group">Start here</div>',
+        f'<a href="{up}welcome.html">Welcome</a>',
+        f'<a href="{up}mac-intro.html">Mac intro</a>',
+        f'<a href="{up}windows-intro.html">Windows intro</a>',
+        f'<a href="{up}tools.html">Install tools</a>',
+        '<div class="group">Guide</div>',
+    ]
     for anchor, label in [("how", "How this works"), ("rhythm", "The weekly rhythm"),
                           ("machine", "Your machine"), ("install", "Installing everything"),
                           ("github", "Git &amp; GitHub"), ("firstrepo", "Your first repo")]:
@@ -55,7 +62,7 @@ def page(title, active, depth, body, subtitle="16 weeks &middot; 8 projects"):
 <button id="menu" aria-label="Open navigation">&#9776; Menu</button>
 <div id="veil"></div>
 <aside id="sidebar">
-  <a class="brand" href="{up}index.html">
+  <a class="brand" href="{up}welcome.html">
     <div class="mark">Aug &mdash; Nov 2026</div>
     <div class="bt">Ship Eight Things</div>
     <div class="sub">{subtitle}</div>
