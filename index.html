@@ -101,8 +101,13 @@ git config --global init.defaultBranch main</code></pre></div>
   <div class="code"><button class="copy">Copy</button><pre><code>ssh-keygen -t ed25519 -C "you@example.com"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
-pbcopy &lt; ~/.ssh/id_ed25519.pub</code></pre></div>
-  <p>That last command copied your public key to the clipboard. Go to GitHub &rarr; Settings &rarr; SSH and GPG keys &rarr; New SSH key, paste it in, and save. Then check it worked:</p>
+
+<span class="c"># Mac</span>
+pbcopy &lt; ~/.ssh/id_ed25519.pub
+
+<span class="c"># Windows WSL</span>
+clip.exe &lt; ~/.ssh/id_ed25519.pub</code></pre></div>
+  <p>That last command copied your public key to the clipboard. If neither version works, run <code>cat ~/.ssh/id_ed25519.pub</code> and copy the output manually. Then go to GitHub &rarr; Settings &rarr; SSH and GPG keys &rarr; New SSH key, paste it in, and save. Then check it worked:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>ssh -T git@github.com</code></pre></div>
   <p>It'll greet you by username. If it asks about authenticity the first time, type <code>yes</code>.</p>
 
