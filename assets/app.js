@@ -12,7 +12,7 @@
           btn.classList.remove('done');
         }, 1600);
       }).catch(function () {
-        btn.textContent = 'Press Ctrl+C';
+        btn.textContent = 'Copy manually';
         setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
       });
     });
