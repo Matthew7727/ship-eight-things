@@ -88,13 +88,15 @@ sudo apt upgrade -y</code></pre></div>
   <p>Your password won't show as you type it. That's normal.</p>
 
   <h3>3 &mdash; Install the tools you need inside WSL</h3>
-  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y python3 python3-pip python3-venv nodejs npm git</code></pre></div>
-  <p>This gives Ubuntu its own copy of Python, pip, Node.js, npm, and Git. Keep your coding work inside Linux, not under random Windows folders.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y python3 python3-pip python3-venv git curl
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs</code></pre></div>
+  <p>This gives Ubuntu its own copy of Python, pip, Node.js, npm, and Git. The NodeSource step avoids the outdated Node.js packages in Ubuntu's default repository. Keep your coding work inside Linux, not under random Windows folders.</p>
 
   <h3>4 &mdash; Install VS Code on Windows</h3>
   <p>Back in a normal Windows terminal, install VS Code:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>winget install --id Microsoft.VisualStudioCode -e</code></pre></div>
-  <p>Then open VS Code, install the <strong>Remote - WSL</strong> extension, and also install the same four extensions listed later on this page: Python, Pylance, Ruff, and GitLens.</p>
+  <p>Then open VS Code, install the <strong>Remote - WSL</strong> extension, open a WSL window, and install the same four extensions listed later on this page <strong>inside that WSL session</strong>: Python, Pylance, Ruff, and GitLens.</p>
 
   <h3>5 &mdash; Check WSL can open VS Code</h3>
   <p>Back in Ubuntu, run:</p>
@@ -247,6 +249,7 @@ git config --global init.defaultBranch main</code></pre></div>
 
   <h3>Install exactly these extensions</h3>
   <p>Extensions add language support, linting, and extra tools. Every extension uses a small amount of memory, so install only what you need. For now, install these four and nothing else:</p>
+  <p>If you're using Windows + WSL, install them in the <strong>WSL: Ubuntu</strong> window, not only in the local Windows window.</p>
 
   <table>
     <tr><th>Extension name</th><th>What it does</th></tr>
