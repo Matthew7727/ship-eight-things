@@ -20,6 +20,7 @@
     <div class="group">Start here</div>
     <a href="welcome.html">Welcome</a>
     <a href="mac-intro.html">Mac intro</a>
+    <a href="windows-intro.html">Windows intro</a>
     <a href="tools.html" class="on">Install tools</a>
     <div class="group">Guide</div>
     <a href="index.html#how">How this works</a>
@@ -45,7 +46,7 @@
   </nav>
 </aside>
 <main>
-<a class="back" href="mac-intro.html">&larr; Mac intro</a>
+<a class="back" href="welcome.html">&larr; Choose your platform</a>
 <div class="eyebrow">Step 02</div>
 <h2>Install tools</h2>
 <p class="lede">Everything you need to write, run, and share code. You do this once and never again.</p>
@@ -214,13 +215,13 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
 
   <h3>Tell Git who you are</h3>
   <p>Git needs to know your name and email address to attach to your commits. Use the same email you'll use for GitHub.</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>git config --global user.name "Tom"
+  <div class="code"><button class="copy">Copy</button><pre><code>  git config --global user.name "Your Name"
 git config --global user.email "your@email.com"
 git config --global init.defaultBranch main</code></pre></div>
   <p>Let's read those commands:</p>
   <ul>
     <li><code>git config --global</code> &mdash; changes a setting that applies to all your git repos on this machine (<code>--global</code> means "not just this folder, everywhere").</li>
-    <li><code>user.name "Tom"</code> &mdash; sets the name that appears on your commits. Swap in your actual name.</li>
+    <li><code>user.name "Your Name"</code> &mdash; sets the name that appears on your commits. Swap in your actual name.</li>
     <li><code>user.email "..."</code> &mdash; sets the email. Must match your GitHub account or commits won't link to your profile.</li>
     <li><code>init.defaultBranch main</code> &mdash; makes new repos start with a branch called <code>main</code> (the modern default) instead of the older <code>master</code>.</li>
   </ul>
@@ -285,7 +286,7 @@ git config --global init.defaultBranch main</code></pre></div>
 
   <table>
     <tr><th>Command</th><th>What it does</th><th>Example</th></tr>
-    <tr><td><code>pwd</code></td><td>Print Working Directory &mdash; shows you where you are right now</td><td><code>pwd</code> → <code>/Users/tom/code</code></td></tr>
+    <tr><td><code>pwd</code></td><td>Print Working Directory &mdash; shows you where you are right now</td><td><code>pwd</code> → <code>/home/your-name/code</code> in WSL</td></tr>
     <tr><td><code>ls</code></td><td>List &mdash; shows the files and folders in the current directory</td><td><code>ls</code> shows the contents, <code>ls -la</code> shows hidden files too</td></tr>
     <tr><td><code>cd</code></td><td>Change Directory &mdash; moves you into a folder</td><td><code>cd projects</code> to go in, <code>cd ..</code> to go up one level, <code>cd ~</code> to go home</td></tr>
     <tr><td><code>mkdir</code></td><td>Make Directory &mdash; creates a new folder</td><td><code>mkdir my-project</code></td></tr>
@@ -307,9 +308,9 @@ git config --global init.defaultBranch main</code></pre></div>
   <h3>How paths work</h3>
   <p>A path is an address for a file or folder on your disk. Understanding paths removes a lot of confusion.</p>
   <ul>
-    <li><code>/</code> at the very start means the root of the disk (the very top level). <code>/Users/tom/code/project/main.py</code> is an <strong>absolute path</strong> &mdash; it works from anywhere.</li>
-    <li>A path <em>without</em> a leading <code>/</code> is a <strong>relative path</strong> &mdash; it's relative to where you are now. If you're already in <code>/Users/tom/code/</code>, then <code>project/main.py</code> means the same file.</li>
-    <li><code>~</code> is a shortcut for your home folder: <code>/Users/tom</code>. So <code>~/code</code> means <code>/Users/tom/code</code>.</li>
+    <li><code>/</code> at the very start means the root of the disk (the very top level). <code>/home/your-name/code/project/main.py</code> is an <strong>absolute path</strong> &mdash; it works from anywhere.</li>
+    <li>A path <em>without</em> a leading <code>/</code> is a <strong>relative path</strong> &mdash; it's relative to where you are now. If you're already in <code>/home/your-name/code/</code>, then <code>project/main.py</code> means the same file.</li>
+    <li><code>~</code> is a shortcut for your home folder: <code>/home/your-name</code> in WSL or <code>/Users/your-name</code> on Mac. So <code>~/code</code> means your code folder.</li>
     <li><code>.</code> means "the current folder". <code>ls .</code> is the same as <code>ls</code>.</li>
     <li><code>..</code> means "the folder above this one". <code>cd ..</code> moves you up one level.</li>
   </ul>
@@ -351,7 +352,7 @@ code --version          <span class="c"># VS Code talking to WSL</span></code></
 </section>
 
 <div class="pager">
-  <a class="pg" href="mac-intro.html"><span>&larr; Previous</span><strong>Mac intro</strong></a>
+  <a class="pg" href="welcome.html"><span>&larr; Previous</span><strong>Choose your platform</strong></a>
   <a class="pg r" href="index.html#how"><span>Next &rarr;</span><strong>The guide &middot; How this works</strong></a>
 </div>
 

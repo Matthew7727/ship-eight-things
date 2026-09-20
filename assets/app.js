@@ -12,7 +12,7 @@
           btn.classList.remove('done');
         }, 1600);
       }).catch(function () {
-        btn.textContent = 'Press \u2318C';
+        btn.textContent = 'Press Ctrl+C';
         setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
       });
     });
@@ -62,7 +62,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 
   // ---- progress tracking (pick up where you left off) ----
-  var STORAGE_KEY = 'tomGuideProgress';
+  var STORAGE_KEY = 'shipEightGuideProgress';
 
   function pageTitle() {
     return document.title || '';
@@ -111,7 +111,7 @@
   })();
 
   // Expose a helper for the welcome page to read progress
-  window.TomGuide = {
+  window.ShipEightGuide = {
     getProgress: function () {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
       catch (e) { return null; }
