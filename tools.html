@@ -52,12 +52,18 @@
 
 <div class="note">
   <div class="lbl">Before you start</div>
-  <p>Every command on this page is typed into <strong>Terminal</strong>. Open it with <kbd>&#8984; Space</kbd>, type "Terminal", press Enter. Each command is followed by pressing Enter to run it. Wait for each one to finish before running the next.</p>
+  <p>Every command on this page is typed into a terminal window. On Mac, open <strong>Terminal</strong> with <kbd>&#8984; Space</kbd>, type "Terminal", press Enter. On Windows, open your <strong>Ubuntu</strong> WSL window from the Start menu. Each command is followed by pressing Enter to run it. Wait for each one to finish before running the next.</p>
+</div>
+
+<div class="note">
+  <div class="lbl">Mac or Windows?</div>
+  <p>If you're on a Mac, work straight down the page. If you're on Windows, start with the WSL section below, do the setup inside Ubuntu, then skip the Apple developer tools and Homebrew sections.</p>
 </div>
 
 <div class="jump"><div class="jt">On this page</div><ol>
-<li><a href="#xcode">Apple developer tools</a></li>
-<li><a href="#homebrew">Homebrew — the package manager</a></li>
+<li><a href="#windows-wsl">Windows: enable WSL</a></li>
+<li><a href="#xcode">Mac: Apple developer tools</a></li>
+<li><a href="#homebrew">Mac: Homebrew — the package manager</a></li>
 <li><a href="#python">Python</a></li>
 <li><a href="#node">Node.js &amp; npm</a></li>
 <li><a href="#git">Git</a></li>
@@ -65,6 +71,42 @@
 <li><a href="#terminal-kit">Terminal survival kit</a></li>
 <li><a href="#verify">Checking everything works</a></li>
 </ol></div>
+
+<section id="windows-wsl">
+  <div class="eyebrow">Windows path</div>
+  <h2>Enable WSL and use Ubuntu</h2>
+  <p>If you're on Windows, don't do this guide in PowerShell or Command Prompt. Use <strong>WSL</strong> (Windows Subsystem for Linux) so the terminal, paths, package manager, and Python setup behave like a normal developer machine.</p>
+
+  <h3>1 &mdash; Install WSL</h3>
+  <p>Open <strong>PowerShell as Administrator</strong> and run:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>wsl --install -d Ubuntu</code></pre></div>
+  <p>Windows may ask you to restart. Let it. When Ubuntu opens for the first time, create your Linux username and password. From this point on, do the guide inside <strong>Ubuntu</strong>, not in PowerShell.</p>
+
+  <h3>2 &mdash; Update Ubuntu</h3>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt update
+sudo apt upgrade -y</code></pre></div>
+  <p>Your password won't show as you type it. That's normal.</p>
+
+  <h3>3 &mdash; Install the tools you need inside WSL</h3>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y python3 python3-pip python3-venv git ca-certificates curl gnupg
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+  NODE_CODENAME=$(awk -F= '/^VERSION_CODENAME=/{print $2}' /etc/os-release)
+  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x $NODE_CODENAME main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  sudo apt update
+  sudo apt install -y nodejs</code></pre></div>
+  <p>This gives Ubuntu its own copy of Python, pip, Node.js, npm, and Git. The extra NodeSource steps add a signed repository, which avoids the stale Node.js packages in Ubuntu's default repository without using a blind curl-to-shell install. Keep your coding work inside Linux, not under random Windows folders.</p>
+
+  <h3>4 &mdash; Install VS Code on Windows</h3>
+  <p>Back in a normal Windows terminal, install VS Code:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>winget install --id Microsoft.VisualStudioCode -e</code></pre></div>
+  <p>Then open VS Code, install the <strong>Remote - WSL</strong> extension, open a WSL window, and install the same four extensions listed later on this page <strong>inside that WSL session</strong>: Python, Pylance, Ruff, and GitLens.</p>
+
+  <h3>5 &mdash; After VS Code is installed, check Ubuntu can open it</h3>
+  <p>Once the previous step is done, go back to Ubuntu and run:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>code --version</code></pre></div>
+  <p>If that prints a version number, you're set. If it says <code>code</code> isn't found, open any folder from VS Code using the <strong>Remote - WSL</strong> extension once, then try again.</p>
+</section>
 
 <section id="xcode">
   <div class="eyebrow">Step 1</div>
@@ -115,8 +157,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
   <div class="eyebrow">Step 3</div>
   <h2>Python</h2>
   <p>macOS comes with a Python, but it belongs to the operating system and you shouldn't build on top of it &mdash; Apple may change or remove it in a future update. Install your own fresh copy instead.</p>
+  <p>If you're on Windows with WSL, you already installed Python inside Ubuntu above, so here you're just checking it worked.</p>
 
-  <p>Install Python via Homebrew:</p>
+  <p>On Mac, install Python via Homebrew:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install python</code></pre></div>
 
   <p>Check it installed:</p>
@@ -125,7 +168,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
 
   <p>Also check <code>pip3</code>, which is Python's package installer (you'll use it constantly):</p>
   <div class="code"><button class="copy">Copy</button><pre><code>pip3 --version</code></pre></div>
-  <p>You'll see a version number and a path. The path should include <code>homebrew</code> somewhere in it &mdash; confirming you're using the Homebrew Python, not the system one.</p>
+  <p>You'll see a version number and a path. On Mac, the path should include <code>homebrew</code> somewhere in it &mdash; confirming you're using the Homebrew Python, not the system one. In WSL, it will point somewhere inside Ubuntu instead.</p>
 
   <div class="note">
     <div class="lbl">What is pip?</div>
@@ -137,8 +180,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
   <div class="eyebrow">Step 4</div>
   <h2>Node.js &amp; npm</h2>
   <p>Node.js lets you run JavaScript outside of a browser &mdash; directly on your machine. You'll use it from Project 5 onwards when you start building web apps. npm (Node Package Manager) comes bundled with it and works like pip but for the JavaScript world.</p>
+  <p>If you're on Windows with WSL, you already installed both inside Ubuntu above, so this section is just the version check.</p>
 
-  <p>Install both via Homebrew:</p>
+  <p>On Mac, install both via Homebrew:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install node</code></pre></div>
 
   <p>Check Node.js installed:</p>
@@ -159,8 +203,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
   <div class="eyebrow">Step 5</div>
   <h2>Git</h2>
   <p>Git is version control &mdash; it tracks every change you make to your code, lets you go back in time, and makes it possible to share code with others. It's the single most important tool in professional software development. You'll use it every session.</p>
+  <p>If you're on Windows with WSL, use the Ubuntu copy of Git, not Git for Windows, so the commands match the rest of the guide.</p>
 
-  <p>macOS ships with a version of Git, but it's old. Install a current one:</p>
+  <p>On Mac, the built-in Git is old. Install a current one:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install git</code></pre></div>
 
   <p>Check it installed:</p>
@@ -189,7 +234,9 @@ git config --global init.defaultBranch main</code></pre></div>
   <div class="eyebrow">Step 6</div>
   <h2>VS Code</h2>
   <p>VS Code (Visual Studio Code) is the code editor. It's free, fast, runs on everything, and is by far the most widely used editor in industry today. This is where you'll write all your code.</p>
+  <p>On Windows, VS Code itself runs on Windows but your project folder should live in WSL. Open it through the <strong>Remote - WSL</strong> extension so the editor talks to Ubuntu, not to PowerShell.</p>
 
+  <p>On Mac, install it with Homebrew:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install --cask visual-studio-code</code></pre></div>
 
   <p>The <code>--cask</code> flag tells Homebrew to install a full Mac application (as opposed to a command-line tool). This takes a minute or two to download.</p>
@@ -198,7 +245,7 @@ git config --global init.defaultBranch main</code></pre></div>
 
   <h3>Install the shell command</h3>
   <p>This lets you open VS Code from the terminal by typing <code>code .</code>, which you'll do constantly.</p>
-  <p>In VS Code, press <kbd>&#8679; &#8984; P</kbd> (Shift + Command + P) to open the Command Palette. Type "shell command" and click <em>Shell Command: Install 'code' command in PATH</em>. Done.</p>
+  <p>On Mac, press <kbd>&#8679; &#8984; P</kbd> to open the Command Palette, type "shell command", and click <em>Shell Command: Install 'code' command in PATH</em>. On Windows + WSL, the VS Code installer and <strong>Remote - WSL</strong> extension normally make <code>code</code> available inside Ubuntu automatically.</p>
 
   <p>Test it works:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>code --version</code></pre></div>
@@ -206,6 +253,7 @@ git config --global init.defaultBranch main</code></pre></div>
 
   <h3>Install exactly these extensions</h3>
   <p>Extensions add language support, linting, and extra tools. Every extension uses a small amount of memory, so install only what you need. For now, install these four and nothing else:</p>
+  <p>If you're using Windows + WSL, install them in the <strong>WSL: Ubuntu</strong> window, not only in the local Windows window.</p>
 
   <table>
     <tr><th>Extension name</th><th>What it does</th></tr>
@@ -223,7 +271,7 @@ git config --global init.defaultBranch main</code></pre></div>
   </div>
 
   <h3>Two settings to change in VS Code</h3>
-  <p>Open Settings with <kbd>&#8984; ,</kbd>. Search for each of these and update them:</p>
+  <p>Open Settings with <kbd>&#8984; ,</kbd> on Mac or <kbd>Ctrl ,</kbd> on Windows. Search for each of these and update them:</p>
   <ul>
     <li><strong>Format on Save</strong> &mdash; set to <em>checked</em>. This makes Ruff format your code every time you save. You'll want this.</li>
     <li><strong>Word Wrap</strong> &mdash; set to <em>on</em>. Long lines won't run off the right edge of the screen.</li>
@@ -270,7 +318,9 @@ git config --global init.defaultBranch main</code></pre></div>
 <section id="verify">
   <div class="eyebrow">Verification</div>
   <h2>Checking everything works</h2>
-  <p>Run these one by one. Each should print a version number &mdash; no error messages.</p>
+  <p>Run the set for your machine. Each command should print a version number &mdash; no error messages.</p>
+
+  <h3>Mac</h3>
 
   <div class="code"><button class="copy">Copy</button><pre><code>xcode-select --version  <span class="c"># Apple developer tools</span>
 brew --version          <span class="c"># Homebrew</span>
@@ -281,7 +331,15 @@ npm --version           <span class="c"># Node's package manager</span>
 git --version           <span class="c"># Git</span>
 code --version          <span class="c"># VS Code shell command</span></code></pre></div>
 
-  <p>If any of them say "command not found", go back to that section and check you ran every step. The most common cause is closing Terminal too early before a command finished &mdash; or missing the two Homebrew path commands after installation.</p>
+  <h3>Windows + WSL</h3>
+  <div class="code"><button class="copy">Copy</button><pre><code>python3 --version       <span class="c"># Python inside Ubuntu</span>
+pip3 --version          <span class="c"># Python's package manager</span>
+node --version          <span class="c"># Node.js inside Ubuntu</span>
+npm --version           <span class="c"># Node's package manager</span>
+git --version           <span class="c"># Git inside Ubuntu</span>
+code --version          <span class="c"># VS Code talking to WSL</span></code></pre></div>
+
+  <p>If any of them say "command not found", go back to that section and check you ran every step. On Mac, the most common cause is missing the Homebrew path commands. On Windows, the most common cause is running the command in the wrong place &mdash; PowerShell instead of Ubuntu.</p>
 
   <div class="note">
     <div class="lbl">If something went wrong</div>

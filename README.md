@@ -1,14 +1,14 @@
 # Ship Eight Things
 
 A four-month, project-based route into software engineering, written for a complete beginner
-working evenings and weekends on a MacBook Neo.
+working evenings and weekends on a MacBook Neo or a Windows laptop using WSL.
 
 **Live site:** https://matthew7727.github.io/ship-eight-things/
 
 ## What's in it
 
-- **Setup** — macOS from a fresh machine: terminal, Homebrew, Python, VS Code, git, SSH keys,
-  virtual environments, and the specific compromises an 8GB machine calls for.
+- **Setup** — macOS from a fresh machine, or Windows via WSL: terminal, Homebrew or apt, Python,
+  VS Code, git, SSH keys, virtual environments, and the specific compromises an 8GB machine calls for.
 - **Eight project guides** — six sessions each, with the new concepts taught as they come up,
   the traps that catch people, stretch goals, and a definition of done.
 - **Reference** — a stuck protocol, git commands, how to read a traceback, a README template,
