@@ -216,11 +216,12 @@ jobs:
 <div class="trap"><b>Deleting and rewriting</b><p>Not refactoring. The skill is changing code safely, in steps, with the tests green.</p></div>
 <div class="trap"><b>Testing the inside</b><p>If renaming a private variable breaks a test, the test is testing the wrong thing. Test behaviour.</p></div>
 <div class="trap"><b>Classes everywhere</b><p>Not everything needs to be a class. A function that takes some data and returns an answer is often just better.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Make the main test suite green first. Then use official documentation to explore one of these directions and describe the evidence that it works.</p><ul class="stretch">
 <li>Add a test that checks loading and saving round-trips correctly.</li>
 <li>Use <code>pytest</code> fixtures to avoid repeating setup in every test.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>20+ passing tests, code split across at least 4 modules, no <code>print</code>/<code>input</code> outside <code>main.py</code>, GitHub Actions is green, and a commit history showing small steps.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p04">Project 4 reference build</a> and identify one test boundary you would adopt.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your refactored tracker. The MR must include a passing CI badge in the README (the Actions workflow must be green before you open the MR). The diff must show no deleted tests — only additions and modifications. The MR will not be merged if any test is removed rather than updated.</div>
 <div class="pager">
 <a class="pg" href="03-weather-client.html"><span>&larr; Previous</span><strong>03 &middot; Weather client</strong></a>

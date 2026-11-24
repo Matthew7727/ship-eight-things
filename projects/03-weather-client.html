@@ -92,6 +92,10 @@ print(response.json())</code></pre></div>
 <div class="shead"><span class="snum">Session 2</span><h3>Getting a key, and keeping it secret</h3></div>
 
 <p>Sign up for a free OpenWeatherMap account and get an API key. It's a string that identifies you — treat it exactly like a password.</p>
+<div class="note">
+  <div class="lbl">Provider runbook — use this exact route</div>
+  <p>Open <a href="https://openweathermap.org/appid">OpenWeather's API-key guide</a>, create and verify your own account, then find the key in its API-key tab. Use the <a href="https://openweathermap.org/api/current">current-weather documentation</a> for this project. Do not use someone else's key and do not paste yours into chat, a screenshot, or a repository. If signup is unavailable, use a saved response in <code>sample_response.json</code> and complete the parsing and error-handling work offline.</p>
+</div>
 <p>It must never go in your code, because your code goes on GitHub. Instead, put it in a file called <code>.env</code>:</p>
 <div class="code"><button class="copy">Copy</button><pre><code>WEATHER_API_KEY=your_actual_key_here</code></pre></div>
 <p>An <strong>environment variable</strong> is a key-value pair the operating system makes available to any program it runs. They're not Python-specific — every language and every tool can read them. When you run <code>python3 weather.py</code>, Python can see everything in your environment. The <code>.env</code> file is just a convenient way to set them for one project without polluting your whole system.</p>
@@ -208,12 +212,13 @@ except requests.exceptions.HTTPError:
 <div class="trap"><b>Assuming the response shape</b><p>Print it. Every time. APIs change and documentation lags behind.</p></div>
 <div class="trap"><b>No timeout</b><p>A network call without a timeout can hang forever. Always set one.</p></div>
 <div class="trap"><b>Hammering the API while debugging</b><p>Free tiers have limits. Save one response to a JSON file and work against that while you build the parsing.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Choose one only after the core client works. Search the official documentation first; record the endpoint, parameters, and one thing that surprised you in your README.</p><ul class="stretch">
 <li>Cache the last response so repeated runs don't re-fetch within a few minutes.</li>
 <li>Accept several cities at once and compare them side by side.</li>
 <li>Show wind direction as a compass point (N, NE, E…) not just degrees.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>Handles a nonsense city gracefully, key lives in <code>.env</code>, <code>.env</code> is gitignored, <code>requirements.txt</code> is committed, a clean clone runs first time, the <code>--json</code> flag works, and the 5-day forecast challenge is complete.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p03">Project 3 reference build</a>; notice how it can run from a saved response without a key.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your weather client. The MR description must include: a sample output screenshot showing the dashboard and the 5-day forecast, a confirmation that running <code>git log -p | grep -i "api_key\|appid"</code> returns nothing from your code, and a brief note on what you'd do differently if the free tier had a strict 60-calls-per-hour limit. The MR will not be merged if the key appears in any committed file.</div>
 <div class="pager">
 <a class="pg" href="02-expense-tracker.html"><span>&larr; Previous</span><strong>02 &middot; Expense tracker</strong></a>

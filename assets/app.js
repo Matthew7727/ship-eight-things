@@ -4,6 +4,11 @@
     btn.addEventListener('click', function () {
       var code = btn.parentElement.querySelector('code');
       if (!code) return;
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        btn.textContent = 'Copy manually';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+        return;
+      }
       navigator.clipboard.writeText(code.innerText).then(function () {
         btn.textContent = 'Copied';
         btn.classList.add('done');
@@ -30,18 +35,22 @@
     if (el) map[id] = a;
   });
 
-  if (Object.keys(map).length) {
+  var sessionTargets = Array.prototype.slice.call(document.querySelectorAll('article.session[id]'));
+  if (Object.keys(map).length || sessionTargets.length) {
     var obs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
-          links.forEach(function (a) { a.classList.remove('on'); });
-          if (map[e.target.id]) map[e.target.id].classList.add('on');
+          if (map[e.target.id]) {
+            links.forEach(function (a) { a.classList.remove('on'); });
+            map[e.target.id].classList.add('on');
+          }
           // ---- save progress ----
           saveProgress(e.target.id);
         }
       });
     }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
     Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+    sessionTargets.forEach(function (el) { obs.observe(el); });
   }
 
   // ---- mobile drawer ----
@@ -92,6 +101,9 @@
   // Save that we visited this page (without a specific section) on first load
   // so even a quick visit to a page is tracked.
   (function seedPageVisit() {
+    // The welcome page reads the previous location to render its resume card.
+    // Saving Welcome first would erase that destination before it can be shown.
+    if (document.getElementById('resume-wrap')) return;
     try {
       var existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       // Only overwrite if this page is different or there's no record yet

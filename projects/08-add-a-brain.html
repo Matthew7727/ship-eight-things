@@ -68,6 +68,10 @@
 <div class="shead"><span class="snum">Session 1</span><h3>Your first model call</h3></div>
 
 <p>Get an API key from Anthropic or OpenAI, put it in <code>.env</code>, and set a spending cap on the account before you write a line of code.</p>
+<div class="note">
+  <div class="lbl">Provider runbook — choose one</div>
+  <p>Use one provider for the whole project: create your own key in the <a href="https://console.anthropic.com/settings/keys">Anthropic Console</a> or <a href="https://platform.openai.com/api-keys">OpenAI API-key page</a>, set the smallest practical spend limit, and copy it only into <code>.env</code>. Never share a course-wide key. If billing or signup is unavailable, use the mock client from session 4 so every integration and resilience task remains possible without a live call.</p>
+</div>
 <div class="code"><button class="copy">Copy</button><pre><code>import os
 from anthropic import Anthropic
 
@@ -233,12 +237,13 @@ def suggest_category_cached(description: str) -> str:
 <div class="trap"><b>No timeout</b><p>A hanging model call hangs your whole page.</p></div>
 <div class="trap"><b>Letting AI failure break the app</b><p>The feature is optional. The app isn't.</p></div>
 <div class="trap"><b>No spending cap</b><p>Set one before your first call, not after your first bill.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Start with the provider's official documentation, make a small experiment in a separate branch, and record the cost, latency, and failure behaviour before bringing it into the app.</p><ul class="stretch">
 <li>Stream the response so text appears as it's generated.</li>
 <li>Let the person correct a suggestion and store the correction to improve future suggestions.</li>
 <li>Log every prompt and response to a database table so you can debug odd behaviour later.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>Deployed, key in environment variables, survives the API failing, has a loading state, has a spending cap, natural-language search challenge is complete, and <code>COST.md</code> is in the repo.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p08">Project 8 reference build</a>. Test its no-key fallback before comparing its live API path.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your AI feature. The MR description must include: a <code>COST.md</code> showing actual spend from the provider's dashboard (screenshots), and confirmation that every API call has a <code>try/except</code> wrapper and a fallback path. The MR will not be merged if a single API call is unprotected or if there is no fallback when the AI is unavailable.</div>
 <div class="pager">
 <a class="pg" href="07-accounts-and-auth.html"><span>&larr; Previous</span><strong>07 &middot; Accounts &amp; auth</strong></a>

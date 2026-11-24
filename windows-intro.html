@@ -120,9 +120,14 @@
   <div class="eyebrow">The terminal</div>
   <h2>Windows Terminal and WSL</h2>
   <p>Windows Terminal is the app that hosts command-line shells. For this guide, use its <strong>Ubuntu</strong> profile, supplied by Windows Subsystem for Linux (WSL). It gives you a real Linux development environment while keeping Windows for desktop apps.</p>
+  <div class="note">
+    <div class="lbl">Three names to keep separate</div>
+    <p><strong>Windows</strong> runs your desktop apps, such as VS Code and your browser. <strong>Windows Terminal</strong> is the window that lets you type commands. <strong>Ubuntu in WSL</strong> is the Linux environment inside that window where you will run Python, Git, and Node commands. The same window can open PowerShell too, but guide commands belong in the Ubuntu tab unless a step explicitly says “PowerShell as Administrator”.</p>
+  </div>
   <p>Open Start, type <strong>Ubuntu</strong>, and press Enter after completing the setup on the next page. A prompt ending in <code>$</code> means Ubuntu is ready for a command.</p>
   <div class="code"><button class="copy">Copy</button><pre><code>pwd</code></pre></div>
   <p>It prints your current folder, normally something like <code>/home/your-name</code>. A <code>~</code> means that same home folder.</p>
+  <p><code>pwd</code> means “print working directory”: it answers “which folder am I in?”. The final <code>$</code> is only the prompt; do not type it. A command that starts with <code>sudo</code>, which you will meet on the setup page, temporarily runs with administrator permission <em>inside Ubuntu</em>. It does not mean “this is safe”: read the full command before entering your password.</p>
   <div class="note warn">
     <div class="lbl">Use the right terminal</div>
     <p>Run guide commands in Ubuntu unless a step explicitly says to use PowerShell as Administrator. PowerShell commands and Linux commands look similar in places but are not interchangeable.</p>

@@ -236,12 +236,13 @@ April 2024
 <div class="trap"><b>One giant function</b><p>If <code>add_expense()</code> is also saving the file and printing a summary, split it up. One job each.</p></div>
 <div class="trap"><b>Forgetting to save</b><p>Data changes in memory but never reaches disk. Save after every change that matters.</p></div>
 <div class="trap"><b>Floats and money</b><p><code>0.1 + 0.2</code> doesn't give exactly <code>0.3</code> in any language. For this project just round when displaying. Real financial software stores pennies as whole numbers.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Choose one after the core tracker is solid. Look up the relevant library or file format yourself, then note the source you trusted and the trade-off you made.</p><ul class="stretch">
 <li>Add a budget per category and warn when it's exceeded.</li>
 <li>Add a search by keyword across descriptions.</li>
 <li>Add a recurring expense flag and auto-add them on startup.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>You can close the program, reopen it, and your expenses are still there. Add, list, delete, edit, total, filter by category, filter by date range, sort, CSV export, and monthly summary all work — each in its own function.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p02">Project 2 reference build</a>, especially persistence and money handling.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your tracker. The MR description must include a terminal paste showing the full menu working end-to-end (add some expenses, list them, filter, export), a confirmation that data survives a restart, and a screenshot of the CSV opening in a spreadsheet. The MR will not be merged if any of those three are missing.</div>
 <div class="pager">
 <a class="pg" href="01-terminal-toolkit.html"><span>&larr; Previous</span><strong>01 &middot; Terminal toolkit</strong></a>

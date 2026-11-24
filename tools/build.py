@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Generates the static site."""
+"""Retired site generator.
+
+The committed HTML is now the source of truth.  This file is deliberately kept as
+an explicit guard rather than allowing a stale content model to overwrite the site.
+"""
+raise SystemExit(
+    "The generator is retired. Edit the published HTML directly; see tools/README.md."
+)
+"""Legacy generator implementation (intentionally unreachable)."""
 import os, shutil
 from projects import PROJECTS
 

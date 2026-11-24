@@ -204,12 +204,13 @@ cursor.execute("SELECT * FROM expenses WHERE category = ?", (category,))</code><
 <div class="trap"><b>Debug mode in production</b><p>Shows your source code to the world. Off.</p></div>
 <div class="trap"><b>Committing the database file</b><p>Add <code>*.db</code> to <code>.gitignore</code>.</p></div>
 <div class="trap"><b>Assuming deploy will be quick</b><p>Set aside a whole session and expect to spend it reading logs.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Deploy the required version first. Use your chosen host's official docs for an extension, and write down both its benefits and its new failure mode.</p><ul class="stretch">
 <li>Add a monthly summary page using GROUP BY on the date.</li>
 <li>Set up automatic deploys on every push to main.</li>
 <li>Switch to Postgres on the host's managed database so data survives restarts.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>Someone else can open your app on their phone. Data is in a real database, every query uses placeholders, debug mode is off, and the database migration challenge is complete.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p06">Project 6 reference build</a>, focusing on where parameterised SQL and environment configuration appear.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your deployed app. The MR description must include: the successful deployment build log (paste it as a code block), the live URL, and a confirmation that every SQL query in the diff uses <code>?</code> placeholders (run <code>grep -rn "f\"SELECT\|f\"INSERT\|f\"UPDATE\|f\"DELETE" .</code> — it must return nothing). The MR will not be merged if a single f-string SQL query is found.</div>
 <div class="pager">
 <a class="pg" href="05-first-web-app.html"><span>&larr; Previous</span><strong>05 &middot; First web app</strong></a>

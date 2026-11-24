@@ -49,11 +49,11 @@
 <section><a class="back" href="../index.html">&larr; All projects</a>
 <div class="eyebrow">Project 01 &middot; Weeks 1–2</div>
 <h2>Terminal toolkit</h2>
-<p class="lede">Four small command-line tools. Everything you need to write a working program.</p>
+<p class="lede">A small terminal toolbox and a guessing game. Everything you need to write a working program.</p>
 <div class="cmsg">init: first commits</div>
 
 <p>The goal of these two weeks is not the tools. It's getting to the point where writing a small program stops feeling like magic and starts feeling like typing.</p>
-<p>You'll build four things in one repository. Each is small enough to finish in a session or two, and each adds one new idea. Nothing here has a user interface, nothing looks good, and that's fine — you're learning to make a computer do what you say.</p>
+<p>You'll begin with a few deliberately small scripts, then turn the useful ones into one terminal toolbox. Each step adds one new idea. Nothing here has a graphical interface, and that's fine — you're learning to make a computer do what you say.</p>
 
 <div class="jump"><div class="jt">Sessions</div><ol>
 <li><a href="#s1">Printing, variables, and your first script</a></li>
@@ -186,12 +186,12 @@ print(result)      <span class="c"># NameError — 'result' doesn't exist here</
 <p>This is a feature, not a bug. If every variable in every function were visible everywhere, programs would become impossible to reason about. Scope means a function can use any name it likes internally without breaking anything outside it. You can hand data in through parameters and get data back through <code>return</code>. That's the whole interface.</p>
 <p>Good functions do <strong>one thing</strong> and have a name that says what that thing is. If you can't name it clearly, it's probably doing too much.</p>
 
-<div class="sbuild"><b>Build this</b><p>Two things: (1) Go back through all three tools and pull the logic into functions. Then build <code>tip.py</code>: take a bill total, a tip percentage and a number of people, and return what each person owes. (2) Build <code>unit_converter.py</code> with a menu that offers Celsius↔Fahrenheit, km↔miles, and kg↔pounds. Each conversion must be its own function that returns a value. The menu calls the right function and prints the result — no conversion logic inside the menu itself.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>You can write a function that returns a value, explain why returning beats printing, and explain what scope means.</p></div>
+<div class="sbuild"><b>Build this</b><p>Pull the logic from your converter and dice roller into small functions. Then build <code>tip.py</code>: take a bill total, a tip percentage and a number of people, and return what each person owes. Keep each conversion or calculation in its own function; you will bring them together in the final session.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>You can write a function that returns a value, explain why returning beats printing, and recognise which pieces are ready to reuse in another program.</p></div>
 </article>
 <article class="session" id="challenge">
-<div class="shead"><span class="snum">Challenge</span><h3>No hints — word counter</h3></div>
-<div class="note"><div class="lbl">This one is on you</div><p>Everything you need to complete this, you already know. There is no example code. Work it out, get stuck, look things up, and work it out again. That process is the actual skill.</p></div>
+<div class="shead"><span class="snum">Optional challenge</span><h3>Feeling brave? Build a word counter</h3></div>
+<div class="note"><div class="lbl">This one is on you</div><p>Everything you need to complete this, you already know. There is no example code. Work it out, get stuck, search the unfamiliar terms, and work it out again. This is optional: finish the toolbox first.</p></div>
 <p>Build <code>word_counter.py</code>. Ask the user for a sentence. Print three things:</p>
 <ol>
 <li>The total number of words in the sentence</li>
@@ -211,22 +211,24 @@ print(result)      <span class="c"># NameError — 'result' doesn't exist here</
 except ValueError:
     print("That wasn't a number.")</code></pre></div>
 <p><strong>Rename things.</strong> Any variable called <code>x</code>, <code>temp</code> or <code>data</code> should be renamed to say what it holds. This is the cheapest possible improvement to code quality.</p>
+<p><strong>Turn the scripts into one toolbox.</strong> Make <code>toolbox.py</code> show a simple numbered menu: temperature/distance conversion, dice rolling, and tip splitting. Call the functions you already wrote; do not paste the calculation code into the menu. Add a <code>quit</code> option, and handle an invalid menu choice without crashing.</p>
 <p><strong>Write the README.</strong> Use the template in the reference section. Include the "what I learned" part properly — it's the bit that's actually worth something.</p>
 
-<div class="sbuild"><b>Build this</b><p>Every tool survives nonsense input. Every variable has a meaningful name. README written. Everything pushed.</p></div>
-<div class="scheck"><b>You should now be able to</b><p>Someone else could clone your repo and run all four tools from your README alone.</p></div>
+<div class="sbuild"><b>Build this</b><p>Your toolbox survives nonsense input, each menu option works, every variable has a meaningful name, and the README explains how to run it. Keep the guessing game as a separate small program. Commit and push both.</p></div>
+<div class="scheck"><b>You should now be able to</b><p>Someone else could clone your repo, run the toolbox, choose every option, and understand what each function is responsible for from your README.</p></div>
 </article>
 <h3 class="sec">Traps to avoid</h3>
 <div class="trap"><b>Making it look nice</b><p>It's a terminal. Fancy formatting is procrastination dressed as work.</p></div>
 <div class="trap"><b>Copying without reading</b><p>If you paste something and it works but you can't explain it, you've learned nothing. Delete it and type it out.</p></div>
 <div class="trap"><b>Waiting to commit</b><p>Commit when it works, and when it half works. Fifteen small commits beats one big one.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
-<li>Give the guessing game a difficulty setting that changes the range.</li>
-<li>Make the dice roller show each individual roll as well as the total.</li>
-<li>Add a loop to the converter so it keeps going until the person types 'quit'.</li>
+<h3 class="sec">Feeling brave?</h3><p>Try one only after the core tools work. Search for the unfamiliar concept first, then explain in your README what you changed and why.</p><ul class="stretch">
+<li>Give the guessing game a difficulty setting that changes the range, then save the best score in a text file.</li>
+<li>Make the dice roller show each individual roll as well as the total, with a short pause between rolls.</li>
+<li>Add kilograms↔pounds to the toolbox. Search how Python command-line arguments work, then make <code>python3 toolbox.py --help</code> show a short usage message.</li>
 </ul>
-<div class="done big"><b>Definition of done</b>Five scripts run without crashing (hello, converter, guess, dice, times table, tip, unit converter, word counter), each survives nonsense input, the README explains how to run each one, and there are 15+ commits.</div>
-<div class="done"><b>Raise an MR</b>Open a pull request on this repository with your scripts. The MR description must list each script, briefly say what it does, and note what you found hardest. The MR will not be merged until: all scripts survive nonsense input, the README has instructions for running each one, and the word counter challenge is included.</div>
+<div class="done big"><b>Definition of done</b>Your terminal toolbox offers conversion, dice rolling, and tip splitting from one menu; the guessing game works separately; both survive nonsense input; the README explains how to run them; and there are 15+ small commits.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p01">Project 1 reference build</a>. Read it as a code review, not an answer sheet.</p></div>
+<div class="done"><b>Raise an MR</b>Open a pull request on this repository with the toolbox and guessing game. The MR description must explain the functions in the toolbox, briefly say what each menu option does, and note what you found hardest. The optional word-counter challenge is welcome but does not block the core project.</div>
 <div class="pager">
 <a class="pg" href="../index.html#firstrepo"><span>&larr; Previous</span><strong>Setup &middot; Your first repo</strong></a>
 <a class="pg r" href="02-expense-tracker.html"><span>Next &rarr;</span><strong>02 &middot; Expense tracker</strong></a>

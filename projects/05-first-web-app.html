@@ -247,12 +247,13 @@ def server_error(e):
 <div class="trap"><b>The CSS rabbit hole</b><p>Four hours. Timer on.</p></div>
 <div class="trap"><b>Logic inside routes</b><p>A route should read the request, call your logic, and return a response. If it's doing maths, move it.</p></div>
 <div class="trap"><b>Rendering straight from a POST</b><p>Refresh re-submits. Redirect instead.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Ship the required app before choosing one. Search for the browser or Flask concept you need, test it on a small route first, and commit the experiment separately.</p><ul class="stretch">
 <li>Add a chart of spending by category using a JavaScript charting library.</li>
 <li>Add a keyboard shortcut to focus the add form.</li>
 <li>Export the filtered view (not just all expenses) to CSV.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>Runs at <code>localhost:5000</code>, you can add, edit and delete in a browser, refreshing never duplicates anything, it looks deliberately made, pagination works, and no error ever shows a stack trace.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p05">Project 5 reference build</a>, then explain why a redirect follows a form submission.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your web app. The MR description must include a screenshot on desktop and a screenshot on mobile (use your phone or browser devtools to simulate). Confirm you've tested that deliberately triggering an error shows a friendly page, not a traceback. The MR will not be merged if a stack trace is visible to users under any circumstance.</div>
 <div class="pager">
 <a class="pg" href="04-refactor-and-test.html"><span>&larr; Previous</span><strong>04 &middot; Refactor &amp; test</strong></a>

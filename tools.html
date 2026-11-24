@@ -77,16 +77,21 @@
   <div class="eyebrow">Windows path</div>
   <h2>Enable WSL and use Ubuntu</h2>
   <p>If you're on Windows, don't do this guide in PowerShell or Command Prompt. Use <strong>WSL</strong> (Windows Subsystem for Linux) so the terminal, paths, package manager, and Python setup behave like a normal developer machine.</p>
+  <div class="note">
+    <div class="lbl">Words you will meet on this page</div>
+    <p><strong>WSL</strong> is Linux running alongside Windows; it is not a replacement for Windows. <strong>Ubuntu</strong> is the Linux distribution we use inside WSL. A <strong>package manager</strong> installs and updates software from trusted software repositories. On Ubuntu it is called <code>apt</code>. <strong>PowerShell as Administrator</strong> has elevated permission on Windows; <code>sudo</code> gives one command elevated permission inside Ubuntu. They are separate permissions in separate systems.</p>
+  </div>
 
   <h3>1 &mdash; Install WSL</h3>
   <p>Open <strong>PowerShell as Administrator</strong> and run:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>wsl --install -d Ubuntu</code></pre></div>
   <p>Windows may ask you to restart. Let it. When Ubuntu opens for the first time, create your Linux username and password. From this point on, do the guide inside <strong>Ubuntu</strong>, not in PowerShell.</p>
+  <p><code>wsl</code> is Windows’ command for managing its Linux environments. <code>--install</code> asks it to set up WSL; <code>-d Ubuntu</code> chooses Ubuntu as the Linux distribution. You use PowerShell as Administrator here only because Windows needs permission to enable this optional system feature.</p>
 
   <h3>2 &mdash; Update Ubuntu</h3>
   <div class="code"><button class="copy">Copy</button><pre><code>sudo apt update
 sudo apt upgrade -y</code></pre></div>
-  <p>Your password won't show as you type it. That's normal.</p>
+  <p>Your password won't show as you type it. That's normal. <code>sudo</code> is short for “superuser do”: it asks Ubuntu to run the next command with administrator permission, so use it only for a command you understand. <code>apt update</code> downloads the latest list of available software; it does not install anything. <code>apt upgrade</code> updates software already installed. <code>-y</code> answers “yes” to its normal confirmation prompt, which is safe here because the command only updates packages Ubuntu already manages.</p>
 
   <h3>3 &mdash; Install the tools you need inside WSL</h3>
   <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y python3 python3-pip python3-venv git ca-certificates curl gnupg
@@ -97,16 +102,20 @@ curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg 
   sudo apt update
   sudo apt install -y nodejs</code></pre></div>
   <p>This gives Ubuntu its own copy of Python, pip, Node.js, npm, and Git. The extra NodeSource steps add a signed repository, which avoids the stale Node.js packages in Ubuntu's default repository without using a blind curl-to-shell install. Keep your coding work inside Linux, not under random Windows folders.</p>
+  <div class="note">
+    <div class="lbl">Read the install command line by line</div>
+    <p><code>apt install</code> installs named packages; <code>python3-pip</code> provides Python’s package installer, <code>python3-venv</code> creates isolated project environments, and <code>git</code> records your code history. <code>ca-certificates</code> lets Ubuntu verify secure websites, <code>curl</code> downloads a URL in the terminal, and <code>gnupg</code> verifies signed software repositories. <code>mkdir -p</code> creates the keyring folder (and any missing parent folders). The <code>|</code> character passes the downloaded signing key from <code>curl</code> into <code>gpg</code>; <code>--dearmor</code> converts it into the format apt expects. <code>NODE_CODENAME=...</code> saves Ubuntu’s release name in a temporary shell variable. <code>tee</code> writes the repository line into a protected system file, which is why it needs <code>sudo</code>.</p>
+  </div>
 
   <h3>4 &mdash; Install VS Code on Windows</h3>
   <p>Back in a normal Windows terminal, install VS Code:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>winget install --id Microsoft.VisualStudioCode -e</code></pre></div>
-  <p>Then open VS Code, install the <strong>Remote - WSL</strong> extension, open a WSL window, and install the same four extensions listed later on this page <strong>inside that WSL session</strong>: Python, Pylance, Ruff, and GitLens.</p>
+  <p><code>winget</code> is Windows’ package manager. <code>install</code> installs an app; <code>--id</code> selects its exact catalogue identifier, and <code>-e</code> means “exact match” so Windows does not choose a similarly named app. Then open VS Code, install the <strong>Remote - WSL</strong> extension, open a WSL window, and install the same four extensions listed later on this page <strong>inside that WSL session</strong>: Python, Pylance, Ruff, and GitLens.</p>
 
   <h3>5 &mdash; After VS Code is installed, check Ubuntu can open it</h3>
   <p>Once the previous step is done, go back to Ubuntu and run:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>code --version</code></pre></div>
-  <p>If that prints a version number, you're set. If it says <code>code</code> isn't found, open any folder from VS Code using the <strong>Remote - WSL</strong> extension once, then try again.</p>
+  <p><code>code</code> is VS Code’s terminal command and <code>--version</code> asks it to print its installed version without opening anything. If that prints a version number, you're set. If it says <code>code</code> isn't found, open any folder from VS Code using the <strong>Remote - WSL</strong> extension once, then try again. “Not found” usually means the command has not yet been added to Ubuntu’s <strong>PATH</strong>—the list of folders Ubuntu searches when you type a command.</p>
 </section>
 
 <section id="xcode">

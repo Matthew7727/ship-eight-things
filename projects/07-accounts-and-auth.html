@@ -205,12 +205,13 @@ def books():
 <div class="trap"><b>Checking login but not ownership</b><p>The IDOR bug. Test it with two accounts, by hand, every time.</p></div>
 <div class="trap"><b>SECRET_KEY in the code</b><p>Environment variable. If it leaks, sessions can be forged.</p></div>
 <div class="trap"><b>Building something you don't care about</b><p>Week 13 is late. Motivation has to come from the project itself.</p></div>
-<h3 class="sec">If you finish early</h3><ul class="stretch">
+<h3 class="sec">Feeling brave?</h3><p>Only explore these after the core security checks pass. Start with the framework's official security docs, then add a test proving your change does not weaken another account.</p><ul class="stretch">
 <li>Add a password reset flow via email.</li>
 <li>Let users share one item publicly with a secret link.</li>
 <li>Add HTTPS-only cookies (<code>SESSION_COOKIE_SECURE = True</code>) and explain what this protects against.</li>
 </ul>
 <div class="done big"><b>Definition of done</b>Two accounts see two different sets of data, passwords are hashed, no URL leaks or modifies another user's records, rate limiting is in place, and it's live.</div>
+<div class="note"><div class="lbl">After you finish</div><p>Compare your choices with the <a href="../reference-apps/index.html#p07">Project 7 reference build</a>. Do not copy it blindly: identify the security properties it demonstrates and the ones your full app still needs.</p></div>
 <div class="done"><b>Raise an MR</b>Open a pull request on this repository with your auth app. The MR description must include a security checklist, which you must complete honestly: (1) passwords hashed — confirmed by checking the database directly; (2) no user enumeration on login — confirmed by testing both "wrong email" and "wrong password"; (3) every protected route tested by logging out and navigating directly; (4) IDOR tested with two accounts on every route that touches data by ID (list which routes). The MR will not be merged until all four are checked off with evidence.</div>
 <div class="pager">
 <a class="pg" href="06-database-and-deploy.html"><span>&larr; Previous</span><strong>06 &middot; Database &amp; deploy</strong></a>
