@@ -113,22 +113,27 @@
 
   <h3>Tell git who you are</h3>
   <p>Use the same email you'll use for GitHub, or your commits won't be linked to your account.</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-git config --global init.defaultBranch main</code></pre></div>
+  <div class="code"><button class="copy">Copy</button><pre><code>git config --global user.name "Your Name"</code></pre></div>
+  <p><code>git config</code> saves a Git setting. <code>--global</code> means “for every repository on this computer”. <code>user.name</code> is the label shown beside your commits; replace <code>Your Name</code> with your actual name, including the quotation marks.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git config --global user.email "you@example.com"</code></pre></div>
+  <p>This saves the email shown beside your commits. Replace the example email with the email on your GitHub account so GitHub can connect those commits to your profile.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git config --global init.defaultBranch main</code></pre></div>
+  <p><code>init.defaultBranch</code> sets the starting branch name for future repositories. <code>main</code> is the current common default.</p>
 
   <h3>Set up an SSH key</h3>
   <p>This lets you push code to GitHub without typing a password every time. Press enter at every prompt to accept the defaults.</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>ssh-keygen -t ed25519 -C "you@example.com"
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_ed25519
-
-<span class="c"># Mac</span>
-pbcopy &lt; ~/.ssh/id_ed25519.pub
-
-<span class="c"># Windows WSL</span>
-clip.exe &lt; ~/.ssh/id_ed25519.pub</code></pre></div>
-  <p>Use the clipboard command for your platform above to copy your public key. If neither version works, run <code>cat ~/.ssh/id_ed25519.pub</code> and copy the output manually. Then go to GitHub &rarr; Settings &rarr; SSH and GPG keys &rarr; New SSH key, paste it in, and save. Then check it worked:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>ssh-keygen -t ed25519 -C "you@example.com"</code></pre></div>
+  <p><code>ssh-keygen</code> creates a matched private and public key pair. <code>-t ed25519</code> chooses the modern key type. <code>-C</code adds an identifying comment; replace the example email with your own. Press Enter at each prompt to use the safe default location. The private key stays on your machine; never share it.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>eval "$(ssh-agent -s)"</code></pre></div>
+  <p><code>ssh-agent</code> is a small helper that can hold your private key for the current login session. <code>-s</code> prints the setup instructions, <code>$(...)</code> runs it, and <code>eval</code> applies those instructions to this terminal.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>ssh-add ~/.ssh/id_ed25519</code></pre></div>
+  <p><code>ssh-add</code> gives the agent your private key. <code>~</code> means your home folder, and <code>.ssh/id_ed25519</code> is the default private-key file created in the first step.</p>
+  <p>Now copy the <strong>public</strong> key only. Use the one command for your platform:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>pbcopy &lt; ~/.ssh/id_ed25519.pub</code></pre></div>
+  <p><strong>Mac:</strong> <code>pbcopy</code> copies text to the clipboard. The <code>&lt;</code> character gives it the contents of the public-key file, identified by the safe <code>.pub</code> ending.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>clip.exe &lt; ~/.ssh/id_ed25519.pub</code></pre></div>
+  <p><strong>Windows WSL:</strong> <code>clip.exe</code> is Windows’ clipboard tool, available from Ubuntu. The <code>&lt;</code> character supplies the contents of the public-key file. If either command fails, run <code>cat ~/.ssh/id_ed25519.pub</code> and copy the one line it prints manually.</p>
+  <p>Go to GitHub &rarr; Settings &rarr; SSH and GPG keys &rarr; New SSH key, paste it in, and save. Then check it worked:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>ssh -T git@github.com</code></pre></div>
   <p>It'll greet you by username. If it asks about authenticity the first time, type <code>yes</code>.</p>
 
@@ -143,23 +148,22 @@ clip.exe &lt; ~/.ssh/id_ed25519.pub</code></pre></div>
   <h2>Your first repo</h2>
   <p>Do this now, before project 1. It's the loop you'll repeat for the next four months.</p>
 
-  <div class="code"><button class="copy">Copy</button><pre><code><span class="c"># make a home for all your code</span>
-mkdir -p ~/code &amp;&amp; cd ~/code
-
-<span class="c"># make the project folder and go into it</span>
-mkdir terminal-toolkit &amp;&amp; cd terminal-toolkit
-
-<span class="c"># start tracking it with git</span>
-git init
-
-<span class="c"># make a virtual environment (keeps this project's</span>
-<span class="c"># packages separate from every other project's)</span>
-python3 -m venv .venv
-source .venv/bin/activate
-
-<span class="c"># open it in VS Code</span>
-code .</code></pre></div>
-
+  <div class="code"><button class="copy">Copy</button><pre><code>mkdir -p ~/code</code></pre></div>
+  <p><code>mkdir</code> makes a folder. <code>-p</code means “also make missing parent folders without complaining”. <code>~</code> means your home folder, so this creates a <code>code</code> folder there.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>cd ~/code</code></pre></div>
+  <p><code>cd</code> means “change directory”: it moves this terminal into the code folder you just created.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>mkdir terminal-toolkit</code></pre></div>
+  <p>This makes the folder for Project 1 inside your current <code>code</code> folder.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>cd terminal-toolkit</code></pre></div>
+  <p>This moves into the new project folder. Run <code>pwd</code> if you want to check where you are.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git init</code></pre></div>
+  <p><code>git</code> runs version control; <code>init</code> starts tracking this folder as a new repository.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>python3 -m venv .venv</code></pre></div>
+  <p><code>python3</code> runs Python. <code>-m venv</code> asks its built-in virtual-environment tool to create an isolated package area, and <code>.venv</code> is the folder name for it.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>source .venv/bin/activate</code></pre></div>
+  <p><code>source</code> applies a setup file to the current terminal. This turns on the virtual environment; confirm that your prompt starts with <code>(.venv)</code>.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>code .</code></pre></div>
+  <p><code>code</code> opens VS Code; <code>.</code> means “this current folder”.</p>
   <p>Your terminal prompt now starts with <code>(.venv)</code> &mdash; that means the virtual environment is active. You need to run <code>source .venv/bin/activate</code> every time you come back to this project in a new terminal. Forgetting this is the single most common beginner confusion, and it usually shows up as "but I installed that package already".</p>
 
   <div class="note warn">
@@ -176,10 +180,10 @@ __pycache__/
 
   <h3>The commit loop</h3>
   <p>This is the rhythm. Every session, several times a session:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>git status                          <span class="c"># what's changed?</span>
-git add .                           <span class="c"># stage everything</span>
-git commit -m "add dice roller"     <span class="c"># save a snapshot</span>
-git push                            <span class="c"># send it to GitHub</span></code></pre></div>
+  <div class="code"><button class="copy">Copy</button><pre><code>git status</code></pre></div><p><code>status</code> asks Git what has changed. Run this first so you know what you are about to save.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git add .</code></pre></div><p><code>add</code> selects changes for the next snapshot. The <code>.</code> means every changed file in the current folder; check <code>git status</code> first so you do not include a secret or unrelated file.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git commit -m "add dice roller"</code></pre></div><p><code>commit</code> creates the snapshot. <code>-m</code> supplies its message, and the quoted text is your explanation of what changed.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>git push</code></pre></div><p><code>push</code> sends commits from this computer to the connected GitHub repository. It will only work after you have created and connected that repository.</p>
   <p>The first time you push a new project, GitHub will give you a longer command to connect the folder to a repository. Make a new empty repo on GitHub, then copy what it tells you.</p>
   <p>Write commit messages as instructions: "add dice roller", "fix crash on empty input", "rename total function". Present tense, lowercase, says what changed. You'll be reading these back in four months.</p>
 </section>

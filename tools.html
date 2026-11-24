@@ -53,12 +53,12 @@
 
 <div class="note">
   <div class="lbl">Before you start</div>
-  <p>Every command on this page is typed into a terminal window. On Mac, open <strong>Terminal</strong> with <kbd>&#8984; Space</kbd>, type "Terminal", press Enter. On Windows, open your <strong>Ubuntu</strong> WSL window from the Start menu. Each command is followed by pressing Enter to run it. Wait for each one to finish before running the next.</p>
+  <p>Every command on this page is typed into a terminal window. On Mac, open <strong>Terminal</strong> with <kbd>&#8984; Space</kbd>, type "Terminal", press Enter. On Windows, begin in <strong>PowerShell as Administrator</strong> for the single WSL-install command; after the restart, use <strong>Ubuntu</strong> from the Start menu. Each command is followed by pressing Enter to run it. Wait for each one to finish before running the next.</p>
 </div>
 
 <div class="note">
-  <div class="lbl">Mac or Windows?</div>
-  <p>If you're on a Mac, work straight down the page. If you're on Windows, start with the WSL section below, do the setup inside Ubuntu, then skip the Apple developer tools and Homebrew sections.</p>
+  <div class="lbl">Choose one route — do not mix them</div>
+  <p><strong>Mac:</strong> skip the Windows section, then complete Apple developer tools, Homebrew, Python, Node, Git, VS Code, and verification in that order. <strong>Windows:</strong> start with WSL below, then go directly to VS Code and verification; WSL has already installed Python, Node, and Git for you. Commands marked Mac belong only in macOS Terminal; commands marked Windows belong in PowerShell or Ubuntu exactly as stated.</p>
 </div>
 
 <div class="jump"><div class="jt">On this page</div><ol>
@@ -89,33 +89,32 @@
   <p><code>wsl</code> is Windows’ command for managing its Linux environments. <code>--install</code> asks it to set up WSL; <code>-d Ubuntu</code> chooses Ubuntu as the Linux distribution. You use PowerShell as Administrator here only because Windows needs permission to enable this optional system feature.</p>
 
   <h3>2 &mdash; Update Ubuntu</h3>
-  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt update
-sudo apt upgrade -y</code></pre></div>
-  <p>Your password won't show as you type it. That's normal. <code>sudo</code> is short for “superuser do”: it asks Ubuntu to run the next command with administrator permission, so use it only for a command you understand. <code>apt update</code> downloads the latest list of available software; it does not install anything. <code>apt upgrade</code> updates software already installed. <code>-y</code> answers “yes” to its normal confirmation prompt, which is safe here because the command only updates packages Ubuntu already manages.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt update</code></pre></div>
+  <p>Run this first. <code>sudo</code> is short for “superuser do”: it asks Ubuntu to run this one command with administrator permission. <code>apt</code> is Ubuntu’s package manager, and <code>update</code> downloads its latest list of available software; it does not install or change any programs. Your password will not appear as you type it—that is normal.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt upgrade -y</code></pre></div>
+  <p>Run this only after the update finishes. <code>upgrade</code> updates software already installed by Ubuntu. <code>-y</code> answers “yes” to its normal confirmation prompt, so this command can continue without stopping to ask you.</p>
 
   <h3>3 &mdash; Install the tools you need inside WSL</h3>
-  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y python3 python3-pip python3-venv git ca-certificates curl gnupg
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-  NODE_CODENAME=$(awk -F= '/^VERSION_CODENAME=/{print $2}' /etc/os-release)
-  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x $NODE_CODENAME main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  sudo apt update
-  sudo apt install -y nodejs</code></pre></div>
-  <p>This gives Ubuntu its own copy of Python, pip, Node.js, npm, and Git. The extra NodeSource steps add a signed repository, which avoids the stale Node.js packages in Ubuntu's default repository without using a blind curl-to-shell install. Keep your coding work inside Linux, not under random Windows folders.</p>
-  <div class="note">
-    <div class="lbl">Read the install command line by line</div>
-    <p><code>apt install</code> installs named packages; <code>python3-pip</code> provides Python’s package installer, <code>python3-venv</code> creates isolated project environments, and <code>git</code> records your code history. <code>ca-certificates</code> lets Ubuntu verify secure websites, <code>curl</code> downloads a URL in the terminal, and <code>gnupg</code> verifies signed software repositories. <code>mkdir -p</code> creates the keyring folder (and any missing parent folders). The <code>|</code> character passes the downloaded signing key from <code>curl</code> into <code>gpg</code>; <code>--dearmor</code> converts it into the format apt expects. <code>NODE_CODENAME=...</code> saves Ubuntu’s release name in a temporary shell variable. <code>tee</code> writes the repository line into a protected system file, which is why it needs <code>sudo</code>.</p>
-  </div>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y python3 python3-pip python3-venv git</code></pre></div>
+  <p>This installs four development tools. <code>install</code> tells <code>apt</code> to add software; <code>python3</code> runs Python, <code>python3-pip</code> installs Python libraries, <code>python3-venv</code> creates isolated project environments, and <code>git</code> records your code history. <code>-y</code accepts apt’s confirmation.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y ca-certificates curl gnupg</code></pre></div>
+  <p>These three supporting tools let Ubuntu safely add the current Node.js source. <code>ca-certificates</code> verifies secure websites, <code>curl</code> downloads a URL in the terminal, and <code>gnupg</code> checks signed software sources.</p>
+  <p>The next five commands add NodeSource’s signed Node.js repository. Run them one at a time; each explanation says exactly what changed.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo mkdir -p /etc/apt/keyrings</code></pre></div>
+  <p><code>mkdir</code> makes a folder. <code>-p</code also creates any missing parent folders. <code>/etc/apt/keyrings</code> is the protected Ubuntu location where apt keeps trusted signing keys.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg</code></pre></div>
+  <p>This downloads NodeSource’s public signing key and saves it where apt can use it. <code>-f</code makes curl fail on an HTTP error, <code>-sS</code keeps normal output quiet but still shows errors, and <code>-L</code follows redirects. The <code>|</code pipe passes that download to <code>gpg</code>; <code>--dearmor</code converts it to apt’s key format, and <code>-o</code names the output file.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>NODE_CODENAME=$(awk -F= '/^VERSION_CODENAME=/{print $2}' /etc/os-release)</code></pre></div>
+  <p>This only saves your Ubuntu release name in a temporary shell variable called <code>NODE_CODENAME</code>. <code>/etc/os-release</code> is Ubuntu’s identity file; <code>awk</code> reads its <code>VERSION_CODENAME</code> value. Nothing is installed or sent anywhere.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x $NODE_CODENAME main" | sudo tee /etc/apt/sources.list.d/nodesource.list</code></pre></div>
+  <p><code>echo</code> writes the repository address as text. <code>$NODE_CODENAME</code> is replaced by the release name saved in the previous step. The pipe sends that text to <code>tee</code>, which writes the new repository file; <code>sudo</code> is needed because this is a protected system folder.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt update</code></pre></div>
+  <p>Run update again so apt reads the newly added Node.js repository.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>sudo apt install -y nodejs</code></pre></div>
+  <p>This installs Node.js and its package manager, npm, from the signed repository you just added. Keep coding projects in Ubuntu, not under random Windows folders.</p>
 
-  <h3>4 &mdash; Install VS Code on Windows</h3>
-  <p>Back in a normal Windows terminal, install VS Code:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>winget install --id Microsoft.VisualStudioCode -e</code></pre></div>
-  <p><code>winget</code> is Windows’ package manager. <code>install</code> installs an app; <code>--id</code> selects its exact catalogue identifier, and <code>-e</code> means “exact match” so Windows does not choose a similarly named app. Then open VS Code, install the <strong>Remote - WSL</strong> extension, open a WSL window, and install the same four extensions listed later on this page <strong>inside that WSL session</strong>: Python, Pylance, Ruff, and GitLens.</p>
-
-  <h3>5 &mdash; After VS Code is installed, check Ubuntu can open it</h3>
-  <p>Once the previous step is done, go back to Ubuntu and run:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>code --version</code></pre></div>
-  <p><code>code</code> is VS Code’s terminal command and <code>--version</code> asks it to print its installed version without opening anything. If that prints a version number, you're set. If it says <code>code</code> isn't found, open any folder from VS Code using the <strong>Remote - WSL</strong> extension once, then try again. “Not found” usually means the command has not yet been added to Ubuntu’s <strong>PATH</strong>—the list of folders Ubuntu searches when you type a command.</p>
+  <h3>4 &mdash; Continue at VS Code</h3>
+  <p>Your Windows command-line tools are now installed. Do not install a second copy through the Mac sections below. Jump to <a href="#vscode">VS Code</a> for the one set of editor instructions, then use the Windows verification block at the end of this page.</p>
 </section>
 
 <section id="xcode">
@@ -136,22 +135,19 @@ curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg 
   <h2>Homebrew</h2>
   <p>Homebrew is the package manager for macOS. Think of it as an app store for developer tools &mdash; it lets you install, update, and remove programs with a single command. Almost everything you'll install goes through Homebrew.</p>
 
-  <p>Copy this entire command (it's long &mdash; that's normal) and paste it into Terminal, then press Enter:</p>
+  <p>This is the one unavoidable long command in setup: it is Homebrew’s published installer. Read the explanation first, then copy it exactly once from here rather than from a random search result:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre></div>
+  <p><code>/bin/bash</code> starts macOS’s shell. <code>-c</code> tells it to run the text that follows. <code>curl</code> downloads that text from the official Homebrew address; <code>-f</code> fails on an error, <code>-sS</code> hides normal download noise but shows errors, and <code>-L</code> follows redirects. <code>$(...)</code> places the downloaded installer into the command. This is powerful, which is why this guide uses it only for the official package-manager installer.</p>
 
   <p>It will ask for your Mac login password. Type it &mdash; you won't see the characters as you type, that's normal. Press Enter when done. The installer runs for a few minutes.</p>
 
   <p>When it finishes, it will print two more commands near the bottom of the output. They start with <code>echo</code> and <code>eval</code>. <strong>Run both of them.</strong> They tell your terminal where to find Homebrew. On Apple Silicon, Homebrew lives at <code>/opt/homebrew</code> rather than the old location, and your terminal needs pointing at it.</p>
 
-  <p>Here's what those two lines look like (yours will be identical):</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
-
-  <p>Let's break down what those two lines do, because understanding them is worth it:</p>
-  <ul>
-    <li><code>echo '...' &gt;&gt; ~/.zprofile</code> &mdash; the <code>echo</code> command prints text, and the <code>&gt;&gt;</code> means "append it to the end of this file" rather than printing it on screen. <code>~/.zprofile</code> is a file that runs automatically every time you open a new terminal window. So this line is adding the Homebrew setup to that startup file, meaning it'll work forever, not just in this session.</li>
-    <li><code>eval "$(...)"</code> &mdash; runs the Homebrew setup right now, in the current terminal session, so you don't have to close and reopen it first.</li>
-  </ul>
+  <p>Run the two setup commands separately, in this order:</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile</code></pre></div>
+  <p><code>echo</code> produces text. <code>&gt;&gt;</code> appends that text to the end of <code>~/.zprofile</code>, a file macOS runs whenever a new Terminal session begins. This makes Homebrew available in future terminals.</p>
+  <div class="code"><button class="copy">Copy</button><pre><code>eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
+  <p><code>/opt/homebrew/bin/brew shellenv</code> prints Homebrew’s environment setup. <code>$(...)</code> captures it and <code>eval</code> applies it to this terminal now, so you do not have to restart Terminal first.</p>
 
   <p>Check it worked:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew --version</code></pre></div>
@@ -171,6 +167,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
 
   <p>On Mac, install Python via Homebrew:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install python</code></pre></div>
+  <p><code>brew</code> runs Homebrew, <code>install</code> asks it to add software, and <code>python</code> is the package name.</p>
 
   <p>Check it installed:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>python3 --version</code></pre></div>
@@ -194,6 +191,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
 
   <p>On Mac, install both via Homebrew:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install node</code></pre></div>
+  <p><code>brew install</code> adds a package through Homebrew; <code>node</code> is the package name. npm is included with Node.js, so there is no second install command.</p>
 
   <p>Check Node.js installed:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>node --version</code></pre></div>
@@ -217,27 +215,16 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</code></pre></div>
 
   <p>On Mac, the built-in Git is old. Install a current one:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install git</code></pre></div>
+  <p><code>brew install</code> adds software through Homebrew; <code>git</code> is the package name.</p>
 
   <p>Check it installed:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>git --version</code></pre></div>
   <p>You should see <code>git version 2.4x.x</code> or similar. If it still shows <code>2.39</code>, close and reopen Terminal so it picks up the Homebrew version.</p>
 
-  <h3>Tell Git who you are</h3>
-  <p>Git needs to know your name and email address to attach to your commits. Use the same email you'll use for GitHub.</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>  git config --global user.name "Your Name"
-git config --global user.email "your@email.com"
-git config --global init.defaultBranch main</code></pre></div>
-  <p>Let's read those commands:</p>
-  <ul>
-    <li><code>git config --global</code> &mdash; changes a setting that applies to all your git repos on this machine (<code>--global</code> means "not just this folder, everywhere").</li>
-    <li><code>user.name "Your Name"</code> &mdash; sets the name that appears on your commits. Swap in your actual name.</li>
-    <li><code>user.email "..."</code> &mdash; sets the email. Must match your GitHub account or commits won't link to your profile.</li>
-    <li><code>init.defaultBranch main</code> &mdash; makes new repos start with a branch called <code>main</code> (the modern default) instead of the older <code>master</code>.</li>
-  </ul>
-
-  <p>Check your settings saved:</p>
-  <div class="code"><button class="copy">Copy</button><pre><code>git config --list</code></pre></div>
-  <p>You'll see a list of your settings. Scroll up to find <code>user.name</code> and <code>user.email</code>.</p>
+  <div class="note">
+    <div class="lbl">Stop here for Git configuration</div>
+    <p>Installation only makes Git available. The next shared setup step explains GitHub, your identity, SSH keys, and your first repository once, for both platforms. Continue through VS Code and verification, then follow <a href="index.html#github">Git &amp; GitHub</a>. Keeping that material there prevents two competing versions of the same setup.</p>
+  </div>
 </section>
 
 <section id="vscode">
@@ -248,8 +235,7 @@ git config --global init.defaultBranch main</code></pre></div>
 
   <p>On Mac, install it with Homebrew:</p>
   <div class="code"><button class="copy">Copy</button><pre><code>brew install --cask visual-studio-code</code></pre></div>
-
-  <p>The <code>--cask</code> flag tells Homebrew to install a full Mac application (as opposed to a command-line tool). This takes a minute or two to download.</p>
+  <p><code>brew install</code> adds software through Homebrew. <code>--cask</code> says this package is a full Mac application rather than a command-line tool, and <code>visual-studio-code</code> is its Homebrew package name. This takes a minute or two to download.</p>
 
   <p>Open VS Code when it's done. You'll find it in your Applications folder or via Spotlight (<kbd>&#8984; Space</kbd> &rarr; "VS Code").</p>
 
@@ -357,12 +343,12 @@ code --version          <span class="c"># VS Code talking to WSL</span></code></
   </div>
 
   <h3>What to do next</h3>
-  <p>Now that your machine is set up, go to the <a href="index.html#github">main guide</a> to set up Git and GitHub, and create your first repo. That's the final piece before Project 1 starts.</p>
+  <p>Now that your machine is set up, go to <a href="index.html#github">Git &amp; GitHub</a> for the shared account and first-repository setup. That is the final piece before Project 1 starts.</p>
 </section>
 
 <div class="pager">
   <a class="pg" href="welcome.html"><span>&larr; Previous</span><strong>Choose your platform</strong></a>
-  <a class="pg r" href="index.html#how"><span>Next &rarr;</span><strong>The guide &middot; How this works</strong></a>
+  <a class="pg r" href="index.html#github"><span>Next &rarr;</span><strong>Shared setup &middot; Git &amp; GitHub</strong></a>
 </div>
 
 </main>
